@@ -36,7 +36,7 @@ Every message exchanged on the serial link — in both directions — follows th
 | `0x42` | Device → Host | **Response** — carries a JSON reply |
 | `0x41` | Device → Host | **Response** (split / continuation) |
 | `0x02` | Host → Device | **ACK** — acknowledges a device response (no JSON payload) |
-| `0x14`–`0xF4` | Device → Host | **Data chunks** — binary preset data fragments (see §6) |
+| `0xF4` / various | Device → Host | **Chunk header** — marks the start of a JSON data segment within a streaming response (see §6) |
 
 ### Checksum
 
@@ -122,7 +122,7 @@ Sent by Nexus immediately after opening the COM port:
 > ["rp", 103, "system/LAST PRES"]
 < ["rpr",  N, 103, 23]              ← index of last active preset
 
-> ["rc", 104, "preset"]             ← read current preset (chunked, see §6)
+> ["rc", 104, "preset"]             ← read current preset (streaming, see §6)
 < (chunked binary response)
 
 > ["rp", 105, "system/PRESETDIRTY"]
@@ -142,7 +142,7 @@ Sent by Nexus immediately after opening the COM port:
 
 ```
 > ["mc", SEQ, "banks/user/N", "preset"]
-> ["rc", SEQ, "preset"]                    ← read the now-active preset (chunked)
+> ["rc", SEQ, "preset"]                  ← read the now-active preset (streaming, see §6)
 > ["rp", SEQ, "system/PRESETDIRTY"]
 < ["rpr", ..., SEQ, 0]
 ```
@@ -216,32 +216,111 @@ The device sends unsolicited notifications when the user presses a footswitch:
 
 ---
 
-## 6. Reading a Preset (chunked transfer)
+## 6. Reading a Preset (streaming response)
 
-Presets are too large for a single frame (max payload ~249 bytes). The device sends the JSON preset in multiple binary chunks.
+Preset content responses (`"rcr"`) are delivered as a **continuous byte stream** on the serial link, not as self-contained framed packets. The JSON payload is segmented into chunks by the device's serial buffer, with each segment prefixed by a 10-byte header.
 
 ### Request
 
 ```
 > ["rc", SEQ, "preset"]           ← read active preset
-> ["rc", SEQ, "banks/user/N"]     ← read a specific slot
+> ["rc", SEQ, "banks/user/N"]     ← read a specific slot (used during backup)
 ```
 
-### Response
+During a full backup, multiple `"rc"` requests are **pipelined** — the host sends several requests without waiting for each response. The device interleaves the responses in the serial stream.
 
-The device replies with a series of frames of type `0xF4` (first chunk) followed by continuation frames with varying type bytes. Each chunk is exactly **259 bytes** including framing (`0x00 0x01 0xF4` length prefix).
+### Stream structure
+
+Each `"rcr"` response is delivered as one or more segments. Each segment has the form:
 
 ```
-< (type=0xF4, 259 bytes)    ← first chunk
-< (type=0xNN, 259 bytes)    ← continuation chunks
-< (type=0xNN, N bytes)      ← last chunk (variable size)
+55 00 01 TT  H4 H5 H6 H7  00 00  [JSON bytes …]  CC
+│            │              │     │               │
+│            └── 6 bytes    │     └── JSON part   └── 1-byte checksum
+│                header     └── 2-byte prefix (always 0x00 0x00)
+└── sync + len=256 (LE) + type
 ```
 
-The JSON content of the preset is split across these frames starting at offset `[8]` (after the 8-byte frame header), concatenated in order, ending before the final checksum byte of each frame.
+| Field | Value | Notes |
+|-------|-------|-------|
+| `55 00 01` | constant | Marks the start of every segment |
+| `TT` | `0xF4` for first and full segments; varies for last segment | The type byte of continuation/last segments varies; it is **not** a checksum of the payload |
+| `H4..H7` | `00 42 HH LL` | `HH LL` is a monotonically increasing global chunk counter on the device |
+| `00 00` | constant | 2-byte padding prefix before the JSON content |
+| JSON bytes | variable | Portion of the `["rcr", ...]` JSON array |
+| `CC` | 1 byte | Checksum of the entire message: `(256 − sum(all_bytes_from_[1]_to_last_JSON_byte)) % 256` |
 
-**Reassembly**: strip the 8-byte header and 1-byte checksum from each chunk, concatenate the payloads, parse as JSON.
+**Full segments** (when the JSON portion is ~495 bytes) have `len=256` in the frame header (total = 259 bytes). The `CC` byte at the end of a full segment is the checksum of that segment's contribution — it appears in the stream **immediately before** the `55 00 01` marker of the next segment, and must be **discarded** during reassembly.
 
-The resulting JSON structure is a `{"preset": {...}}` object (see §9).
+**Last segment** has a shorter payload and its `CC` is the final checksum of the complete message.
+
+### Interleaved frames
+
+During pipelined backup, other device frames (short ACKs, `"rpr"` responses) appear interleaved in the stream between segments of a `"rcr"` response. These are standard framed messages starting with `55 LL LL TT` where `len < 256`; they must be skipped during reassembly.
+
+### Reassembly algorithm
+
+```python
+def extract_rcr(stream, start_pos):
+    """
+    Extract and reassemble a ["rcr", ...] JSON message from the raw device stream.
+    start_pos: byte offset of the '[' of ["rcr" in the stream.
+    Returns the complete JSON string.
+    """
+    json_bytes = bytearray()
+    pos = start_pos
+    in_string = False
+    escape_next = False
+    bracket_depth = 0
+
+    while pos < len(stream):
+        b = stream[pos]
+
+        # Detect any protocol frame header: 0x55 LL LL TT ...
+        if b == 0x55 and pos + 3 < len(stream):
+            plen = stream[pos+1] | (stream[pos+2] << 8)
+            flen = plen + 3
+
+            if plen == 256:
+                # Full preset segment: discard the checksum byte just added,
+                # skip the 10-byte segment header, continue with JSON content.
+                if json_bytes:
+                    json_bytes.pop()          # remove preceding CC byte
+                pos += 10                     # skip: 55 00 01 TT H4 H5 H6 H7 00 00
+                continue
+
+            if plen < 256 and flen < 300:
+                # Short interleaved frame (ACK, rpr, etc.): skip entirely.
+                if json_bytes:
+                    json_bytes.pop()          # remove preceding CC byte
+                pos += flen
+                continue
+
+        # Track JSON structure to detect the end of the message
+        c = chr(b) if 32 <= b < 128 else None
+        if escape_next:
+            escape_next = False
+        elif c == '\\' and in_string:
+            escape_next = True
+        elif c == '"':
+            in_string = not in_string
+
+        if not in_string:
+            if c in ('[', '{'):
+                bracket_depth += 1
+            elif c in (']', '}'):
+                bracket_depth -= 1
+                if bracket_depth == 0:
+                    json_bytes.append(b)
+                    return json_bytes.decode('ascii')
+
+        json_bytes.append(b)
+        pos += 1
+
+    return json_bytes.decode('ascii')
+```
+
+The resulting JSON has the form `["rcr", DEV_SEQ, HOST_SEQ, {preset object}]`. The preset object structure is described in §9.
 
 ---
 
@@ -290,7 +369,7 @@ Nexus reads all 99 user presets sequentially:
 > ["rc", SEQ+1, "banks/user/1"]   ← requests are pipelined
 ...
 > ["rc", SEQ+98, "banks/user/98"]
-< (chunked responses, interleaved)
+< (streaming responses, interleaved — see §6)
 ```
 
 The resulting data is saved locally as a `.rp360b` file (see §10).  
@@ -440,7 +519,7 @@ The following areas are **not yet documented** and are targets for Part 2 (Devic
 
 | Area | Status |
 |------|--------|
-| Chunked preset reassembly (exact byte offsets per chunk type) | Partially understood |
+| Checksum verification of full streaming response | Algorithm identified; full validation pending |
 | `"sbs"` command semantics | Unknown — likely event subscription |
 | Device-initiated `"np"` notification full path catalogue | Partial (ENABLE observed) |
 | Factory preset content reading | Not captured (Nexus doesn't read it) |
@@ -454,4 +533,3 @@ The following areas are **not yet documented** and are targets for Part 2 (Devic
 ---
 
 *Captured and analysed: May 2026. Contributions welcome.*
-

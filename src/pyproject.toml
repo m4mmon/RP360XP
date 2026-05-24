@@ -1,0 +1,18 @@
+[build-system]
+requires = ["setuptools>=61"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "rp360xp"
+version = "0.1.0"
+description = "Open-source controller for the DigiTech RP360XP guitar effects pedal"
+requires-python = ">=3.10"
+dependencies = ["pyserial>=3.5", "click>=8.0"]
+
+[project.optional-dependencies]
+dev = ["pytest"]
+gui = ["PySide6>=6.4"]
+
+[project.scripts]
+rp360xp     = "rp360xp.cli:main"
+rp360xp-gui = "rp360xp.ui.main_window:main"

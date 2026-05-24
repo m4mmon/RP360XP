@@ -1,0 +1,6957 @@
+{
+  "device": "DigiTech RP360XP",
+  "source": "RPPedalInfo.xml",
+  "effects": [
+    {
+      "category": "Wah",
+      "subcategory": "Wah",
+      "type": "Wah",
+      "id": 0,
+      "index": 0,
+      "displayName": "Cry Wah",
+      "address": "CRY WAH",
+      "params": [
+        {
+          "address": "ENABLE",
+          "index": 1,
+          "default": 0,
+          "type": "Special"
+        },
+        {
+          "address": "WAH LEVL",
+          "index": 177,
+          "default": 6,
+          "type": "Normal",
+          "min": 0,
+          "max": 12
+        },
+        {
+          "address": "PEDAL",
+          "index": 261,
+          "default": 0,
+          "type": "Normal",
+          "min": 0,
+          "max": 99
+        }
+      ]
+    },
+    {
+      "category": "Wah",
+      "subcategory": "Wah",
+      "type": "Wah",
+      "id": 1,
+      "index": 1,
+      "displayName": "Clyde Wah",
+      "address": "CLYDEWAH",
+      "params": [
+        {
+          "address": "ENABLE",
+          "index": 1,
+          "default": 0,
+          "type": "Special"
+        },
+        {
+          "address": "WAH LEVL",
+          "index": 177,
+          "default": 6,
+          "type": "Normal",
+          "min": 0,
+          "max": 12
+        },
+        {
+          "address": "PEDAL",
+          "index": 261,
+          "default": 0,
+          "type": "Normal",
+          "min": 0,
+          "max": 99
+        }
+      ]
+    },
+    {
+      "category": "Wah",
+      "subcategory": "Wah",
+      "type": "Wah",
+      "id": 2,
+      "index": 2,
+      "displayName": "Full Range",
+      "address": "FULLRANG",
+      "params": [
+        {
+          "address": "ENABLE",
+          "index": 1,
+          "default": 0,
+          "type": "Special"
+        },
+        {
+          "address": "WAH LEVL",
+          "index": 177,
+          "default": 6,
+          "type": "Normal",
+          "min": 0,
+          "max": 12
+        },
+        {
+          "address": "PEDAL",
+          "index": 261,
+          "default": 0,
+          "type": "Normal",
+          "min": 0,
+          "max": 99
+        }
+      ]
+    },
+    {
+      "category": "Compressor",
+      "subcategory": "Compressor",
+      "type": "Compressor",
+      "id": 0,
+      "index": 3,
+      "displayName": "Main Squeeze",
+      "address": "DIGICOMP",
+      "params": [
+        {
+          "address": "ENABLE",
+          "index": 1,
+          "default": 0,
+          "type": "Special"
+        },
+        {
+          "address": "LEVEL",
+          "index": 185,
+          "default": 70,
+          "type": "Normal",
+          "min": 0,
+          "max": 99
+        },
+        {
+          "address": "ATTACK",
+          "index": 184,
+          "default": 0,
+          "type": "Normal",
+          "min": 0,
+          "max": 99
+        },
+        {
+          "address": "TONE",
+          "index": 183,
+          "default": 50,
+          "type": "Normal",
+          "min": 0,
+          "max": 0
+        },
+        {
+          "address": "SUSTAIN",
+          "index": 181,
+          "default": 50,
+          "type": "Normal",
+          "min": 0,
+          "max": 99
+        }
+      ]
+    },
+    {
+      "category": "Compressor",
+      "subcategory": "Compressor",
+      "type": "Compressor",
+      "id": 1,
+      "index": 4,
+      "displayName": "Blue Compressor",
+      "address": "CS COMP",
+      "params": [
+        {
+          "address": "ENABLE",
+          "index": 1,
+          "default": 0,
+          "type": "Special"
+        },
+        {
+          "address": "LEVEL",
+          "index": 185,
+          "default": 70,
+          "type": "Normal",
+          "min": 0,
+          "max": 99
+        },
+        {
+          "address": "SUSTAIN",
+          "index": 181,
+          "default": 35,
+          "type": "Normal",
+          "min": 0,
+          "max": 99
+        },
+        {
+          "address": "ATTACK",
+          "index": 184,
+          "default": 0,
+          "type": "Normal",
+          "min": 0,
+          "max": 99
+        }
+      ]
+    },
+    {
+      "category": "Compressor",
+      "subcategory": "Compressor",
+      "type": "Compressor",
+      "id": 2,
+      "index": 5,
+      "displayName": "Red Compressor",
+      "address": "DYNOCOMP",
+      "params": [
+        {
+          "address": "ENABLE",
+          "index": 1,
+          "default": 0,
+          "type": "Special"
+        },
+        {
+          "address": "OUTPUT",
+          "index": 186,
+          "default": 99,
+          "type": "Normal",
+          "min": 0,
+          "max": 99
+        },
+        {
+          "address": "SENSTVTY",
+          "index": 234,
+          "default": 65,
+          "type": "Normal",
+          "min": 0,
+          "max": 99
+        }
+      ]
+    },
+    {
+      "category": "Distortion",
+      "subcategory": "Distortion",
+      "type": "Distortion",
+      "id": 0,
+      "index": 6,
+      "displayName": "Screamer",
+      "address": "SCREAMER",
+      "params": [
+        {
+          "address": "ENABLE",
+          "index": 1,
+          "default": 0,
+          "type": "Special"
+        },
+        {
+          "address": "DRIVE",
+          "index": 188,
+          "default": 50,
+          "type": "Normal",
+          "min": 0,
+          "max": 99
+        },
+        {
+          "address": "LEVEL",
+          "index": 185,
+          "default": 65,
+          "type": "Normal",
+          "min": 0,
+          "max": 99
+        },
+        {
+          "address": "TONE",
+          "index": 183,
+          "default": 70,
+          "type": "Normal",
+          "min": 0,
+          "max": 99
+        }
+      ]
+    },
+    {
+      "category": "Distortion",
+      "subcategory": "Distortion",
+      "type": "Distortion",
+      "id": 1,
+      "index": 7,
+      "displayName": "Eight-Oh-Eight",
+      "address": "808",
+      "params": [
+        {
+          "address": "ENABLE",
+          "index": 1,
+          "default": 0,
+          "type": "Special"
+        },
+        {
+          "address": "OVERDRIV",
+          "index": 189,
+          "default": 70,
+          "type": "Normal",
+          "min": 0,
+          "max": 99
+        },
+        {
+          "address": "LEVEL",
+          "index": 185,
+          "default": 60,
+          "type": "Normal",
+          "min": 0,
+          "max": 99
+        },
+        {
+          "address": "TONE",
+          "index": 183,
+          "default": 90,
+          "type": "Normal",
+          "min": 0,
+          "max": 99
+        }
+      ]
+    },
+    {
+      "category": "Distortion",
+      "subcategory": "Distortion",
+      "type": "Distortion",
+      "id": 2,
+      "index": 8,
+      "displayName": "TS Modded",
+      "address": "TS MOD",
+      "params": [
+        {
+          "address": "ENABLE",
+          "index": 1,
+          "default": 0,
+          "type": "Special"
+        },
+        {
+          "address": "DRIVE",
+          "index": 188,
+          "default": 75,
+          "type": "Normal",
+          "min": 0,
+          "max": 99
+        },
+        {
+          "address": "LEVEL",
+          "index": 185,
+          "default": 70,
+          "type": "Normal",
+          "min": 0,
+          "max": 99
+        },
+        {
+          "address": "TONE",
+          "index": 183,
+          "default": 90,
+          "type": "Normal",
+          "min": 0,
+          "max": 99
+        }
+      ]
+    },
+    {
+      "category": "Distortion",
+      "subcategory": "Distortion",
+      "type": "Distortion",
+      "id": 3,
+      "index": 9,
+      "displayName": "Supreme Overdrive",
+      "address": "SD ODRV",
+      "params": [
+        {
+          "address": "ENABLE",
+          "index": 1,
+          "default": 0,
+          "type": "Special"
+        },
+        {
+          "address": "LEVEL",
+          "index": 185,
+          "default": 30,
+          "type": "Normal",
+          "min": 0,
+          "max": 99
+        },
+        {
+          "address": "DRIVE",
+          "index": 188,
+          "default": 70,
+          "type": "Normal",
+          "min": 0,
+          "max": 99
+        },
+        {
+          "address": "TONE",
+          "index": 183,
+          "default": 75,
+          "type": "Normal",
+          "min": 0,
+          "max": 99
+        }
+      ]
+    },
+    {
+      "category": "Distortion",
+      "subcategory": "Distortion",
+      "type": "Distortion",
+      "id": 4,
+      "index": 10,
+      "displayName": "Over Overdrive",
+      "address": "OD ODRV",
+      "params": [
+        {
+          "address": "ENABLE",
+          "index": 1,
+          "default": 0,
+          "type": "Special"
+        },
+        {
+          "address": "LEVEL",
+          "index": 185,
+          "default": 45,
+          "type": "Normal",
+          "min": 0,
+          "max": 99
+        },
+        {
+          "address": "OVERDRIV",
+          "index": 189,
+          "default": 75,
+          "type": "Normal",
+          "min": 0,
+          "max": 99
+        }
+      ]
+    },
+    {
+      "category": "Distortion",
+      "subcategory": "Distortion",
+      "type": "Distortion",
+      "id": 5,
+      "index": 11,
+      "displayName": "Who Do Drive",
+      "address": "SPARKDRV",
+      "params": [
+        {
+          "address": "ENABLE",
+          "index": 1,
+          "default": 0,
+          "type": "Special"
+        },
+        {
+          "address": "GAIN",
+          "index": 190,
+          "default": 60,
+          "type": "Normal",
+          "min": 0,
+          "max": 99
+        },
+        {
+          "address": "TONE",
+          "index": 183,
+          "default": 50,
+          "type": "Normal",
+          "min": 0,
+          "max": 99
+        },
+        {
+          "address": "CLEAN",
+          "index": 200,
+          "default": 25,
+          "type": "Normal",
+          "min": 0,
+          "max": 99
+        },
+        {
+          "address": "VOLUME",
+          "index": 207,
+          "default": 50,
+          "type": "Normal",
+          "min": 0,
+          "max": 99
+        }
+      ]
+    },
+    {
+      "category": "Distortion",
+      "subcategory": "Distortion",
+      "type": "Distortion",
+      "id": 6,
+      "index": 12,
+      "displayName": "Driven Over",
+      "address": "GUY ODRV",
+      "params": [
+        {
+          "address": "ENABLE",
+          "index": 1,
+          "default": 0,
+          "type": "Special"
+        },
+        {
+          "address": "LEVEL",
+          "index": 185,
+          "default": 50,
+          "type": "Normal",
+          "min": 0,
+          "max": 99
+        },
+        {
+          "address": "GAIN",
+          "index": 190,
+          "default": 60,
+          "type": "Normal",
+          "min": 0,
+          "max": 99
+        }
+      ]
+    },
+    {
+      "category": "Distortion",
+      "subcategory": "Distortion",
+      "type": "Distortion",
+      "id": 7,
+      "index": 13,
+      "displayName": "DOD 250",
+      "address": "DOD 250",
+      "params": [
+        {
+          "address": "ENABLE",
+          "index": 1,
+          "default": 0,
+          "type": "Special"
+        },
+        {
+          "address": "GAIN",
+          "index": 190,
+          "default": 70,
+          "type": "Normal",
+          "min": 0,
+          "max": 99
+        },
+        {
+          "address": "LEVEL",
+          "index": 185,
+          "default": 50,
+          "type": "Normal",
+          "min": 0,
+          "max": 99
+        }
+      ]
+    },
+    {
+      "category": "Distortion",
+      "subcategory": "Distortion",
+      "type": "Distortion",
+      "id": 8,
+      "index": 14,
+      "displayName": "Redline",
+      "address": "REDLINE",
+      "params": [
+        {
+          "address": "ENABLE",
+          "index": 1,
+          "default": 0,
+          "type": "Special"
+        },
+        {
+          "address": "GAIN",
+          "index": 190,
+          "default": 60,
+          "type": "Normal",
+          "min": 0,
+          "max": 99
+        },
+        {
+          "address": "LOW",
+          "index": 194,
+          "default": 50,
+          "type": "Normal",
+          "min": 0,
+          "max": 99
+        },
+        {
+          "address": "HIGH",
+          "index": 201,
+          "default": 50,
+          "type": "Normal",
+          "min": 0,
+          "max": 99
+        },
+        {
+          "address": "LEVEL",
+          "index": 185,
+          "default": 80,
+          "type": "Normal",
+          "min": 0,
+          "max": 99
+        }
+      ]
+    },
+    {
+      "category": "Distortion",
+      "subcategory": "Distortion",
+      "type": "Distortion",
+      "id": 9,
+      "index": 15,
+      "displayName": "Amp Driver",
+      "address": "AMPDRIVR",
+      "params": [
+        {
+          "address": "ENABLE",
+          "index": 1,
+          "default": 0,
+          "type": "Special"
+        },
+        {
+          "address": "GAIN",
+          "index": 190,
+          "default": 75,
+          "type": "Normal",
+          "min": 0,
+          "max": 99
+        },
+        {
+          "address": "MIDBOOST",
+          "index": 195,
+          "default": 50,
+          "type": "Normal",
+          "min": 0,
+          "max": 99
+        },
+        {
+          "address": "LEVEL",
+          "index": 185,
+          "default": 25,
+          "type": "Normal",
+          "min": 0,
+          "max": 99
+        }
+      ]
+    },
+    {
+      "category": "Distortion",
+      "subcategory": "Distortion",
+      "type": "Distortion",
+      "id": 10,
+      "index": 16,
+      "displayName": "Anxiety Disorder",
+      "address": "OC DRIVE",
+      "params": [
+        {
+          "address": "ENABLE",
+          "index": 1,
+          "default": 0,
+          "type": "Special"
+        },
+        {
+          "address": "VOLUME",
+          "index": 207,
+          "default": 70,
+          "type": "Normal",
+          "min": 0,
+          "max": 99
+        },
+        {
+          "address": "TONE",
+          "index": 183,
+          "default": 99,
+          "type": "Normal",
+          "min": 0,
+          "max": 99
+        },
+        {
+          "address": "DRIVE",
+          "index": 188,
+          "default": 70,
+          "type": "Normal",
+          "min": 0,
+          "max": 99
+        },
+        {
+          "address": "HP LP",
+          "index": 202,
+          "default": 0,
+          "type": "Normal",
+          "min": 0,
+          "max": 1
+        }
+      ]
+    },
+    {
+      "category": "Distortion",
+      "subcategory": "Distortion",
+      "type": "Distortion",
+      "id": 11,
+      "index": 17,
+      "displayName": "Rodent",
+      "address": "RODENT",
+      "params": [
+        {
+          "address": "ENABLE",
+          "index": 1,
+          "default": 0,
+          "type": "Special"
+        },
+        {
+          "address": "DIST",
+          "index": 191,
+          "default": 50,
+          "type": "Normal",
+          "min": 0,
+          "max": 99
+        },
+        {
+          "address": "FILTER",
+          "index": 196,
+          "default": 30,
+          "type": "Normal",
+          "min": 0,
+          "max": 99
+        },
+        {
+          "address": "VOLUME",
+          "index": 207,
+          "default": 85,
+          "type": "Normal",
+          "min": 0,
+          "max": 99
+        }
+      ]
+    },
+    {
+      "category": "Distortion",
+      "subcategory": "Distortion",
+      "type": "Distortion",
+      "id": 12,
+      "index": 18,
+      "displayName": "MX Distortion",
+      "address": "MX DIST",
+      "params": [
+        {
+          "address": "ENABLE",
+          "index": 1,
+          "default": 0,
+          "type": "Special"
+        },
+        {
+          "address": "OUTPUT",
+          "index": 186,
+          "default": 80,
+          "type": "Normal",
+          "min": 0,
+          "max": 99
+        },
+        {
+          "address": "DIST",
+          "index": 191,
+          "default": 75,
+          "type": "Normal",
+          "min": 0,
+          "max": 99
+        }
+      ]
+    },
+    {
+      "category": "Distortion",
+      "subcategory": "Distortion",
+      "type": "Distortion",
+      "id": 13,
+      "index": 19,
+      "displayName": "Orange Distortion",
+      "address": "DS DIST",
+      "params": [
+        {
+          "address": "ENABLE",
+          "index": 1,
+          "default": 0,
+          "type": "Special"
+        },
+        {
+          "address": "TONE",
+          "index": 183,
+          "default": 60,
+          "type": "Normal",
+          "min": 0,
+          "max": 99
+        },
+        {
+          "address": "DIST",
+          "index": 191,
+          "default": 75,
+          "type": "Normal",
+          "min": 0,
+          "max": 99
+        },
+        {
+          "address": "LEVEL",
+          "index": 185,
+          "default": 32,
+          "type": "Normal",
+          "min": 0,
+          "max": 99
+        }
+      ]
+    },
+    {
+      "category": "Distortion",
+      "subcategory": "Distortion",
+      "type": "Distortion",
+      "id": 14,
+      "index": 20,
+      "displayName": "Grunge",
+      "address": "GRUNGE",
+      "params": [
+        {
+          "address": "ENABLE",
+          "index": 1,
+          "default": 0,
+          "type": "Special"
+        },
+        {
+          "address": "LOUD",
+          "index": 208,
+          "default": 70,
+          "type": "Normal",
+          "min": 0,
+          "max": 99
+        },
+        {
+          "address": "BUTT",
+          "index": 194,
+          "default": 50,
+          "type": "Normal",
+          "min": 0,
+          "max": 99
+        },
+        {
+          "address": "FACE",
+          "index": 201,
+          "default": 50,
+          "type": "Normal",
+          "min": 0,
+          "max": 99
+        },
+        {
+          "address": "GRUNGE",
+          "index": 192,
+          "default": 60,
+          "type": "Normal",
+          "min": 0,
+          "max": 99
+        }
+      ]
+    },
+    {
+      "category": "Distortion",
+      "subcategory": "Distortion",
+      "type": "Distortion",
+      "id": 15,
+      "index": 21,
+      "displayName": "Zone",
+      "address": "ZONE",
+      "params": [
+        {
+          "address": "ENABLE",
+          "index": 1,
+          "default": 0,
+          "type": "Special"
+        },
+        {
+          "address": "GAIN",
+          "index": 190,
+          "default": 60,
+          "type": "Normal",
+          "min": 0,
+          "max": 99
+        },
+        {
+          "address": "MID FREQ",
+          "index": 218,
+          "default": 50,
+          "type": "Normal",
+          "min": 0,
+          "max": 99
+        },
+        {
+          "address": "LEVEL",
+          "index": 185,
+          "default": 80,
+          "type": "Normal",
+          "min": 0,
+          "max": 99
+        },
+        {
+          "address": "LOW",
+          "index": 194,
+          "default": 50,
+          "type": "Normal",
+          "min": 0,
+          "max": 99
+        },
+        {
+          "address": "MID",
+          "index": 204,
+          "default": 65,
+          "type": "Normal",
+          "min": 0,
+          "max": 99
+        },
+        {
+          "address": "HIGH",
+          "index": 201,
+          "default": 50,
+          "type": "Normal",
+          "min": 0,
+          "max": 99
+        }
+      ]
+    },
+    {
+      "category": "Distortion",
+      "subcategory": "Distortion",
+      "type": "Distortion",
+      "id": 16,
+      "index": 22,
+      "displayName": "Death Metal",
+      "address": "DEATH",
+      "params": [
+        {
+          "address": "ENABLE",
+          "index": 1,
+          "default": 0,
+          "type": "Special"
+        },
+        {
+          "address": "LEVEL",
+          "index": 185,
+          "default": 65,
+          "type": "Normal",
+          "min": 0,
+          "max": 99
+        },
+        {
+          "address": "LOW",
+          "index": 194,
+          "default": 50,
+          "type": "Normal",
+          "min": 0,
+          "max": 99
+        },
+        {
+          "address": "MID",
+          "index": 204,
+          "default": 50,
+          "type": "Normal",
+          "min": 0,
+          "max": 99
+        },
+        {
+          "address": "HIGH",
+          "index": 201,
+          "default": 50,
+          "type": "Normal",
+          "min": 0,
+          "max": 99
+        }
+      ]
+    },
+    {
+      "category": "Distortion",
+      "subcategory": "Distortion",
+      "type": "Distortion",
+      "id": 17,
+      "index": 23,
+      "displayName": "Gonkulator",
+      "address": "GONKULTR",
+      "params": [
+        {
+          "address": "ENABLE",
+          "index": 1,
+          "default": 0,
+          "type": "Special"
+        },
+        {
+          "address": "SUCK",
+          "index": 205,
+          "default": 80,
+          "type": "Normal",
+          "min": 0,
+          "max": 99
+        },
+        {
+          "address": "SMEAR",
+          "index": 199,
+          "default": 99,
+          "type": "Normal",
+          "min": 0,
+          "max": 99
+        },
+        {
+          "address": "GUNK",
+          "index": 198,
+          "default": 99,
+          "type": "Normal",
+          "min": 0,
+          "max": 99
+        },
+        {
+          "address": "HEAVE",
+          "index": 209,
+          "default": 70,
+          "type": "Normal",
+          "min": 0,
+          "max": 99
+        }
+      ]
+    },
+    {
+      "category": "Distortion",
+      "subcategory": "Distortion",
+      "type": "Distortion",
+      "id": 18,
+      "index": 24,
+      "displayName": "8tavia",
+      "address": "8TAVIA",
+      "params": [
+        {
+          "address": "ENABLE",
+          "index": 1,
+          "default": 0,
+          "type": "Special"
+        },
+        {
+          "address": "VOLUME",
+          "index": 207,
+          "default": 40,
+          "type": "Normal",
+          "min": 0,
+          "max": 99
+        },
+        {
+          "address": "DRIVE",
+          "index": 188,
+          "default": 70,
+          "type": "Normal",
+          "min": 0,
+          "max": 99
+        }
+      ]
+    },
+    {
+      "category": "Distortion",
+      "subcategory": "Distortion",
+      "type": "Distortion",
+      "id": 19,
+      "index": 25,
+      "displayName": "Later Fuzz",
+      "address": "FUZZLATR",
+      "params": [
+        {
+          "address": "ENABLE",
+          "index": 1,
+          "default": 0,
+          "type": "Special"
+        },
+        {
+          "address": "FUZZ",
+          "index": 193,
+          "default": 75,
+          "type": "Normal",
+          "min": 0,
+          "max": 99
+        },
+        {
+          "address": "VOLUME",
+          "index": 207,
+          "default": 30,
+          "type": "Normal",
+          "min": 0,
+          "max": 99
+        },
+        {
+          "address": "LOOSETIGHT",
+          "index": 206,
+          "default": 1,
+          "type": "Normal",
+          "min": 0,
+          "max": 99
+        },
+        {
+          "address": "TONE",
+          "index": 183,
+          "default": 85,
+          "type": "Normal",
+          "min": 0,
+          "max": 99
+        }
+      ]
+    },
+    {
+      "category": "Distortion",
+      "subcategory": "Distortion",
+      "type": "Distortion",
+      "id": 20,
+      "index": 26,
+      "displayName": "DOD Classic Fuzz",
+      "address": "CLASCFUZ",
+      "params": [
+        {
+          "address": "ENABLE",
+          "index": 1,
+          "default": 0,
+          "type": "Special"
+        },
+        {
+          "address": "VOLUME",
+          "index": 207,
+          "default": 60,
+          "type": "Normal",
+          "min": 0,
+          "max": 99
+        },
+        {
+          "address": "TONE",
+          "index": 183,
+          "default": 60,
+          "type": "Normal",
+          "min": 0,
+          "max": 99
+        },
+        {
+          "address": "FUZZ",
+          "index": 193,
+          "default": 80,
+          "type": "Normal",
+          "min": 0,
+          "max": 99
+        }
+      ]
+    },
+    {
+      "category": "Distortion",
+      "subcategory": "Distortion",
+      "type": "Distortion",
+      "id": 21,
+      "index": 27,
+      "displayName": "Face Fuzz",
+      "address": "FUZZYFAC",
+      "params": [
+        {
+          "address": "ENABLE",
+          "index": 1,
+          "default": 0,
+          "type": "Special"
+        },
+        {
+          "address": "VOLUME",
+          "index": 207,
+          "default": 50,
+          "type": "Normal",
+          "min": 0,
+          "max": 99
+        },
+        {
+          "address": "FUZZ",
+          "index": 193,
+          "default": 90,
+          "type": "Normal",
+          "min": 0,
+          "max": 99
+        }
+      ]
+    },
+    {
+      "category": "Distortion",
+      "subcategory": "Distortion",
+      "type": "Distortion",
+      "id": 22,
+      "index": 28,
+      "displayName": "Big Pi",
+      "address": "BIG PI",
+      "params": [
+        {
+          "address": "ENABLE",
+          "index": 1,
+          "default": 0,
+          "type": "Special"
+        },
+        {
+          "address": "VOLUME",
+          "index": 207,
+          "default": 35,
+          "type": "Normal",
+          "min": 0,
+          "max": 99
+        },
+        {
+          "address": "TONE",
+          "index": 183,
+          "default": 50,
+          "type": "Normal",
+          "min": 0,
+          "max": 99
+        },
+        {
+          "address": "SUSTAIN",
+          "index": 181,
+          "default": 75,
+          "type": "Normal",
+          "min": 0,
+          "max": 99
+        }
+      ]
+    },
+    {
+      "category": "Other",
+      "subcategory": "Other",
+      "type": "Other",
+      "id": 0,
+      "index": 207,
+      "displayName": "Volume",
+      "address": "VOLUME",
+      "params": [
+        {
+          "address": "VOLUME",
+          "index": 207,
+          "default": 99,
+          "type": "Normal",
+          "min": 0,
+          "max": 99
+        }
+      ]
+    },
+    {
+      "category": "EQ",
+      "subcategory": "EQ",
+      "type": "EQ",
+      "id": 0,
+      "index": 110,
+      "displayName": "EQ",
+      "address": "EQ",
+      "params": [
+        {
+          "address": "ENABLE",
+          "index": 1,
+          "default": 0,
+          "type": "Special"
+        },
+        {
+          "address": "LOW LEVL",
+          "index": 217,
+          "default": 12,
+          "type": "Normal",
+          "min": 0,
+          "max": 99
+        },
+        {
+          "address": "LOW FREQ",
+          "index": 222,
+          "default": 9,
+          "type": "Normal",
+          "min": 60,
+          "max": 500
+        },
+        {
+          "address": "LOW BW",
+          "index": 223,
+          "default": 1,
+          "type": "Normal",
+          "min": 0,
+          "max": 99
+        },
+        {
+          "address": "MID LEVL",
+          "index": 219,
+          "default": 12,
+          "type": "Normal",
+          "min": -12,
+          "max": 12
+        },
+        {
+          "address": "MID FREQ",
+          "index": 218,
+          "default": 28,
+          "type": "Normal",
+          "min": 300,
+          "max": 4000
+        },
+        {
+          "address": "MID BW",
+          "index": 224,
+          "default": 1,
+          "type": "Normal",
+          "min": 0,
+          "max": 99
+        },
+        {
+          "address": "HIGHLEVL",
+          "index": 221,
+          "default": 12,
+          "type": "Normal",
+          "min": -12,
+          "max": 12
+        },
+        {
+          "address": "HIGHFREQ",
+          "index": 220,
+          "default": 12,
+          "type": "Normal",
+          "min": 2000,
+          "max": 8000
+        },
+        {
+          "address": "HIGH BW",
+          "index": 225,
+          "default": 1,
+          "type": "Normal",
+          "min": 0,
+          "max": 99
+        }
+      ]
+    },
+    {
+      "category": "Gate",
+      "subcategory": "Gate",
+      "type": "Gate",
+      "id": 0,
+      "index": 111,
+      "displayName": "Silencer Gate",
+      "address": "GATE",
+      "params": [
+        {
+          "address": "ENABLE",
+          "index": 1,
+          "default": 0,
+          "type": "Special"
+        },
+        {
+          "address": "THRESHLD",
+          "index": 230,
+          "default": 40,
+          "type": "Normal",
+          "min": 0,
+          "max": 99
+        },
+        {
+          "address": "ATTACK",
+          "index": 231,
+          "default": 0,
+          "type": "Normal",
+          "min": 0,
+          "max": 99
+        },
+        {
+          "address": "RELEASE",
+          "index": 232,
+          "default": 0,
+          "type": "Normal",
+          "min": 0,
+          "max": 99
+        },
+        {
+          "address": "ATTEN",
+          "index": 233,
+          "default": 99,
+          "type": "Normal",
+          "min": 0,
+          "max": 99
+        }
+      ]
+    },
+    {
+      "category": "Gate",
+      "subcategory": "Gate",
+      "type": "Gate",
+      "id": 1,
+      "index": 112,
+      "displayName": "Swell",
+      "address": "SWELL",
+      "params": [
+        {
+          "address": "ENABLE",
+          "index": 1,
+          "default": 0,
+          "type": "Special"
+        },
+        {
+          "address": "ATTACK",
+          "index": 231,
+          "default": 99,
+          "type": "Normal",
+          "min": 0,
+          "max": 99
+        },
+        {
+          "address": "RELEASE",
+          "index": 232,
+          "default": 0,
+          "type": "Normal",
+          "min": 0,
+          "max": 99
+        },
+        {
+          "address": "ATTEN",
+          "index": 233,
+          "default": 99,
+          "type": "Normal",
+          "min": 0,
+          "max": 99
+        },
+        {
+          "address": "SENSTVTY",
+          "index": 234,
+          "default": 20,
+          "type": "Normal",
+          "min": 0,
+          "max": 99
+        }
+      ]
+    },
+    {
+      "category": "Mod",
+      "subcategory": "Chorus",
+      "type": "Chorus",
+      "id": 0,
+      "index": 113,
+      "displayName": "CE Chorus",
+      "address": "CECHORUS",
+      "params": [
+        {
+          "address": "ENABLE",
+          "index": 1,
+          "default": 0,
+          "type": "Special"
+        },
+        {
+          "address": "SPEED",
+          "index": 239,
+          "default": 15,
+          "type": "Normal",
+          "min": 0,
+          "max": 99
+        },
+        {
+          "address": "DEPTH",
+          "index": 241,
+          "default": 70,
+          "type": "Normal",
+          "min": 0,
+          "max": 99
+        }
+      ]
+    },
+    {
+      "category": "Mod",
+      "subcategory": "Chorus",
+      "type": "Chorus",
+      "id": 1,
+      "index": 114,
+      "displayName": "Danish Chorus",
+      "address": "TCCHORUS",
+      "params": [
+        {
+          "address": "ENABLE",
+          "index": 1,
+          "default": 0,
+          "type": "Special"
+        },
+        {
+          "address": "SPEED",
+          "index": 239,
+          "default": 25,
+          "type": "Normal",
+          "min": 0,
+          "max": 99
+        },
+        {
+          "address": "INTENSTY",
+          "index": 243,
+          "default": 75,
+          "type": "Normal",
+          "min": 0,
+          "max": 4
+        },
+        {
+          "address": "WIDTH",
+          "index": 242,
+          "default": 75,
+          "type": "Normal",
+          "min": 0,
+          "max": 99
+        }
+      ]
+    },
+    {
+      "category": "Mod",
+      "subcategory": "Chorus",
+      "type": "Chorus",
+      "id": 2,
+      "index": 115,
+      "displayName": "Pearl Chorus",
+      "address": "CHORUS",
+      "params": [
+        {
+          "address": "ENABLE",
+          "index": 1,
+          "default": 0,
+          "type": "Special"
+        },
+        {
+          "address": "SPEED",
+          "index": 239,
+          "default": 20,
+          "type": "Normal",
+          "min": 0,
+          "max": 99
+        },
+        {
+          "address": "DEPTH",
+          "index": 241,
+          "default": 70,
+          "type": "Normal",
+          "min": 0,
+          "max": 99
+        },
+        {
+          "address": "LEVEL",
+          "index": 185,
+          "default": 75,
+          "type": "Normal",
+          "min": 0,
+          "max": 99
+        },
+        {
+          "address": "WAVEFORM",
+          "index": 244,
+          "default": 0,
+          "type": "Normal",
+          "min": 0,
+          "max": 99
+        }
+      ]
+    },
+    {
+      "category": "Mod",
+      "subcategory": "Chorus",
+      "type": "Chorus",
+      "id": 3,
+      "index": 116,
+      "displayName": "Glisten Chorus",
+      "address": "GLISCHRS",
+      "params": [
+        {
+          "address": "ENABLE",
+          "index": 1,
+          "default": 0,
+          "type": "Special"
+        },
+        {
+          "address": "SPEED",
+          "index": 239,
+          "default": 20,
+          "type": "Normal",
+          "min": 0,
+          "max": 99
+        },
+        {
+          "address": "DEPTH",
+          "index": 241,
+          "default": 70,
+          "type": "Normal",
+          "min": 0,
+          "max": 99
+        },
+        {
+          "address": "LEVEL",
+          "index": 185,
+          "default": 70,
+          "type": "Normal",
+          "min": 0,
+          "max": 99
+        }
+      ]
+    },
+    {
+      "category": "Mod",
+      "subcategory": "Chorus",
+      "type": "Chorus",
+      "id": 4,
+      "index": 117,
+      "displayName": "Multi Chorus",
+      "address": "MULTCHRS",
+      "params": [
+        {
+          "address": "ENABLE",
+          "index": 1,
+          "default": 0,
+          "type": "Special"
+        },
+        {
+          "address": "SPEED",
+          "index": 239,
+          "default": 20,
+          "type": "Normal",
+          "min": 0,
+          "max": 99
+        },
+        {
+          "address": "DEPTH",
+          "index": 241,
+          "default": 80,
+          "type": "Normal",
+          "min": 0,
+          "max": 99
+        },
+        {
+          "address": "LEVEL",
+          "index": 185,
+          "default": 70,
+          "type": "Normal",
+          "min": 0,
+          "max": 99
+        },
+        {
+          "address": "WAVEFORM",
+          "index": 244,
+          "default": 0,
+          "type": "Normal",
+          "min": 0,
+          "max": 99
+        }
+      ]
+    },
+    {
+      "category": "Mod",
+      "subcategory": "Chorus",
+      "type": "Chorus",
+      "id": 5,
+      "index": 118,
+      "displayName": "Who Do Chorus",
+      "address": "VOO DOO",
+      "params": [
+        {
+          "address": "ENABLE",
+          "index": 1,
+          "default": 0,
+          "type": "Special"
+        },
+        {
+          "address": "SPEED",
+          "index": 239,
+          "default": 15,
+          "type": "Normal",
+          "min": 0,
+          "max": 99
+        },
+        {
+          "address": "INTENSTY",
+          "index": 243,
+          "default": 70,
+          "type": "Normal",
+          "min": 0,
+          "max": 4
+        }
+      ]
+    },
+    {
+      "category": "Mod",
+      "subcategory": "Chorus",
+      "type": "Chorus",
+      "id": 6,
+      "index": 119,
+      "displayName": "Clone Chorus",
+      "address": "CLONE",
+      "params": [
+        {
+          "address": "ENABLE",
+          "index": 1,
+          "default": 0,
+          "type": "Special"
+        },
+        {
+          "address": "RATE",
+          "index": 240,
+          "default": 15,
+          "type": "Normal",
+          "min": 0,
+          "max": 99
+        },
+        {
+          "address": "DEPTH",
+          "index": 241,
+          "default": 70,
+          "type": "Normal",
+          "min": 0,
+          "max": 99
+        }
+      ]
+    },
+    {
+      "category": "Mod",
+      "subcategory": "Flanger",
+      "type": "Flanger",
+      "id": 7,
+      "index": 120,
+      "displayName": "Flanger",
+      "address": "FLANGER",
+      "params": [
+        {
+          "address": "ENABLE",
+          "index": 1,
+          "default": 0,
+          "type": "Special"
+        },
+        {
+          "address": "SPEED",
+          "index": 239,
+          "default": 20,
+          "type": "Normal",
+          "min": 0,
+          "max": 99
+        },
+        {
+          "address": "DEPTH",
+          "index": 241,
+          "default": 20,
+          "type": "Normal",
+          "min": 0,
+          "max": 99
+        },
+        {
+          "address": "REGEN",
+          "index": 247,
+          "default": 70,
+          "type": "Normal",
+          "min": 0,
+          "max": 99
+        },
+        {
+          "address": "LEVEL",
+          "index": 185,
+          "default": 70,
+          "type": "Normal",
+          "min": 0,
+          "max": 99
+        },
+        {
+          "address": "WAVEFORM",
+          "index": 244,
+          "default": 0,
+          "type": "Normal",
+          "min": 0,
+          "max": 99
+        }
+      ]
+    },
+    {
+      "category": "Mod",
+      "subcategory": "Flanger",
+      "type": "Flanger",
+      "id": 8,
+      "index": 121,
+      "displayName": "Triggered Flanger",
+      "address": "TRIGFLNG",
+      "params": [
+        {
+          "address": "ENABLE",
+          "index": 1,
+          "default": 0,
+          "type": "Special"
+        },
+        {
+          "address": "SPEED",
+          "index": 239,
+          "default": 20,
+          "type": "Normal",
+          "min": 0,
+          "max": 99
+        },
+        {
+          "address": "SENSTVTY",
+          "index": 182,
+          "default": 70,
+          "type": "Normal",
+          "min": 0,
+          "max": 99
+        },
+        {
+          "address": "LFOSTART",
+          "index": 248,
+          "default": 50,
+          "type": "Normal",
+          "min": 0,
+          "max": 99
+        },
+        {
+          "address": "LEVEL",
+          "index": 185,
+          "default": 70,
+          "type": "Normal",
+          "min": 0,
+          "max": 99
+        }
+      ]
+    },
+    {
+      "category": "Mod",
+      "subcategory": "Flanger",
+      "type": "Flanger",
+      "id": 9,
+      "index": 122,
+      "displayName": "Filter Flange",
+      "address": "FLTRFLNG",
+      "params": [
+        {
+          "address": "ENABLE",
+          "index": 1,
+          "default": 0,
+          "type": "Special"
+        },
+        {
+          "address": "SPEED",
+          "index": 239,
+          "default": 55,
+          "type": "Normal",
+          "min": 0,
+          "max": 99
+        },
+        {
+          "address": "DEPTH",
+          "index": 241,
+          "default": 10,
+          "type": "Normal",
+          "min": 0,
+          "max": 99
+        },
+        {
+          "address": "REGEN",
+          "index": 247,
+          "default": 90,
+          "type": "Normal",
+          "min": 0,
+          "max": 99
+        },
+        {
+          "address": "FREQ",
+          "index": 250,
+          "default": 60,
+          "type": "Normal",
+          "min": 0,
+          "max": 99
+        }
+      ]
+    },
+    {
+      "category": "Mod",
+      "subcategory": "Flanger",
+      "type": "Flanger",
+      "id": 10,
+      "index": 123,
+      "displayName": "MX Flanger",
+      "address": "MX FLNGR",
+      "params": [
+        {
+          "address": "ENABLE",
+          "index": 1,
+          "default": 0,
+          "type": "Special"
+        },
+        {
+          "address": "SPEED",
+          "index": 239,
+          "default": 30,
+          "type": "Normal",
+          "min": 0,
+          "max": 99
+        },
+        {
+          "address": "WIDTH",
+          "index": 242,
+          "default": 85,
+          "type": "Normal",
+          "min": 0,
+          "max": 99
+        },
+        {
+          "address": "REGEN",
+          "index": 247,
+          "default": 80,
+          "type": "Normal",
+          "min": 0,
+          "max": 99
+        },
+        {
+          "address": "MANUAL",
+          "index": 251,
+          "default": 65,
+          "type": "Normal",
+          "min": 0,
+          "max": 99
+        }
+      ]
+    },
+    {
+      "category": "Mod",
+      "subcategory": "Flanger",
+      "type": "Flanger",
+      "id": 11,
+      "index": 124,
+      "displayName": "EH Flanger",
+      "address": "EH FLNGR",
+      "params": [
+        {
+          "address": "ENABLE",
+          "index": 1,
+          "default": 0,
+          "type": "Special"
+        },
+        {
+          "address": "RATE",
+          "index": 240,
+          "default": 15,
+          "type": "Normal",
+          "min": 0,
+          "max": 99
+        },
+        {
+          "address": "RANGE",
+          "index": 245,
+          "default": 45,
+          "type": "Normal",
+          "min": 0,
+          "max": 99
+        },
+        {
+          "address": "COLOR",
+          "index": 249,
+          "default": 99,
+          "type": "Normal",
+          "min": 0,
+          "max": 99
+        }
+      ]
+    },
+    {
+      "category": "Mod",
+      "subcategory": "Flanger",
+      "type": "Flanger",
+      "id": 12,
+      "index": 125,
+      "displayName": "AD Flanger",
+      "address": "AD FLNGR",
+      "params": [
+        {
+          "address": "ENABLE",
+          "index": 1,
+          "default": 0,
+          "type": "Special"
+        },
+        {
+          "address": "SPEED",
+          "index": 239,
+          "default": 55,
+          "type": "Normal",
+          "min": 0,
+          "max": 99
+        },
+        {
+          "address": "ENHANCE",
+          "index": 246,
+          "default": 85,
+          "type": "Normal",
+          "min": 0,
+          "max": 99
+        },
+        {
+          "address": "RANGE",
+          "index": 245,
+          "default": 35,
+          "type": "Normal",
+          "min": 0,
+          "max": 99
+        },
+        {
+          "address": "MANUAL",
+          "index": 251,
+          "default": 0,
+          "type": "Normal",
+          "min": 0,
+          "max": 99
+        },
+        {
+          "address": "HARMONIC",
+          "index": 252,
+          "default": 0,
+          "type": "Normal",
+          "min": 0,
+          "max": 99
+        }
+      ]
+    },
+    {
+      "category": "Mod",
+      "subcategory": "Phaser",
+      "type": "Phaser",
+      "id": 13,
+      "index": 126,
+      "displayName": "Phaser Beam",
+      "address": "PHASER",
+      "params": [
+        {
+          "address": "ENABLE",
+          "index": 1,
+          "default": 0,
+          "type": "Special"
+        },
+        {
+          "address": "SPEED",
+          "index": 239,
+          "default": 20,
+          "type": "Normal",
+          "min": 0,
+          "max": 99
+        },
+        {
+          "address": "DEPTH",
+          "index": 241,
+          "default": 80,
+          "type": "Normal",
+          "min": 0,
+          "max": 99
+        },
+        {
+          "address": "REGEN",
+          "index": 247,
+          "default": 60,
+          "type": "Normal",
+          "min": 0,
+          "max": 99
+        },
+        {
+          "address": "LEVEL",
+          "index": 185,
+          "default": 60,
+          "type": "Normal",
+          "min": 0,
+          "max": 99
+        },
+        {
+          "address": "WAVEFORM",
+          "index": 244,
+          "default": 1,
+          "type": "Normal",
+          "min": 0,
+          "max": 99
+        }
+      ]
+    },
+    {
+      "category": "Mod",
+      "subcategory": "Phaser",
+      "type": "Phaser",
+      "id": 14,
+      "index": 127,
+      "displayName": "Triggered Phaser",
+      "address": "TRIGPHAS",
+      "params": [
+        {
+          "address": "ENABLE",
+          "index": 1,
+          "default": 0,
+          "type": "Special"
+        },
+        {
+          "address": "SPEED",
+          "index": 239,
+          "default": 20,
+          "type": "Normal",
+          "min": 0,
+          "max": 99
+        },
+        {
+          "address": "SENSTVTY",
+          "index": 182,
+          "default": 70,
+          "type": "Normal",
+          "min": 0,
+          "max": 99
+        },
+        {
+          "address": "LFOSTART",
+          "index": 248,
+          "default": 60,
+          "type": "Normal",
+          "min": 0,
+          "max": 99
+        },
+        {
+          "address": "LEVEL",
+          "index": 185,
+          "default": 60,
+          "type": "Normal",
+          "min": 0,
+          "max": 99
+        }
+      ]
+    },
+    {
+      "category": "Mod",
+      "subcategory": "Phaser",
+      "type": "Phaser",
+      "id": 15,
+      "index": 128,
+      "displayName": "MX Phaser",
+      "address": "MX PHASR",
+      "params": [
+        {
+          "address": "ENABLE",
+          "index": 1,
+          "default": 0,
+          "type": "Special"
+        },
+        {
+          "address": "SPEED",
+          "index": 239,
+          "default": 30,
+          "type": "Normal",
+          "min": 0,
+          "max": 99
+        },
+        {
+          "address": "INTENSTY",
+          "index": 243,
+          "default": 2,
+          "type": "Normal",
+          "min": 1,
+          "max": 4
+        }
+      ]
+    },
+    {
+      "category": "Mod",
+      "subcategory": "Phaser",
+      "type": "Phaser",
+      "id": 16,
+      "index": 129,
+      "displayName": "Stone Phase",
+      "address": "EH PHASR",
+      "params": [
+        {
+          "address": "ENABLE",
+          "index": 1,
+          "default": 0,
+          "type": "Special"
+        },
+        {
+          "address": "COLOR",
+          "index": 249,
+          "default": 1,
+          "type": "Normal",
+          "min": 0,
+          "max": 99
+        },
+        {
+          "address": "RATE",
+          "index": 240,
+          "default": 25,
+          "type": "Normal",
+          "min": 0,
+          "max": 99
+        }
+      ]
+    },
+    {
+      "category": "Mod",
+      "subcategory": "VibRot",
+      "type": "VibRot",
+      "id": 17,
+      "index": 130,
+      "displayName": "Vibrato",
+      "address": "VIBRATO",
+      "params": [
+        {
+          "address": "ENABLE",
+          "index": 1,
+          "default": 1,
+          "type": "Special"
+        },
+        {
+          "address": "SPEED",
+          "index": 239,
+          "default": 55,
+          "type": "Normal",
+          "min": 0,
+          "max": 99
+        },
+        {
+          "address": "DEPTH",
+          "index": 241,
+          "default": 25,
+          "type": "Normal",
+          "min": 0,
+          "max": 4
+        }
+      ]
+    },
+    {
+      "category": "Mod",
+      "subcategory": "VibRot",
+      "type": "VibRot",
+      "id": 18,
+      "index": 131,
+      "displayName": "Rotator",
+      "address": "ROTARY",
+      "params": [
+        {
+          "address": "ENABLE",
+          "index": 1,
+          "default": 1,
+          "type": "Special"
+        },
+        {
+          "address": "SPEED",
+          "index": 239,
+          "default": 45,
+          "type": "Normal",
+          "min": 0,
+          "max": 99
+        },
+        {
+          "address": "INTENSTY",
+          "index": 243,
+          "default": 50,
+          "type": "Normal",
+          "min": 0,
+          "max": 4
+        },
+        {
+          "address": "DOPPLER",
+          "index": 256,
+          "default": 25,
+          "type": "Normal",
+          "min": 0,
+          "max": 99
+        },
+        {
+          "address": "X OVER",
+          "index": 259,
+          "default": 99,
+          "type": "Normal",
+          "min": 0,
+          "max": 99
+        }
+      ]
+    },
+    {
+      "category": "Mod",
+      "subcategory": "VibRot",
+      "type": "VibRot",
+      "id": 19,
+      "index": 132,
+      "displayName": "Vibro-pan",
+      "address": "VIBROPAN",
+      "params": [
+        {
+          "address": "ENABLE",
+          "index": 1,
+          "default": 1,
+          "type": "Special"
+        },
+        {
+          "address": "SPEED",
+          "index": 239,
+          "default": 50,
+          "type": "Normal",
+          "min": 0,
+          "max": 99
+        },
+        {
+          "address": "DEPTH",
+          "index": 241,
+          "default": 50,
+          "type": "Normal",
+          "min": 0,
+          "max": 4
+        },
+        {
+          "address": "VIBPAN",
+          "index": 257,
+          "default": 25,
+          "type": "Normal",
+          "min": 0,
+          "max": 99
+        },
+        {
+          "address": "WAVEFORM",
+          "index": 244,
+          "default": 0,
+          "type": "Normal",
+          "min": 0,
+          "max": 99
+        }
+      ]
+    },
+    {
+      "category": "Mod",
+      "subcategory": "VibRot",
+      "type": "VibRot",
+      "id": 20,
+      "index": 133,
+      "displayName": "Uno-vibe",
+      "address": "UNOVIBE",
+      "params": [
+        {
+          "address": "ENABLE",
+          "index": 1,
+          "default": 1,
+          "type": "Special"
+        },
+        {
+          "address": "VOLUME",
+          "index": 207,
+          "default": 80,
+          "type": "Normal",
+          "min": 0,
+          "max": 99
+        },
+        {
+          "address": "INTENSTY",
+          "index": 243,
+          "default": 50,
+          "type": "Normal",
+          "min": 0,
+          "max": 4
+        },
+        {
+          "address": "SPEED",
+          "index": 239,
+          "default": 50,
+          "type": "Normal",
+          "min": 0,
+          "max": 99
+        },
+        {
+          "address": "CHOVIB",
+          "index": 258,
+          "default": 0,
+          "type": "Normal",
+          "min": 0,
+          "max": 99
+        }
+      ]
+    },
+    {
+      "category": "Mod",
+      "subcategory": "Tremolo",
+      "type": "Tremolo",
+      "id": 21,
+      "index": 134,
+      "displayName": "Tremolo",
+      "address": "TREMOLO",
+      "params": [
+        {
+          "address": "ENABLE",
+          "index": 1,
+          "default": 1,
+          "type": "Special"
+        },
+        {
+          "address": "SPEED",
+          "index": 239,
+          "default": 45,
+          "type": "Normal",
+          "min": 0,
+          "max": 99
+        },
+        {
+          "address": "DEPTH",
+          "index": 241,
+          "default": 70,
+          "type": "Normal",
+          "min": 0,
+          "max": 99
+        },
+        {
+          "address": "WAVEFORM",
+          "index": 244,
+          "default": 0,
+          "type": "Normal",
+          "min": 0,
+          "max": 99
+        }
+      ]
+    },
+    {
+      "category": "Mod",
+      "subcategory": "Tremolo",
+      "type": "Tremolo",
+      "id": 22,
+      "index": 135,
+      "displayName": "Scatter Tremolo",
+      "address": "SCTRTREM",
+      "params": [
+        {
+          "address": "ENABLE",
+          "index": 1,
+          "default": 1,
+          "type": "Special"
+        },
+        {
+          "address": "SPEED",
+          "index": 239,
+          "default": 55,
+          "type": "Normal",
+          "min": 0,
+          "max": 99
+        },
+        {
+          "address": "DEPTH",
+          "index": 241,
+          "default": 99,
+          "type": "Normal",
+          "min": 0,
+          "max": 99
+        }
+      ]
+    },
+    {
+      "category": "Mod",
+      "subcategory": "Tremolo",
+      "type": "Tremolo",
+      "id": 23,
+      "index": 136,
+      "displayName": "Opto Tremolo",
+      "address": "OPTOTREM",
+      "params": [
+        {
+          "address": "ENABLE",
+          "index": 1,
+          "default": 1,
+          "type": "Special"
+        },
+        {
+          "address": "SPEED",
+          "index": 239,
+          "default": 35,
+          "type": "Normal",
+          "min": 0,
+          "max": 99
+        },
+        {
+          "address": "DEPTH",
+          "index": 241,
+          "default": 99,
+          "type": "Normal",
+          "min": 0,
+          "max": 4
+        }
+      ]
+    },
+    {
+      "category": "Mod",
+      "subcategory": "Tremolo",
+      "type": "Tremolo",
+      "id": 24,
+      "index": 137,
+      "displayName": "Bias Tremolo",
+      "address": "BIASTREM",
+      "params": [
+        {
+          "address": "ENABLE",
+          "index": 1,
+          "default": 1,
+          "type": "Special"
+        },
+        {
+          "address": "SPEED",
+          "index": 239,
+          "default": 50,
+          "type": "Normal",
+          "min": 0,
+          "max": 99
+        },
+        {
+          "address": "DEPTH",
+          "index": 241,
+          "default": 75,
+          "type": "Normal",
+          "min": 0,
+          "max": 99
+        }
+      ]
+    },
+    {
+      "category": "Mod",
+      "subcategory": "Tremolo",
+      "type": "Tremolo",
+      "id": 25,
+      "index": 138,
+      "displayName": "Panner",
+      "address": "PANNER",
+      "params": [
+        {
+          "address": "ENABLE",
+          "index": 1,
+          "default": 1,
+          "type": "Special"
+        },
+        {
+          "address": "SPEED",
+          "index": 239,
+          "default": 10,
+          "type": "Normal",
+          "min": 0,
+          "max": 99
+        },
+        {
+          "address": "DEPTH",
+          "index": 241,
+          "default": 99,
+          "type": "Normal",
+          "min": 0,
+          "max": 99
+        },
+        {
+          "address": "WAVEFORM",
+          "index": 244,
+          "default": 0,
+          "type": "Normal",
+          "min": 0,
+          "max": 99
+        }
+      ]
+    },
+    {
+      "category": "Mod",
+      "subcategory": "EnvSpec",
+      "type": "EnvSpec",
+      "id": 26,
+      "index": 139,
+      "displayName": "Envelope Filter",
+      "address": "ENVFILTR",
+      "params": [
+        {
+          "address": "ENABLE",
+          "index": 1,
+          "default": 0,
+          "type": "Special"
+        },
+        {
+          "address": "SENSTVTY",
+          "index": 182,
+          "default": 30,
+          "type": "Normal",
+          "min": 0,
+          "max": 99
+        },
+        {
+          "address": "RANGE",
+          "index": 245,
+          "default": 60,
+          "type": "Normal",
+          "min": 0,
+          "max": 99
+        }
+      ]
+    },
+    {
+      "category": "Mod",
+      "subcategory": "EnvSpec",
+      "type": "EnvSpec",
+      "id": 27,
+      "index": 140,
+      "displayName": "DOD 440",
+      "address": "FX25 ENV",
+      "params": [
+        {
+          "address": "ENABLE",
+          "index": 1,
+          "default": 0,
+          "type": "Special"
+        },
+        {
+          "address": "BLEND",
+          "index": 260,
+          "default": 50,
+          "type": "Normal",
+          "min": 0,
+          "max": 99
+        },
+        {
+          "address": "SENSTVTY",
+          "index": 182,
+          "default": 50,
+          "type": "Normal",
+          "min": 0,
+          "max": 99
+        },
+        {
+          "address": "RANGE",
+          "index": 245,
+          "default": 50,
+          "type": "Normal",
+          "min": 0,
+          "max": 99
+        }
+      ]
+    },
+    {
+      "category": "Mod",
+      "subcategory": "EnvSpec",
+      "type": "EnvSpec",
+      "id": 28,
+      "index": 141,
+      "displayName": "Auto Ya",
+      "address": "AUTO YA",
+      "params": [
+        {
+          "address": "ENABLE",
+          "index": 1,
+          "default": 0,
+          "type": "Special"
+        },
+        {
+          "address": "SPEED",
+          "index": 239,
+          "default": 40,
+          "type": "Normal",
+          "min": 0,
+          "max": 99
+        },
+        {
+          "address": "INTENSTY",
+          "index": 243,
+          "default": 80,
+          "type": "Normal",
+          "min": 0,
+          "max": 4
+        },
+        {
+          "address": "RANGE",
+          "index": 245,
+          "default": 17,
+          "type": "Normal",
+          "min": 0,
+          "max": 49
+        }
+      ]
+    },
+    {
+      "category": "Mod",
+      "subcategory": "EnvSpec",
+      "type": "EnvSpec",
+      "id": 29,
+      "index": 142,
+      "displayName": "Ya Ya",
+      "address": "YA YA",
+      "params": [
+        {
+          "address": "ENABLE",
+          "index": 1,
+          "default": 0,
+          "type": "Special"
+        },
+        {
+          "address": "PEDAL",
+          "index": 261,
+          "default": 90,
+          "type": "Normal",
+          "min": 0,
+          "max": 99
+        },
+        {
+          "address": "INTENSTY",
+          "index": 243,
+          "default": 90,
+          "type": "Normal",
+          "min": 0,
+          "max": 4
+        },
+        {
+          "address": "RANGE",
+          "index": 245,
+          "default": 30,
+          "type": "Normal",
+          "min": 0,
+          "max": 30
+        }
+      ]
+    },
+    {
+      "category": "Mod",
+      "subcategory": "EnvSpec",
+      "type": "EnvSpec",
+      "id": 30,
+      "index": 143,
+      "displayName": "Synth Talk",
+      "address": "SYNTHTLK",
+      "params": [
+        {
+          "address": "ENABLE",
+          "index": 1,
+          "default": 0,
+          "type": "Special"
+        },
+        {
+          "address": "ATTACK",
+          "index": 184,
+          "default": 30,
+          "type": "Normal",
+          "min": 0,
+          "max": 99
+        },
+        {
+          "address": "RELEASE",
+          "index": 232,
+          "default": 99,
+          "type": "Normal",
+          "min": 0,
+          "max": 99
+        },
+        {
+          "address": "VOX",
+          "index": 262,
+          "default": 60,
+          "type": "Normal",
+          "min": 0,
+          "max": 60
+        },
+        {
+          "address": "SENSTVTY",
+          "index": 182,
+          "default": 65,
+          "type": "Normal",
+          "min": 0,
+          "max": 99
+        },
+        {
+          "address": "BALANCE",
+          "index": 263,
+          "default": 65,
+          "type": "Normal",
+          "min": 0,
+          "max": 99
+        }
+      ]
+    },
+    {
+      "category": "Mod",
+      "subcategory": "EnvSpec",
+      "type": "EnvSpec",
+      "id": 31,
+      "index": 144,
+      "displayName": "Step Filter",
+      "address": "STEPFLTR",
+      "params": [
+        {
+          "address": "ENABLE",
+          "index": 1,
+          "default": 0,
+          "type": "Special"
+        },
+        {
+          "address": "SPEED",
+          "index": 239,
+          "default": 71,
+          "type": "Normal",
+          "min": 0,
+          "max": 99
+        },
+        {
+          "address": "INTENSTY",
+          "index": 243,
+          "default": 15,
+          "type": "Normal",
+          "min": 0,
+          "max": 4
+        }
+      ]
+    },
+    {
+      "category": "Mod",
+      "subcategory": "PitchFX",
+      "type": "PitchFX",
+      "id": 33,
+      "index": 146,
+      "displayName": "Whammy",
+      "address": "WHAMMY",
+      "params": [
+        {
+          "address": "ENABLE",
+          "index": 1,
+          "default": 0,
+          "type": "Special"
+        },
+        {
+          "address": "POSITION",
+          "index": 270,
+          "default": 99,
+          "type": "Normal",
+          "min": 0,
+          "max": 99
+        },
+        {
+          "address": "AMOUNT",
+          "index": 266,
+          "default": 0,
+          "type": "Normal",
+          "min": 0,
+          "max": 99
+        },
+        {
+          "address": "MIX",
+          "index": 272,
+          "default": 99,
+          "type": "Normal",
+          "min": 0,
+          "max": 99
+        }
+      ]
+    },
+    {
+      "category": "Mod",
+      "subcategory": "PitchFX",
+      "type": "PitchFX",
+      "id": 34,
+      "index": 147,
+      "displayName": "Pitch",
+      "address": "PITCH",
+      "params": [
+        {
+          "address": "ENABLE",
+          "index": 1,
+          "default": 0,
+          "type": "Special"
+        },
+        {
+          "address": "SHIFT",
+          "index": 266,
+          "default": 31,
+          "type": "Normal",
+          "min": 0,
+          "max": 99
+        },
+        {
+          "address": "MIX",
+          "index": 272,
+          "default": 40,
+          "type": "Normal",
+          "min": 0,
+          "max": 99
+        }
+      ]
+    },
+    {
+      "category": "Mod",
+      "subcategory": "PitchFX",
+      "type": "PitchFX",
+      "id": 35,
+      "index": 148,
+      "displayName": "Detune",
+      "address": "DETUNE",
+      "params": [
+        {
+          "address": "ENABLE",
+          "index": 1,
+          "default": 0,
+          "type": "Special"
+        },
+        {
+          "address": "SHIFT",
+          "index": 266,
+          "default": 12,
+          "type": "Normal",
+          "min": 0,
+          "max": 99
+        },
+        {
+          "address": "LEVEL",
+          "index": 185,
+          "default": 99,
+          "type": "Normal",
+          "min": 0,
+          "max": 99
+        }
+      ]
+    },
+    {
+      "category": "Mod",
+      "subcategory": "PitchFX",
+      "type": "PitchFX",
+      "id": 36,
+      "index": 149,
+      "displayName": "Harmony",
+      "address": "HARMONY",
+      "params": [
+        {
+          "address": "ENABLE",
+          "index": 1,
+          "default": 0,
+          "type": "Special"
+        },
+        {
+          "address": "AMOUNT",
+          "index": 266,
+          "default": 8,
+          "type": "Normal",
+          "min": 0,
+          "max": 99
+        },
+        {
+          "address": "KEY",
+          "index": 269,
+          "default": 5,
+          "type": "Normal",
+          "min": 0,
+          "max": 99
+        },
+        {
+          "address": "SCALE",
+          "index": 271,
+          "default": 0,
+          "type": "Normal",
+          "min": 0,
+          "max": 99
+        },
+        {
+          "address": "LEVEL",
+          "index": 185,
+          "default": 40,
+          "type": "Normal",
+          "min": 0,
+          "max": 99
+        }
+      ]
+    },
+    {
+      "category": "Mod",
+      "subcategory": "PitchFX",
+      "type": "PitchFX",
+      "id": 37,
+      "index": 150,
+      "displayName": "Octaver",
+      "address": "OCTAVER",
+      "params": [
+        {
+          "address": "ENABLE",
+          "index": 1,
+          "default": 0,
+          "type": "Special"
+        },
+        {
+          "address": "OCTAVE 1",
+          "index": 267,
+          "default": 70,
+          "type": "Normal",
+          "min": 0,
+          "max": 99
+        },
+        {
+          "address": "OCTAVE 2",
+          "index": 268,
+          "default": 0,
+          "type": "Normal",
+          "min": 0,
+          "max": 99
+        },
+        {
+          "address": "DRY LEVL",
+          "index": 273,
+          "default": 99,
+          "type": "Normal",
+          "min": 0,
+          "max": 99
+        }
+      ]
+    },
+    {
+      "category": "Delay",
+      "subcategory": "Delay",
+      "type": "Delay",
+      "id": 0,
+      "index": 151,
+      "displayName": "Analog Delay",
+      "address": "ANALOG",
+      "params": [
+        {
+          "address": "ENABLE",
+          "index": 1,
+          "default": 0,
+          "type": "Special"
+        },
+        {
+          "address": "TIME",
+          "index": 275,
+          "default": 340,
+          "type": "Normal",
+          "min": 0,
+          "max": 5000
+        },
+        {
+          "address": "REPEATS",
+          "index": 277,
+          "default": 25,
+          "type": "Normal",
+          "min": 0,
+          "max": 99
+        },
+        {
+          "address": "DLY LEVL",
+          "index": 283,
+          "default": 35,
+          "type": "Normal",
+          "min": 0,
+          "max": 99
+        },
+        {
+          "address": "TAP DIV",
+          "index": 283,
+          "default": 3,
+          "type": "Normal",
+          "min": 0,
+          "max": 99
+        }
+      ]
+    },
+    {
+      "category": "Delay",
+      "subcategory": "Delay",
+      "type": "Delay",
+      "id": 1,
+      "index": 152,
+      "displayName": "DM Delay",
+      "address": "DM DELAY",
+      "params": [
+        {
+          "address": "ENABLE",
+          "index": 1,
+          "default": 0,
+          "type": "Special"
+        },
+        {
+          "address": "REPEATS",
+          "index": 276,
+          "default": 276,
+          "type": "Normal",
+          "min": 24,
+          "max": 310
+        },
+        {
+          "address": "INTENSTY",
+          "index": 243,
+          "default": 50,
+          "type": "Normal",
+          "min": 0,
+          "max": 4
+        },
+        {
+          "address": "ECHO",
+          "index": 278,
+          "default": 60,
+          "type": "Normal",
+          "min": 0,
+          "max": 99
+        }
+      ]
+    },
+    {
+      "category": "Delay",
+      "subcategory": "Delay",
+      "type": "Delay",
+      "id": 2,
+      "index": 153,
+      "displayName": "Digital Delay",
+      "address": "DIGITAL",
+      "params": [
+        {
+          "address": "ENABLE",
+          "index": 1,
+          "default": 0,
+          "type": "Special"
+        },
+        {
+          "address": "TIME",
+          "index": 275,
+          "default": 500,
+          "type": "Normal",
+          "min": 0,
+          "max": 5000
+        },
+        {
+          "address": "REPEATS",
+          "index": 277,
+          "default": 25,
+          "type": "Normal",
+          "min": 0,
+          "max": 99
+        },
+        {
+          "address": "DLY LEVL",
+          "index": 283,
+          "default": 25,
+          "type": "Normal",
+          "min": 0,
+          "max": 99
+        },
+        {
+          "address": "DUK LEVL",
+          "index": 285,
+          "default": 0,
+          "type": "Normal",
+          "min": 0,
+          "max": 99
+        },
+        {
+          "address": "DUKTHRSH",
+          "index": 279,
+          "default": 40,
+          "type": "Normal",
+          "min": 0,
+          "max": 99
+        },
+        {
+          "address": "TAP DIV",
+          "index": 283,
+          "default": 3,
+          "type": "Normal",
+          "min": 0,
+          "max": 99
+        }
+      ]
+    },
+    {
+      "category": "Delay",
+      "subcategory": "Delay",
+      "type": "Delay",
+      "id": 3,
+      "index": 154,
+      "displayName": "Modulated Delay",
+      "address": "MODULATE",
+      "params": [
+        {
+          "address": "ENABLE",
+          "index": 1,
+          "default": 0,
+          "type": "Special"
+        },
+        {
+          "address": "TIME",
+          "index": 275,
+          "default": 400,
+          "type": "Normal",
+          "min": 10,
+          "max": 5000
+        },
+        {
+          "address": "REPEATS",
+          "index": 277,
+          "default": 30,
+          "type": "Normal",
+          "min": 0,
+          "max": 99
+        },
+        {
+          "address": "DEPTH",
+          "index": 241,
+          "default": 40,
+          "type": "Normal",
+          "min": 0,
+          "max": 99
+        },
+        {
+          "address": "DLY LEVL",
+          "index": 283,
+          "default": 30,
+          "type": "Normal",
+          "min": 0,
+          "max": 99
+        },
+        {
+          "address": "TAP DIV",
+          "index": 283,
+          "default": 3,
+          "type": "Normal",
+          "min": 0,
+          "max": 99
+        }
+      ]
+    },
+    {
+      "category": "Delay",
+      "subcategory": "Delay",
+      "type": "Delay",
+      "id": 4,
+      "index": 155,
+      "displayName": "Ping Pong Delay",
+      "address": "PINGPONG",
+      "params": [
+        {
+          "address": "ENABLE",
+          "index": 1,
+          "default": 0,
+          "type": "Special"
+        },
+        {
+          "address": "TIME",
+          "index": 275,
+          "default": 750,
+          "type": "Normal",
+          "min": 0,
+          "max": 5000
+        },
+        {
+          "address": "REPEATS",
+          "index": 277,
+          "default": 20,
+          "type": "Normal",
+          "min": 0,
+          "max": 99
+        },
+        {
+          "address": "DLY LEVL",
+          "index": 283,
+          "default": 35,
+          "type": "Normal",
+          "min": 0,
+          "max": 99
+        },
+        {
+          "address": "DUK LEVL",
+          "index": 285,
+          "default": 0,
+          "type": "Normal",
+          "min": 0,
+          "max": 99
+        },
+        {
+          "address": "TAP DIV",
+          "index": 283,
+          "default": 3,
+          "type": "Normal",
+          "min": 0,
+          "max": 99
+        },
+        {
+          "address": "DUKTHRSH",
+          "index": 279,
+          "default": 40,
+          "type": "Normal",
+          "min": 0,
+          "max": 99
+        }
+      ]
+    },
+    {
+      "category": "Delay",
+      "subcategory": "Delay",
+      "type": "Delay",
+      "id": 5,
+      "index": 156,
+      "displayName": "Tape Delay",
+      "address": "TAPE",
+      "params": [
+        {
+          "address": "ENABLE",
+          "index": 1,
+          "default": 0,
+          "type": "Special"
+        },
+        {
+          "address": "TIME",
+          "index": 275,
+          "default": 300,
+          "type": "Normal",
+          "min": 10,
+          "max": 5000
+        },
+        {
+          "address": "REPEATS",
+          "index": 277,
+          "default": 30,
+          "type": "Normal",
+          "min": 0,
+          "max": 99
+        },
+        {
+          "address": "WOW",
+          "index": 280,
+          "default": 1,
+          "type": "Normal",
+          "min": 0,
+          "max": 99
+        },
+        {
+          "address": "DLY LEVL",
+          "index": 283,
+          "default": 35,
+          "type": "Normal",
+          "min": 0,
+          "max": 99
+        },
+        {
+          "address": "FLUTTER",
+          "index": 286,
+          "default": 1,
+          "type": "Normal",
+          "min": 0,
+          "max": 99
+        },
+        {
+          "address": "TAP DIV",
+          "index": 283,
+          "default": 3,
+          "type": "Normal",
+          "min": 0,
+          "max": 99
+        }
+      ]
+    },
+    {
+      "category": "Delay",
+      "subcategory": "Delay",
+      "type": "Delay",
+      "id": 6,
+      "index": 157,
+      "displayName": "Echo Flex",
+      "address": "ECHOPLEX",
+      "params": [
+        {
+          "address": "ENABLE",
+          "index": 1,
+          "default": 0,
+          "type": "Special"
+        },
+        {
+          "address": "TIME",
+          "index": 275,
+          "default": 370,
+          "type": "Normal",
+          "min": 110,
+          "max": 870
+        },
+        {
+          "address": "REPEATS",
+          "index": 277,
+          "default": 20,
+          "type": "Normal",
+          "min": 0,
+          "max": 99
+        },
+        {
+          "address": "VOLUME",
+          "index": 207,
+          "default": 35,
+          "type": "Normal",
+          "min": 0,
+          "max": 99
+        },
+        {
+          "address": "TAP DIV",
+          "index": 283,
+          "default": 3,
+          "type": "Normal",
+          "min": 0,
+          "max": 99
+        }
+      ]
+    },
+    {
+      "category": "Delay",
+      "subcategory": "Delay",
+      "type": "Delay",
+      "id": 8,
+      "index": 159,
+      "displayName": "Lo Fi Delay",
+      "address": "LO FI",
+      "params": [
+        {
+          "address": "ENABLE",
+          "index": 1,
+          "default": 0,
+          "type": "Special"
+        },
+        {
+          "address": "TIME",
+          "index": 275,
+          "default": 400,
+          "type": "Normal",
+          "min": 0,
+          "max": 5000
+        },
+        {
+          "address": "REPEATS",
+          "index": 277,
+          "default": 35,
+          "type": "Normal",
+          "min": 0,
+          "max": 99
+        },
+        {
+          "address": "DLY LEVL",
+          "index": 283,
+          "default": 35,
+          "type": "Normal",
+          "min": 0,
+          "max": 99
+        },
+        {
+          "address": "TAP DIV",
+          "index": 283,
+          "default": 3,
+          "type": "Normal",
+          "min": 0,
+          "max": 99
+        }
+      ]
+    },
+    {
+      "category": "Delay",
+      "subcategory": "Delay",
+      "type": "Delay",
+      "id": 9,
+      "index": 160,
+      "displayName": "2-Tap Delay",
+      "address": "2 TAP",
+      "params": [
+        {
+          "address": "ENABLE",
+          "index": 1,
+          "default": 0,
+          "type": "Special"
+        },
+        {
+          "address": "TIME",
+          "index": 275,
+          "default": 1000,
+          "type": "Normal",
+          "min": 0,
+          "max": 5000
+        },
+        {
+          "address": "REPEATS",
+          "index": 277,
+          "default": 30,
+          "type": "Normal",
+          "min": 0,
+          "max": 99
+        },
+        {
+          "address": "RATIO",
+          "index": 281,
+          "default": 37,
+          "type": "Normal",
+          "min": 0,
+          "max": 99
+        },
+        {
+          "address": "DLY LEVL",
+          "index": 283,
+          "default": 35,
+          "type": "Normal",
+          "min": 0,
+          "max": 99
+        },
+        {
+          "address": "TAP DIV",
+          "index": 283,
+          "default": 3,
+          "type": "Normal",
+          "min": 0,
+          "max": 99
+        }
+      ]
+    },
+    {
+      "category": "Reverb",
+      "subcategory": "Reverb",
+      "type": "Reverb",
+      "id": 0,
+      "index": 161,
+      "displayName": "Spring Reverb",
+      "address": "TWNSPRNG",
+      "params": [
+        {
+          "address": "ENABLE",
+          "index": 1,
+          "default": 0,
+          "type": "Special"
+        },
+        {
+          "address": "REVERB",
+          "index": 291,
+          "default": 33,
+          "type": "Normal",
+          "min": 0,
+          "max": 99
+        }
+      ]
+    },
+    {
+      "category": "Reverb",
+      "subcategory": "Reverb",
+      "type": "Reverb",
+      "id": 1,
+      "index": 162,
+      "displayName": "Lexicon Ambience",
+      "address": "LEXAMBNC",
+      "params": [
+        {
+          "address": "ENABLE",
+          "index": 1,
+          "default": 0,
+          "type": "Special"
+        },
+        {
+          "address": "PREDELAY",
+          "index": 288,
+          "default": 0,
+          "type": "Normal",
+          "min": 0,
+          "max": 150
+        },
+        {
+          "address": "DECAY",
+          "index": 289,
+          "default": 30,
+          "type": "Normal",
+          "min": 0,
+          "max": 99
+        },
+        {
+          "address": "LIVENESS",
+          "index": 290,
+          "default": 40,
+          "type": "Normal",
+          "min": 0,
+          "max": 99
+        },
+        {
+          "address": "RVB LEVL",
+          "index": 292,
+          "default": 40,
+          "type": "Normal",
+          "min": 0,
+          "max": 99
+        }
+      ]
+    },
+    {
+      "category": "Reverb",
+      "subcategory": "Reverb",
+      "type": "Reverb",
+      "id": 2,
+      "index": 163,
+      "displayName": "Lexicon Studio",
+      "address": "LEXSTUDO",
+      "params": [
+        {
+          "address": "ENABLE",
+          "index": 1,
+          "default": 0,
+          "type": "Special"
+        },
+        {
+          "address": "PREDELAY",
+          "index": 288,
+          "default": 1,
+          "type": "Normal",
+          "min": 0,
+          "max": 150
+        },
+        {
+          "address": "DECAY",
+          "index": 289,
+          "default": 60,
+          "type": "Normal",
+          "min": 0,
+          "max": 99
+        },
+        {
+          "address": "LIVENESS",
+          "index": 290,
+          "default": 75,
+          "type": "Normal",
+          "min": 0,
+          "max": 99
+        },
+        {
+          "address": "RVB LEVL",
+          "index": 292,
+          "default": 35,
+          "type": "Normal",
+          "min": 0,
+          "max": 99
+        }
+      ]
+    },
+    {
+      "category": "Reverb",
+      "subcategory": "Reverb",
+      "type": "Reverb",
+      "id": 3,
+      "index": 164,
+      "displayName": "Lexicon Room",
+      "address": "LEX ROOM",
+      "params": [
+        {
+          "address": "ENABLE",
+          "index": 1,
+          "default": 0,
+          "type": "Special"
+        },
+        {
+          "address": "PREDELAY",
+          "index": 288,
+          "default": 1,
+          "type": "Normal",
+          "min": 0,
+          "max": 150
+        },
+        {
+          "address": "DECAY",
+          "index": 289,
+          "default": 75,
+          "type": "Normal",
+          "min": 0,
+          "max": 99
+        },
+        {
+          "address": "LIVENESS",
+          "index": 290,
+          "default": 80,
+          "type": "Normal",
+          "min": 0,
+          "max": 99
+        },
+        {
+          "address": "RVB LEVL",
+          "index": 292,
+          "default": 30,
+          "type": "Normal",
+          "min": 0,
+          "max": 99
+        }
+      ]
+    },
+    {
+      "category": "Reverb",
+      "subcategory": "Reverb",
+      "type": "Reverb",
+      "id": 4,
+      "index": 165,
+      "displayName": "Lexicon Hall",
+      "address": "LEX HALL",
+      "params": [
+        {
+          "address": "ENABLE",
+          "index": 1,
+          "default": 0,
+          "type": "Special"
+        },
+        {
+          "address": "PREDELAY",
+          "index": 288,
+          "default": 5,
+          "type": "Normal",
+          "min": 0,
+          "max": 150
+        },
+        {
+          "address": "DECAY",
+          "index": 289,
+          "default": 40,
+          "type": "Normal",
+          "min": 0,
+          "max": 99
+        },
+        {
+          "address": "LIVENESS",
+          "index": 290,
+          "default": 40,
+          "type": "Normal",
+          "min": 0,
+          "max": 99
+        },
+        {
+          "address": "RVB LEVL",
+          "index": 292,
+          "default": 35,
+          "type": "Normal",
+          "min": 0,
+          "max": 99
+        }
+      ]
+    },
+    {
+      "category": "Reverb",
+      "subcategory": "Reverb",
+      "type": "Reverb",
+      "id": 5,
+      "index": 166,
+      "displayName": "Vintage Plate",
+      "address": "EMTPLATE",
+      "params": [
+        {
+          "address": "ENABLE",
+          "index": 1,
+          "default": 0,
+          "type": "Special"
+        },
+        {
+          "address": "PREDELAY",
+          "index": 288,
+          "default": 0,
+          "type": "Normal",
+          "min": 0,
+          "max": 150
+        },
+        {
+          "address": "DECAY",
+          "index": 289,
+          "default": 50,
+          "type": "Normal",
+          "min": 0,
+          "max": 99
+        },
+        {
+          "address": "LIVENESS",
+          "index": 290,
+          "default": 80,
+          "type": "Normal",
+          "min": 0,
+          "max": 99
+        },
+        {
+          "address": "RVB LEVL",
+          "index": 292,
+          "default": 30,
+          "type": "Normal",
+          "min": 0,
+          "max": 99
+        }
+      ]
+    },
+    {
+      "category": "Amplifier",
+      "subcategory": "ElectricAmp",
+      "type": "Amplifier",
+      "id": 0,
+      "index": 29,
+      "displayName": "57 Champion",
+      "address": "57 CHAMP",
+      "params": [
+        {
+          "address": "ENABLE",
+          "index": 1,
+          "default": 1,
+          "type": "Special"
+        },
+        {
+          "address": "GAIN",
+          "index": 211,
+          "default": 70,
+          "type": "Normal",
+          "min": 0,
+          "max": 99
+        },
+        {
+          "address": "BASS",
+          "index": 212,
+          "default": 45,
+          "type": "Normal",
+          "min": 0,
+          "max": 99
+        },
+        {
+          "address": "MID",
+          "index": 213,
+          "default": 45,
+          "type": "Normal",
+          "min": 0,
+          "max": 99
+        },
+        {
+          "address": "TREBLE",
+          "index": 214,
+          "default": 45,
+          "type": "Normal",
+          "min": 0,
+          "max": 99
+        },
+        {
+          "address": "LEVEL",
+          "index": 215,
+          "default": 65,
+          "type": "Normal",
+          "min": 0,
+          "max": 99
+        }
+      ]
+    },
+    {
+      "category": "Amplifier",
+      "subcategory": "ElectricAmp",
+      "type": "Amplifier",
+      "id": 1,
+      "index": 30,
+      "displayName": "57 D-Luxe",
+      "address": "57DELUXE",
+      "params": [
+        {
+          "address": "ENABLE",
+          "index": 1,
+          "default": 1,
+          "type": "Special"
+        },
+        {
+          "address": "GAIN",
+          "index": 211,
+          "default": 75,
+          "type": "Normal",
+          "min": 0,
+          "max": 99
+        },
+        {
+          "address": "BASS",
+          "index": 212,
+          "default": 45,
+          "type": "Normal",
+          "min": 0,
+          "max": 99
+        },
+        {
+          "address": "MID",
+          "index": 213,
+          "default": 45,
+          "type": "Normal",
+          "min": 0,
+          "max": 99
+        },
+        {
+          "address": "TREBLE",
+          "index": 214,
+          "default": 87,
+          "type": "Normal",
+          "min": 0,
+          "max": 99
+        },
+        {
+          "address": "LEVEL",
+          "index": 215,
+          "default": 70,
+          "type": "Normal",
+          "min": 0,
+          "max": 99
+        }
+      ]
+    },
+    {
+      "category": "Amplifier",
+      "subcategory": "ElectricAmp",
+      "type": "Amplifier",
+      "id": 2,
+      "index": 31,
+      "displayName": "59 Bass Man",
+      "address": "59BASSMN",
+      "params": [
+        {
+          "address": "ENABLE",
+          "index": 1,
+          "default": 1,
+          "type": "Special"
+        },
+        {
+          "address": "GAIN",
+          "index": 211,
+          "default": 65,
+          "type": "Normal",
+          "min": 0,
+          "max": 99
+        },
+        {
+          "address": "BASS",
+          "index": 212,
+          "default": 45,
+          "type": "Normal",
+          "min": 0,
+          "max": 99
+        },
+        {
+          "address": "MID",
+          "index": 213,
+          "default": 45,
+          "type": "Normal",
+          "min": 0,
+          "max": 99
+        },
+        {
+          "address": "TREBLE",
+          "index": 214,
+          "default": 63,
+          "type": "Normal",
+          "min": 0,
+          "max": 99
+        },
+        {
+          "address": "LEVEL",
+          "index": 215,
+          "default": 65,
+          "type": "Normal",
+          "min": 0,
+          "max": 99
+        }
+      ]
+    },
+    {
+      "category": "Amplifier",
+      "subcategory": "ElectricAmp",
+      "type": "Amplifier",
+      "id": 3,
+      "index": 32,
+      "displayName": "62 Bass Man",
+      "address": "62BASSMN",
+      "params": [
+        {
+          "address": "ENABLE",
+          "index": 1,
+          "default": 1,
+          "type": "Special"
+        },
+        {
+          "address": "GAIN",
+          "index": 211,
+          "default": 70,
+          "type": "Normal",
+          "min": 0,
+          "max": 99
+        },
+        {
+          "address": "BASS",
+          "index": 212,
+          "default": 38,
+          "type": "Normal",
+          "min": 0,
+          "max": 99
+        },
+        {
+          "address": "MID",
+          "index": 213,
+          "default": 45,
+          "type": "Normal",
+          "min": 0,
+          "max": 99
+        },
+        {
+          "address": "TREBLE",
+          "index": 214,
+          "default": 45,
+          "type": "Normal",
+          "min": 0,
+          "max": 99
+        },
+        {
+          "address": "LEVEL",
+          "index": 215,
+          "default": 75,
+          "type": "Normal",
+          "min": 0,
+          "max": 99
+        }
+      ]
+    },
+    {
+      "category": "Amplifier",
+      "subcategory": "ElectricAmp",
+      "type": "Amplifier",
+      "id": 4,
+      "index": 33,
+      "displayName": "65 FRATERNAL",
+      "address": "65 TWIN",
+      "params": [
+        {
+          "address": "ENABLE",
+          "index": 1,
+          "default": 1,
+          "type": "Special"
+        },
+        {
+          "address": "GAIN",
+          "index": 211,
+          "default": 50,
+          "type": "Normal",
+          "min": 0,
+          "max": 99
+        },
+        {
+          "address": "BASS",
+          "index": 212,
+          "default": 55,
+          "type": "Normal",
+          "min": 0,
+          "max": 99
+        },
+        {
+          "address": "MID",
+          "index": 213,
+          "default": 45,
+          "type": "Normal",
+          "min": 0,
+          "max": 99
+        },
+        {
+          "address": "TREBLE",
+          "index": 214,
+          "default": 54,
+          "type": "Normal",
+          "min": 0,
+          "max": 99
+        },
+        {
+          "address": "LEVEL",
+          "index": 215,
+          "default": 75,
+          "type": "Normal",
+          "min": 0,
+          "max": 99
+        }
+      ]
+    },
+    {
+      "category": "Amplifier",
+      "subcategory": "ElectricAmp",
+      "type": "Amplifier",
+      "id": 5,
+      "index": 34,
+      "displayName": "65 D-Luxe Reverb",
+      "address": "65DLUXRV",
+      "params": [
+        {
+          "address": "ENABLE",
+          "index": 1,
+          "default": 1,
+          "type": "Special"
+        },
+        {
+          "address": "GAIN",
+          "index": 211,
+          "default": 75,
+          "type": "Normal",
+          "min": 0,
+          "max": 99
+        },
+        {
+          "address": "BASS",
+          "index": 212,
+          "default": 36,
+          "type": "Normal",
+          "min": 0,
+          "max": 99
+        },
+        {
+          "address": "MID",
+          "index": 213,
+          "default": 45,
+          "type": "Normal",
+          "min": 0,
+          "max": 99
+        },
+        {
+          "address": "TREBLE",
+          "index": 214,
+          "default": 63,
+          "type": "Normal",
+          "min": 0,
+          "max": 99
+        },
+        {
+          "address": "LEVEL",
+          "index": 215,
+          "default": 72,
+          "type": "Normal",
+          "min": 0,
+          "max": 99
+        }
+      ]
+    },
+    {
+      "category": "Amplifier",
+      "subcategory": "ElectricAmp",
+      "type": "Amplifier",
+      "id": 6,
+      "index": 35,
+      "displayName": "45 JTM",
+      "address": "45 JTM",
+      "params": [
+        {
+          "address": "ENABLE",
+          "index": 1,
+          "default": 1,
+          "type": "Special"
+        },
+        {
+          "address": "GAIN",
+          "index": 211,
+          "default": 80,
+          "type": "Normal",
+          "min": 0,
+          "max": 99
+        },
+        {
+          "address": "BASS",
+          "index": 212,
+          "default": 59,
+          "type": "Normal",
+          "min": 0,
+          "max": 99
+        },
+        {
+          "address": "MID",
+          "index": 213,
+          "default": 72,
+          "type": "Normal",
+          "min": 0,
+          "max": 99
+        },
+        {
+          "address": "TREBLE",
+          "index": 214,
+          "default": 72,
+          "type": "Normal",
+          "min": 0,
+          "max": 99
+        },
+        {
+          "address": "LEVEL",
+          "index": 215,
+          "default": 75,
+          "type": "Normal",
+          "min": 0,
+          "max": 99
+        }
+      ]
+    },
+    {
+      "category": "Amplifier",
+      "subcategory": "ElectricAmp",
+      "type": "Amplifier",
+      "id": 7,
+      "index": 36,
+      "displayName": "68 Plexi",
+      "address": "68 PLEXI",
+      "params": [
+        {
+          "address": "ENABLE",
+          "index": 1,
+          "default": 1,
+          "type": "Special"
+        },
+        {
+          "address": "GAIN",
+          "index": 211,
+          "default": 85,
+          "type": "Normal",
+          "min": 0,
+          "max": 99
+        },
+        {
+          "address": "BASS",
+          "index": 212,
+          "default": 90,
+          "type": "Normal",
+          "min": 0,
+          "max": 99
+        },
+        {
+          "address": "MID",
+          "index": 213,
+          "default": 90,
+          "type": "Normal",
+          "min": 0,
+          "max": 99
+        },
+        {
+          "address": "TREBLE",
+          "index": 214,
+          "default": 90,
+          "type": "Normal",
+          "min": 0,
+          "max": 99
+        },
+        {
+          "address": "LEVEL",
+          "index": 215,
+          "default": 70,
+          "type": "Normal",
+          "min": 0,
+          "max": 99
+        }
+      ]
+    },
+    {
+      "category": "Amplifier",
+      "subcategory": "ElectricAmp",
+      "type": "Amplifier",
+      "id": 8,
+      "index": 37,
+      "displayName": "Jump Panel",
+      "address": "JUMPPANL",
+      "params": [
+        {
+          "address": "ENABLE",
+          "index": 1,
+          "default": 1,
+          "type": "Special"
+        },
+        {
+          "address": "GAIN",
+          "index": 211,
+          "default": 75,
+          "type": "Normal",
+          "min": 0,
+          "max": 99
+        },
+        {
+          "address": "BASS",
+          "index": 212,
+          "default": 90,
+          "type": "Normal",
+          "min": 0,
+          "max": 99
+        },
+        {
+          "address": "MID",
+          "index": 213,
+          "default": 90,
+          "type": "Normal",
+          "min": 0,
+          "max": 99
+        },
+        {
+          "address": "TREBLE",
+          "index": 214,
+          "default": 90,
+          "type": "Normal",
+          "min": 0,
+          "max": 99
+        },
+        {
+          "address": "LEVEL",
+          "index": 215,
+          "default": 75,
+          "type": "Normal",
+          "min": 0,
+          "max": 99
+        }
+      ]
+    },
+    {
+      "category": "Amplifier",
+      "subcategory": "ElectricAmp",
+      "type": "Amplifier",
+      "id": 9,
+      "index": 38,
+      "displayName": "Master Volume",
+      "address": "MASTRVOL",
+      "params": [
+        {
+          "address": "ENABLE",
+          "index": 1,
+          "default": 1,
+          "type": "Special"
+        },
+        {
+          "address": "GAIN",
+          "index": 211,
+          "default": 90,
+          "type": "Normal",
+          "min": 0,
+          "max": 99
+        },
+        {
+          "address": "BASS",
+          "index": 212,
+          "default": 90,
+          "type": "Normal",
+          "min": 0,
+          "max": 99
+        },
+        {
+          "address": "MID",
+          "index": 213,
+          "default": 90,
+          "type": "Normal",
+          "min": 0,
+          "max": 99
+        },
+        {
+          "address": "TREBLE",
+          "index": 214,
+          "default": 90,
+          "type": "Normal",
+          "min": 0,
+          "max": 99
+        },
+        {
+          "address": "LEVEL",
+          "index": 215,
+          "default": 68,
+          "type": "Normal",
+          "min": 0,
+          "max": 99
+        }
+      ]
+    },
+    {
+      "category": "Amplifier",
+      "subcategory": "ElectricAmp",
+      "type": "Amplifier",
+      "id": 10,
+      "index": 39,
+      "displayName": "800 JCM",
+      "address": "800 JCM",
+      "params": [
+        {
+          "address": "ENABLE",
+          "index": 1,
+          "default": 1,
+          "type": "Special"
+        },
+        {
+          "address": "GAIN",
+          "index": 211,
+          "default": 85,
+          "type": "Normal",
+          "min": 0,
+          "max": 99
+        },
+        {
+          "address": "BASS",
+          "index": 212,
+          "default": 38,
+          "type": "Normal",
+          "min": 0,
+          "max": 99
+        },
+        {
+          "address": "MID",
+          "index": 213,
+          "default": 45,
+          "type": "Normal",
+          "min": 0,
+          "max": 99
+        },
+        {
+          "address": "TREBLE",
+          "index": 214,
+          "default": 36,
+          "type": "Normal",
+          "min": 0,
+          "max": 99
+        },
+        {
+          "address": "LEVEL",
+          "index": 215,
+          "default": 65,
+          "type": "Normal",
+          "min": 0,
+          "max": 99
+        }
+      ]
+    },
+    {
+      "category": "Amplifier",
+      "subcategory": "ElectricAmp",
+      "type": "Amplifier",
+      "id": 11,
+      "index": 40,
+      "displayName": "900 JCM",
+      "address": "900 JCM",
+      "params": [
+        {
+          "address": "ENABLE",
+          "index": 1,
+          "default": 1,
+          "type": "Special"
+        },
+        {
+          "address": "GAIN",
+          "index": 211,
+          "default": 90,
+          "type": "Normal",
+          "min": 0,
+          "max": 99
+        },
+        {
+          "address": "BASS",
+          "index": 212,
+          "default": 54,
+          "type": "Normal",
+          "min": 0,
+          "max": 99
+        },
+        {
+          "address": "MID",
+          "index": 213,
+          "default": 45,
+          "type": "Normal",
+          "min": 0,
+          "max": 99
+        },
+        {
+          "address": "TREBLE",
+          "index": 214,
+          "default": 54,
+          "type": "Normal",
+          "min": 0,
+          "max": 99
+        },
+        {
+          "address": "LEVEL",
+          "index": 215,
+          "default": 68,
+          "type": "Normal",
+          "min": 0,
+          "max": 99
+        }
+      ]
+    },
+    {
+      "category": "Amplifier",
+      "subcategory": "ElectricAmp",
+      "type": "Amplifier",
+      "id": 12,
+      "index": 41,
+      "displayName": "2000 JCM",
+      "address": "2000 JCM",
+      "params": [
+        {
+          "address": "ENABLE",
+          "index": 1,
+          "default": 1,
+          "type": "Special"
+        },
+        {
+          "address": "GAIN",
+          "index": 211,
+          "default": 70,
+          "type": "Normal",
+          "min": 0,
+          "max": 99
+        },
+        {
+          "address": "BASS",
+          "index": 212,
+          "default": 63,
+          "type": "Normal",
+          "min": 0,
+          "max": 99
+        },
+        {
+          "address": "MID",
+          "index": 213,
+          "default": 36,
+          "type": "Normal",
+          "min": 0,
+          "max": 99
+        },
+        {
+          "address": "TREBLE",
+          "index": 214,
+          "default": 65,
+          "type": "Normal",
+          "min": 0,
+          "max": 99
+        },
+        {
+          "address": "LEVEL",
+          "index": 215,
+          "default": 70,
+          "type": "Normal",
+          "min": 0,
+          "max": 99
+        }
+      ]
+    },
+    {
+      "category": "Amplifier",
+      "subcategory": "ElectricAmp",
+      "type": "Amplifier",
+      "id": 13,
+      "index": 42,
+      "displayName": "BRITISH 15",
+      "address": "AC15",
+      "params": [
+        {
+          "address": "ENABLE",
+          "index": 1,
+          "default": 1,
+          "type": "Special"
+        },
+        {
+          "address": "GAIN",
+          "index": 211,
+          "default": 80,
+          "type": "Normal",
+          "min": 0,
+          "max": 99
+        },
+        {
+          "address": "BASS",
+          "index": 212,
+          "default": 45,
+          "type": "Normal",
+          "min": 0,
+          "max": 99
+        },
+        {
+          "address": "MID",
+          "index": 213,
+          "default": 45,
+          "type": "Normal",
+          "min": 0,
+          "max": 99
+        },
+        {
+          "address": "TREBLE",
+          "index": 214,
+          "default": 45,
+          "type": "Normal",
+          "min": 0,
+          "max": 99
+        },
+        {
+          "address": "LEVEL",
+          "index": 215,
+          "default": 75,
+          "type": "Normal",
+          "min": 0,
+          "max": 99
+        }
+      ]
+    },
+    {
+      "category": "Amplifier",
+      "subcategory": "ElectricAmp",
+      "type": "Amplifier",
+      "id": 14,
+      "index": 43,
+      "displayName": "BRITISH 30",
+      "address": "AC30 TB",
+      "params": [
+        {
+          "address": "ENABLE",
+          "index": 1,
+          "default": 1,
+          "type": "Special"
+        },
+        {
+          "address": "GAIN",
+          "index": 211,
+          "default": 40,
+          "type": "Normal",
+          "min": 0,
+          "max": 99
+        },
+        {
+          "address": "BASS",
+          "index": 212,
+          "default": 54,
+          "type": "Normal",
+          "min": 0,
+          "max": 99
+        },
+        {
+          "address": "MID",
+          "index": 213,
+          "default": 45,
+          "type": "Normal",
+          "min": 0,
+          "max": 99
+        },
+        {
+          "address": "TREBLE",
+          "index": 214,
+          "default": 52,
+          "type": "Normal",
+          "min": 0,
+          "max": 99
+        },
+        {
+          "address": "LEVEL",
+          "index": 215,
+          "default": 75,
+          "type": "Normal",
+          "min": 0,
+          "max": 99
+        }
+      ]
+    },
+    {
+      "category": "Amplifier",
+      "subcategory": "ElectricAmp",
+      "type": "Amplifier",
+      "id": 15,
+      "index": 44,
+      "displayName": "Hi Wattage",
+      "address": "HIWATTAG",
+      "params": [
+        {
+          "address": "ENABLE",
+          "index": 1,
+          "default": 1,
+          "type": "Special"
+        },
+        {
+          "address": "GAIN",
+          "index": 211,
+          "default": 85,
+          "type": "Normal",
+          "min": 0,
+          "max": 99
+        },
+        {
+          "address": "BASS",
+          "index": 212,
+          "default": 59,
+          "type": "Normal",
+          "min": 0,
+          "max": 99
+        },
+        {
+          "address": "MID",
+          "index": 213,
+          "default": 45,
+          "type": "Normal",
+          "min": 0,
+          "max": 99
+        },
+        {
+          "address": "TREBLE",
+          "index": 214,
+          "default": 50,
+          "type": "Normal",
+          "min": 0,
+          "max": 99
+        },
+        {
+          "address": "LEVEL",
+          "index": 215,
+          "default": 75,
+          "type": "Normal",
+          "min": 0,
+          "max": 99
+        }
+      ]
+    },
+    {
+      "category": "Amplifier",
+      "subcategory": "ElectricAmp",
+      "type": "Amplifier",
+      "id": 16,
+      "index": 45,
+      "displayName": "Mark IIC",
+      "address": "MARK IIC",
+      "params": [
+        {
+          "address": "ENABLE",
+          "index": 1,
+          "default": 1,
+          "type": "Special"
+        },
+        {
+          "address": "GAIN",
+          "index": 211,
+          "default": 85,
+          "type": "Normal",
+          "min": 0,
+          "max": 99
+        },
+        {
+          "address": "BASS",
+          "index": 212,
+          "default": 45,
+          "type": "Normal",
+          "min": 0,
+          "max": 99
+        },
+        {
+          "address": "MID",
+          "index": 213,
+          "default": 45,
+          "type": "Normal",
+          "min": 0,
+          "max": 99
+        },
+        {
+          "address": "TREBLE",
+          "index": 214,
+          "default": 63,
+          "type": "Normal",
+          "min": 0,
+          "max": 99
+        },
+        {
+          "address": "LEVEL",
+          "index": 215,
+          "default": 75,
+          "type": "Normal",
+          "min": 0,
+          "max": 99
+        }
+      ]
+    },
+    {
+      "category": "Amplifier",
+      "subcategory": "ElectricAmp",
+      "type": "Amplifier",
+      "id": 17,
+      "index": 46,
+      "displayName": "Mark 4",
+      "address": "MARK IV",
+      "params": [
+        {
+          "address": "ENABLE",
+          "index": 1,
+          "default": 1,
+          "type": "Special"
+        },
+        {
+          "address": "GAIN",
+          "index": 211,
+          "default": 70,
+          "type": "Normal",
+          "min": 0,
+          "max": 99
+        },
+        {
+          "address": "BASS",
+          "index": 212,
+          "default": 35,
+          "type": "Normal",
+          "min": 0,
+          "max": 99
+        },
+        {
+          "address": "MID",
+          "index": 213,
+          "default": 45,
+          "type": "Normal",
+          "min": 0,
+          "max": 99
+        },
+        {
+          "address": "TREBLE",
+          "index": 214,
+          "default": 55,
+          "type": "Normal",
+          "min": 0,
+          "max": 99
+        },
+        {
+          "address": "LEVEL",
+          "index": 215,
+          "default": 65,
+          "type": "Normal",
+          "min": 0,
+          "max": 99
+        }
+      ]
+    },
+    {
+      "category": "Amplifier",
+      "subcategory": "ElectricAmp",
+      "type": "Amplifier",
+      "id": 18,
+      "index": 47,
+      "displayName": "Duo Rectified",
+      "address": "DUALRECT",
+      "params": [
+        {
+          "address": "ENABLE",
+          "index": 1,
+          "default": 1,
+          "type": "Special"
+        },
+        {
+          "address": "GAIN",
+          "index": 211,
+          "default": 80,
+          "type": "Normal",
+          "min": 0,
+          "max": 99
+        },
+        {
+          "address": "BASS",
+          "index": 212,
+          "default": 54,
+          "type": "Normal",
+          "min": 0,
+          "max": 99
+        },
+        {
+          "address": "MID",
+          "index": 213,
+          "default": 13,
+          "type": "Normal",
+          "min": 0,
+          "max": 99
+        },
+        {
+          "address": "TREBLE",
+          "index": 214,
+          "default": 76,
+          "type": "Normal",
+          "min": 0,
+          "max": 99
+        },
+        {
+          "address": "LEVEL",
+          "index": 215,
+          "default": 70,
+          "type": "Normal",
+          "min": 0,
+          "max": 99
+        }
+      ]
+    },
+    {
+      "category": "Amplifier",
+      "subcategory": "ElectricAmp",
+      "type": "Amplifier",
+      "id": 19,
+      "index": 48,
+      "displayName": "Tri Rectified",
+      "address": "TRIPRECT",
+      "params": [
+        {
+          "address": "ENABLE",
+          "index": 1,
+          "default": 1,
+          "type": "Special"
+        },
+        {
+          "address": "GAIN",
+          "index": 211,
+          "default": 70,
+          "type": "Normal",
+          "min": 0,
+          "max": 99
+        },
+        {
+          "address": "BASS",
+          "index": 212,
+          "default": 45,
+          "type": "Normal",
+          "min": 0,
+          "max": 99
+        },
+        {
+          "address": "MID",
+          "index": 213,
+          "default": 10,
+          "type": "Normal",
+          "min": 0,
+          "max": 99
+        },
+        {
+          "address": "TREBLE",
+          "index": 214,
+          "default": 60,
+          "type": "Normal",
+          "min": 0,
+          "max": 99
+        },
+        {
+          "address": "LEVEL",
+          "index": 215,
+          "default": 70,
+          "type": "Normal",
+          "min": 0,
+          "max": 99
+        }
+      ]
+    },
+    {
+      "category": "Amplifier",
+      "subcategory": "ElectricAmp",
+      "type": "Amplifier",
+      "id": 20,
+      "index": 49,
+      "displayName": "Caliber 22",
+      "address": "22CALIBR",
+      "params": [
+        {
+          "address": "ENABLE",
+          "index": 1,
+          "default": 1,
+          "type": "Special"
+        },
+        {
+          "address": "GAIN",
+          "index": 211,
+          "default": 80,
+          "type": "Normal",
+          "min": 0,
+          "max": 99
+        },
+        {
+          "address": "BASS",
+          "index": 212,
+          "default": 40,
+          "type": "Normal",
+          "min": 0,
+          "max": 99
+        },
+        {
+          "address": "MID",
+          "index": 213,
+          "default": 40,
+          "type": "Normal",
+          "min": 0,
+          "max": 99
+        },
+        {
+          "address": "TREBLE",
+          "index": 214,
+          "default": 40,
+          "type": "Normal",
+          "min": 0,
+          "max": 99
+        },
+        {
+          "address": "LEVEL",
+          "index": 215,
+          "default": 75,
+          "type": "Normal",
+          "min": 0,
+          "max": 99
+        }
+      ]
+    },
+    {
+      "category": "Amplifier",
+      "subcategory": "ElectricAmp",
+      "type": "Amplifier",
+      "id": 21,
+      "index": 50,
+      "displayName": "Heritage",
+      "address": "99LEGACY",
+      "params": [
+        {
+          "address": "ENABLE",
+          "index": 1,
+          "default": 1,
+          "type": "Special"
+        },
+        {
+          "address": "GAIN",
+          "index": 211,
+          "default": 70,
+          "type": "Normal",
+          "min": 0,
+          "max": 99
+        },
+        {
+          "address": "BASS",
+          "index": 212,
+          "default": 45,
+          "type": "Normal",
+          "min": 0,
+          "max": 99
+        },
+        {
+          "address": "MID",
+          "index": 213,
+          "default": 45,
+          "type": "Normal",
+          "min": 0,
+          "max": 99
+        },
+        {
+          "address": "TREBLE",
+          "index": 214,
+          "default": 72,
+          "type": "Normal",
+          "min": 0,
+          "max": 99
+        },
+        {
+          "address": "LEVEL",
+          "index": 215,
+          "default": 80,
+          "type": "Normal",
+          "min": 0,
+          "max": 99
+        }
+      ]
+    },
+    {
+      "category": "Amplifier",
+      "subcategory": "ElectricAmp",
+      "type": "Amplifier",
+      "id": 22,
+      "index": 51,
+      "displayName": "Matched 30",
+      "address": "MATCHC30",
+      "params": [
+        {
+          "address": "ENABLE",
+          "index": 1,
+          "default": 1,
+          "type": "Special"
+        },
+        {
+          "address": "GAIN",
+          "index": 211,
+          "default": 80,
+          "type": "Normal",
+          "min": 0,
+          "max": 99
+        },
+        {
+          "address": "BASS",
+          "index": 212,
+          "default": 45,
+          "type": "Normal",
+          "min": 0,
+          "max": 99
+        },
+        {
+          "address": "MID",
+          "index": 213,
+          "default": 45,
+          "type": "Normal",
+          "min": 0,
+          "max": 99
+        },
+        {
+          "address": "TREBLE",
+          "index": 214,
+          "default": 63,
+          "type": "Normal",
+          "min": 0,
+          "max": 99
+        },
+        {
+          "address": "LEVEL",
+          "index": 215,
+          "default": 70,
+          "type": "Normal",
+          "min": 0,
+          "max": 99
+        }
+      ]
+    },
+    {
+      "category": "Amplifier",
+      "subcategory": "ElectricAmp",
+      "type": "Amplifier",
+      "id": 23,
+      "index": 52,
+      "displayName": "Chief",
+      "address": "CHIEF",
+      "params": [
+        {
+          "address": "ENABLE",
+          "index": 1,
+          "default": 1,
+          "type": "Special"
+        },
+        {
+          "address": "GAIN",
+          "index": 211,
+          "default": 80,
+          "type": "Normal",
+          "min": 0,
+          "max": 99
+        },
+        {
+          "address": "BASS",
+          "index": 212,
+          "default": 40,
+          "type": "Normal",
+          "min": 0,
+          "max": 99
+        },
+        {
+          "address": "MID",
+          "index": 213,
+          "default": 40,
+          "type": "Normal",
+          "min": 0,
+          "max": 99
+        },
+        {
+          "address": "TREBLE",
+          "index": 214,
+          "default": 55,
+          "type": "Normal",
+          "min": 0,
+          "max": 99
+        },
+        {
+          "address": "LEVEL",
+          "index": 215,
+          "default": 70,
+          "type": "Normal",
+          "min": 0,
+          "max": 99
+        }
+      ]
+    },
+    {
+      "category": "Amplifier",
+      "subcategory": "ElectricAmp",
+      "type": "Amplifier",
+      "id": 24,
+      "index": 53,
+      "displayName": "Solo 100",
+      "address": "SLDNO100",
+      "params": [
+        {
+          "address": "ENABLE",
+          "index": 1,
+          "default": 1,
+          "type": "Special"
+        },
+        {
+          "address": "GAIN",
+          "index": 211,
+          "default": 70,
+          "type": "Normal",
+          "min": 0,
+          "max": 99
+        },
+        {
+          "address": "BASS",
+          "index": 212,
+          "default": 90,
+          "type": "Normal",
+          "min": 0,
+          "max": 99
+        },
+        {
+          "address": "MID",
+          "index": 213,
+          "default": 90,
+          "type": "Normal",
+          "min": 0,
+          "max": 99
+        },
+        {
+          "address": "TREBLE",
+          "index": 214,
+          "default": 90,
+          "type": "Normal",
+          "min": 0,
+          "max": 99
+        },
+        {
+          "address": "LEVEL",
+          "index": 215,
+          "default": 80,
+          "type": "Normal",
+          "min": 0,
+          "max": 99
+        }
+      ]
+    },
+    {
+      "category": "Amplifier",
+      "subcategory": "ElectricAmp",
+      "type": "Amplifier",
+      "id": 25,
+      "index": 54,
+      "displayName": "Super Group",
+      "address": "SUPERGRP",
+      "params": [
+        {
+          "address": "ENABLE",
+          "index": 1,
+          "default": 1,
+          "type": "Special"
+        },
+        {
+          "address": "GAIN",
+          "index": 211,
+          "default": 70,
+          "type": "Normal",
+          "min": 0,
+          "max": 99
+        },
+        {
+          "address": "BASS",
+          "index": 212,
+          "default": 45,
+          "type": "Normal",
+          "min": 0,
+          "max": 99
+        },
+        {
+          "address": "MID",
+          "index": 213,
+          "default": 45,
+          "type": "Normal",
+          "min": 0,
+          "max": 99
+        },
+        {
+          "address": "TREBLE",
+          "index": 214,
+          "default": 60,
+          "type": "Normal",
+          "min": 0,
+          "max": 99
+        },
+        {
+          "address": "LEVEL",
+          "index": 215,
+          "default": 65,
+          "type": "Normal",
+          "min": 0,
+          "max": 99
+        }
+      ]
+    },
+    {
+      "category": "Amplifier",
+      "subcategory": "ElectricAmp",
+      "type": "Amplifier",
+      "id": 26,
+      "index": 55,
+      "displayName": "GA-40",
+      "address": "GA-40",
+      "params": [
+        {
+          "address": "ENABLE",
+          "index": 1,
+          "default": 1,
+          "type": "Special"
+        },
+        {
+          "address": "GAIN",
+          "index": 211,
+          "default": 70,
+          "type": "Normal",
+          "min": 0,
+          "max": 99
+        },
+        {
+          "address": "BASS",
+          "index": 212,
+          "default": 45,
+          "type": "Normal",
+          "min": 0,
+          "max": 99
+        },
+        {
+          "address": "MID",
+          "index": 213,
+          "default": 45,
+          "type": "Normal",
+          "min": 0,
+          "max": 99
+        },
+        {
+          "address": "TREBLE",
+          "index": 214,
+          "default": 45,
+          "type": "Normal",
+          "min": 0,
+          "max": 99
+        },
+        {
+          "address": "LEVEL",
+          "index": 215,
+          "default": 70,
+          "type": "Normal",
+          "min": 0,
+          "max": 99
+        }
+      ]
+    },
+    {
+      "category": "Amplifier",
+      "subcategory": "ElectricAmp",
+      "type": "Amplifier",
+      "id": 27,
+      "index": 56,
+      "displayName": "Citrus-120",
+      "address": "OR-120",
+      "params": [
+        {
+          "address": "ENABLE",
+          "index": 1,
+          "default": 1,
+          "type": "Special"
+        },
+        {
+          "address": "GAIN",
+          "index": 211,
+          "default": 70,
+          "type": "Normal",
+          "min": 0,
+          "max": 99
+        },
+        {
+          "address": "BASS",
+          "index": 212,
+          "default": 45,
+          "type": "Normal",
+          "min": 0,
+          "max": 99
+        },
+        {
+          "address": "MID",
+          "index": 213,
+          "default": 45,
+          "type": "Normal",
+          "min": 0,
+          "max": 99
+        },
+        {
+          "address": "TREBLE",
+          "index": 214,
+          "default": 50,
+          "type": "Normal",
+          "min": 0,
+          "max": 99
+        },
+        {
+          "address": "LEVEL",
+          "index": 215,
+          "default": 65,
+          "type": "Normal",
+          "min": 0,
+          "max": 99
+        }
+      ]
+    },
+    {
+      "category": "Amplifier",
+      "subcategory": "ElectricAmp",
+      "type": "Amplifier",
+      "id": 28,
+      "index": 57,
+      "displayName": "PV 5150",
+      "address": "PV 5150",
+      "params": [
+        {
+          "address": "ENABLE",
+          "index": 1,
+          "default": 1,
+          "type": "Special"
+        },
+        {
+          "address": "GAIN",
+          "index": 211,
+          "default": 70,
+          "type": "Normal",
+          "min": 0,
+          "max": 99
+        },
+        {
+          "address": "BASS",
+          "index": 212,
+          "default": 45,
+          "type": "Normal",
+          "min": 0,
+          "max": 99
+        },
+        {
+          "address": "MID",
+          "index": 213,
+          "default": 45,
+          "type": "Normal",
+          "min": 0,
+          "max": 99
+        },
+        {
+          "address": "TREBLE",
+          "index": 214,
+          "default": 45,
+          "type": "Normal",
+          "min": 0,
+          "max": 99
+        },
+        {
+          "address": "LEVEL",
+          "index": 215,
+          "default": 75,
+          "type": "Normal",
+          "min": 0,
+          "max": 99
+        }
+      ]
+    },
+    {
+      "category": "Amplifier",
+      "subcategory": "ElectricAmp",
+      "type": "Amplifier",
+      "id": 29,
+      "index": 58,
+      "displayName": "RG100",
+      "address": "RG100",
+      "params": [
+        {
+          "address": "ENABLE",
+          "index": 1,
+          "default": 1,
+          "type": "Special"
+        },
+        {
+          "address": "GAIN",
+          "index": 211,
+          "default": 70,
+          "type": "Normal",
+          "min": 0,
+          "max": 99
+        },
+        {
+          "address": "BASS",
+          "index": 212,
+          "default": 60,
+          "type": "Normal",
+          "min": 0,
+          "max": 99
+        },
+        {
+          "address": "MID",
+          "index": 213,
+          "default": 20,
+          "type": "Normal",
+          "min": 0,
+          "max": 99
+        },
+        {
+          "address": "TREBLE",
+          "index": 214,
+          "default": 60,
+          "type": "Normal",
+          "min": 0,
+          "max": 99
+        },
+        {
+          "address": "LEVEL",
+          "index": 215,
+          "default": 80,
+          "type": "Normal",
+          "min": 0,
+          "max": 99
+        }
+      ]
+    },
+    {
+      "category": "Amplifier",
+      "subcategory": "ElectricAmp",
+      "type": "Amplifier",
+      "id": 30,
+      "index": 59,
+      "displayName": "Jazz 120",
+      "address": "JAZZ 120",
+      "params": [
+        {
+          "address": "ENABLE",
+          "index": 1,
+          "default": 1,
+          "type": "Special"
+        },
+        {
+          "address": "GAIN",
+          "index": 211,
+          "default": 70,
+          "type": "Normal",
+          "min": 0,
+          "max": 99
+        },
+        {
+          "address": "BASS",
+          "index": 212,
+          "default": 60,
+          "type": "Normal",
+          "min": 0,
+          "max": 99
+        },
+        {
+          "address": "MID",
+          "index": 213,
+          "default": 45,
+          "type": "Normal",
+          "min": 0,
+          "max": 99
+        },
+        {
+          "address": "TREBLE",
+          "index": 214,
+          "default": 55,
+          "type": "Normal",
+          "min": 0,
+          "max": 99
+        },
+        {
+          "address": "LEVEL",
+          "index": 215,
+          "default": 70,
+          "type": "Normal",
+          "min": 0,
+          "max": 99
+        }
+      ]
+    },
+    {
+      "category": "Amplifier",
+      "subcategory": "ElectricAmp",
+      "type": "Amplifier",
+      "id": 31,
+      "index": 60,
+      "displayName": "Solar 100",
+      "address": "SOLAR100",
+      "params": [
+        {
+          "address": "ENABLE",
+          "index": 1,
+          "default": 1,
+          "type": "Special"
+        },
+        {
+          "address": "GAIN",
+          "index": 211,
+          "default": 70,
+          "type": "Normal",
+          "min": 0,
+          "max": 99
+        },
+        {
+          "address": "BASS",
+          "index": 212,
+          "default": 45,
+          "type": "Normal",
+          "min": 0,
+          "max": 99
+        },
+        {
+          "address": "MID",
+          "index": 213,
+          "default": 45,
+          "type": "Normal",
+          "min": 0,
+          "max": 99
+        },
+        {
+          "address": "TREBLE",
+          "index": 214,
+          "default": 45,
+          "type": "Normal",
+          "min": 0,
+          "max": 99
+        },
+        {
+          "address": "LEVEL",
+          "index": 215,
+          "default": 70,
+          "type": "Normal",
+          "min": 0,
+          "max": 99
+        }
+      ]
+    },
+    {
+      "category": "Amplifier",
+      "subcategory": "ElectricAmp",
+      "type": "Amplifier",
+      "id": 32,
+      "index": 61,
+      "displayName": "Solo",
+      "address": "DIG SOLO",
+      "params": [
+        {
+          "address": "ENABLE",
+          "index": 1,
+          "default": 1,
+          "type": "Special"
+        },
+        {
+          "address": "GAIN",
+          "index": 211,
+          "default": 75,
+          "type": "Normal",
+          "min": 0,
+          "max": 99
+        },
+        {
+          "address": "BASS",
+          "index": 212,
+          "default": 50,
+          "type": "Normal",
+          "min": 0,
+          "max": 99
+        },
+        {
+          "address": "MID",
+          "index": 213,
+          "default": 50,
+          "type": "Normal",
+          "min": 0,
+          "max": 99
+        },
+        {
+          "address": "TREBLE",
+          "index": 214,
+          "default": 50,
+          "type": "Normal",
+          "min": 0,
+          "max": 99
+        },
+        {
+          "address": "LEVEL",
+          "index": 215,
+          "default": 65,
+          "type": "Normal",
+          "min": 0,
+          "max": 99
+        }
+      ]
+    },
+    {
+      "category": "Amplifier",
+      "subcategory": "ElectricAmp",
+      "type": "Amplifier",
+      "id": 33,
+      "index": 62,
+      "displayName": "Metal",
+      "address": "DIGMETAL",
+      "params": [
+        {
+          "address": "ENABLE",
+          "index": 1,
+          "default": 1,
+          "type": "Special"
+        },
+        {
+          "address": "GAIN",
+          "index": 211,
+          "default": 80,
+          "type": "Normal",
+          "min": 0,
+          "max": 99
+        },
+        {
+          "address": "BASS",
+          "index": 212,
+          "default": 50,
+          "type": "Normal",
+          "min": 0,
+          "max": 99
+        },
+        {
+          "address": "MID",
+          "index": 213,
+          "default": 50,
+          "type": "Normal",
+          "min": 0,
+          "max": 99
+        },
+        {
+          "address": "TREBLE",
+          "index": 214,
+          "default": 50,
+          "type": "Normal",
+          "min": 0,
+          "max": 99
+        },
+        {
+          "address": "LEVEL",
+          "index": 215,
+          "default": 55,
+          "type": "Normal",
+          "min": 0,
+          "max": 99
+        }
+      ]
+    },
+    {
+      "category": "Amplifier",
+      "subcategory": "ElectricAmp",
+      "type": "Amplifier",
+      "id": 34,
+      "index": 63,
+      "displayName": "Bright Combo",
+      "address": "DIGBRGHT",
+      "params": [
+        {
+          "address": "ENABLE",
+          "index": 1,
+          "default": 1,
+          "type": "Special"
+        },
+        {
+          "address": "GAIN",
+          "index": 211,
+          "default": 25,
+          "type": "Normal",
+          "min": 0,
+          "max": 99
+        },
+        {
+          "address": "BASS",
+          "index": 212,
+          "default": 45,
+          "type": "Normal",
+          "min": 0,
+          "max": 99
+        },
+        {
+          "address": "MID",
+          "index": 213,
+          "default": 45,
+          "type": "Normal",
+          "min": 0,
+          "max": 99
+        },
+        {
+          "address": "TREBLE",
+          "index": 214,
+          "default": 45,
+          "type": "Normal",
+          "min": 0,
+          "max": 99
+        },
+        {
+          "address": "LEVEL",
+          "index": 215,
+          "default": 70,
+          "type": "Normal",
+          "min": 0,
+          "max": 99
+        }
+      ]
+    },
+    {
+      "category": "Amplifier",
+      "subcategory": "ElectricAmp",
+      "type": "Amplifier",
+      "id": 35,
+      "index": 64,
+      "displayName": "Chunk",
+      "address": "DIGCHUNK",
+      "params": [
+        {
+          "address": "ENABLE",
+          "index": 1,
+          "default": 1,
+          "type": "Special"
+        },
+        {
+          "address": "GAIN",
+          "index": 211,
+          "default": 70,
+          "type": "Normal",
+          "min": 0,
+          "max": 99
+        },
+        {
+          "address": "BASS",
+          "index": 212,
+          "default": 45,
+          "type": "Normal",
+          "min": 0,
+          "max": 99
+        },
+        {
+          "address": "MID",
+          "index": 213,
+          "default": 45,
+          "type": "Normal",
+          "min": 0,
+          "max": 99
+        },
+        {
+          "address": "TREBLE",
+          "index": 214,
+          "default": 45,
+          "type": "Normal",
+          "min": 0,
+          "max": 99
+        },
+        {
+          "address": "LEVEL",
+          "index": 215,
+          "default": 70,
+          "type": "Normal",
+          "min": 0,
+          "max": 99
+        }
+      ]
+    },
+    {
+      "category": "Amplifier",
+      "subcategory": "ElectricAmp",
+      "type": "Amplifier",
+      "id": 36,
+      "index": 65,
+      "displayName": "Clean Tube",
+      "address": "DIGCLEAN",
+      "params": [
+        {
+          "address": "ENABLE",
+          "index": 1,
+          "default": 1,
+          "type": "Special"
+        },
+        {
+          "address": "GAIN",
+          "index": 211,
+          "default": 40,
+          "type": "Normal",
+          "min": 0,
+          "max": 99
+        },
+        {
+          "address": "BASS",
+          "index": 212,
+          "default": 50,
+          "type": "Normal",
+          "min": 0,
+          "max": 99
+        },
+        {
+          "address": "MID",
+          "index": 213,
+          "default": 50,
+          "type": "Normal",
+          "min": 0,
+          "max": 99
+        },
+        {
+          "address": "TREBLE",
+          "index": 214,
+          "default": 50,
+          "type": "Normal",
+          "min": 0,
+          "max": 99
+        },
+        {
+          "address": "LEVEL",
+          "index": 215,
+          "default": 80,
+          "type": "Normal",
+          "min": 0,
+          "max": 99
+        }
+      ]
+    },
+    {
+      "category": "Amplifier",
+      "subcategory": "ElectricAmp",
+      "type": "Amplifier",
+      "id": 37,
+      "index": 66,
+      "displayName": "High Gain",
+      "address": "DIG GAIN",
+      "params": [
+        {
+          "address": "ENABLE",
+          "index": 1,
+          "default": 1,
+          "type": "Special"
+        },
+        {
+          "address": "GAIN",
+          "index": 211,
+          "default": 75,
+          "type": "Normal",
+          "min": 0,
+          "max": 99
+        },
+        {
+          "address": "BASS",
+          "index": 212,
+          "default": 50,
+          "type": "Normal",
+          "min": 0,
+          "max": 99
+        },
+        {
+          "address": "MID",
+          "index": 213,
+          "default": 50,
+          "type": "Normal",
+          "min": 0,
+          "max": 99
+        },
+        {
+          "address": "TREBLE",
+          "index": 214,
+          "default": 50,
+          "type": "Normal",
+          "min": 0,
+          "max": 99
+        },
+        {
+          "address": "LEVEL",
+          "index": 215,
+          "default": 68,
+          "type": "Normal",
+          "min": 0,
+          "max": 99
+        }
+      ]
+    },
+    {
+      "category": "Amplifier",
+      "subcategory": "ElectricAmp",
+      "type": "Amplifier",
+      "id": 38,
+      "index": 67,
+      "displayName": "Blues",
+      "address": "DIGBLUES",
+      "params": [
+        {
+          "address": "ENABLE",
+          "index": 1,
+          "default": 1,
+          "type": "Special"
+        },
+        {
+          "address": "GAIN",
+          "index": 211,
+          "default": 70,
+          "type": "Normal",
+          "min": 0,
+          "max": 99
+        },
+        {
+          "address": "BASS",
+          "index": 212,
+          "default": 45,
+          "type": "Normal",
+          "min": 0,
+          "max": 99
+        },
+        {
+          "address": "MID",
+          "index": 213,
+          "default": 45,
+          "type": "Normal",
+          "min": 0,
+          "max": 99
+        },
+        {
+          "address": "TREBLE",
+          "index": 214,
+          "default": 45,
+          "type": "Normal",
+          "min": 0,
+          "max": 99
+        },
+        {
+          "address": "LEVEL",
+          "index": 215,
+          "default": 80,
+          "type": "Normal",
+          "min": 0,
+          "max": 99
+        }
+      ]
+    },
+    {
+      "category": "Amplifier",
+      "subcategory": "ElectricAmp",
+      "type": "Amplifier",
+      "id": 39,
+      "index": 68,
+      "displayName": "Fuzz",
+      "address": "DIG FUZZ",
+      "params": [
+        {
+          "address": "ENABLE",
+          "index": 1,
+          "default": 1,
+          "type": "Special"
+        },
+        {
+          "address": "GAIN",
+          "index": 211,
+          "default": 70,
+          "type": "Normal",
+          "min": 0,
+          "max": 99
+        },
+        {
+          "address": "BASS",
+          "index": 212,
+          "default": 45,
+          "type": "Normal",
+          "min": 0,
+          "max": 99
+        },
+        {
+          "address": "MID",
+          "index": 213,
+          "default": 45,
+          "type": "Normal",
+          "min": 0,
+          "max": 99
+        },
+        {
+          "address": "TREBLE",
+          "index": 214,
+          "default": 45,
+          "type": "Normal",
+          "min": 0,
+          "max": 99
+        },
+        {
+          "address": "LEVEL",
+          "index": 215,
+          "default": 70,
+          "type": "Normal",
+          "min": 0,
+          "max": 99
+        }
+      ]
+    },
+    {
+      "category": "Amplifier",
+      "subcategory": "ElectricAmp",
+      "type": "Amplifier",
+      "id": 40,
+      "index": 69,
+      "displayName": "Spank",
+      "address": "DIGSPANK",
+      "params": [
+        {
+          "address": "ENABLE",
+          "index": 1,
+          "default": 1,
+          "type": "Special"
+        },
+        {
+          "address": "GAIN",
+          "index": 211,
+          "default": 70,
+          "type": "Normal",
+          "min": 0,
+          "max": 99
+        },
+        {
+          "address": "BASS",
+          "index": 212,
+          "default": 45,
+          "type": "Normal",
+          "min": 0,
+          "max": 99
+        },
+        {
+          "address": "MID",
+          "index": 213,
+          "default": 45,
+          "type": "Normal",
+          "min": 0,
+          "max": 99
+        },
+        {
+          "address": "TREBLE",
+          "index": 214,
+          "default": 45,
+          "type": "Normal",
+          "min": 0,
+          "max": 99
+        },
+        {
+          "address": "LEVEL",
+          "index": 215,
+          "default": 65,
+          "type": "Normal",
+          "min": 0,
+          "max": 99
+        }
+      ]
+    },
+    {
+      "category": "Amplifier",
+      "subcategory": "ElectricAmp",
+      "type": "Amplifier",
+      "id": 41,
+      "index": 70,
+      "displayName": "2101 Clean",
+      "address": "2101 CLN",
+      "params": [
+        {
+          "address": "ENABLE",
+          "index": 1,
+          "default": 1,
+          "type": "Special"
+        },
+        {
+          "address": "GAIN",
+          "index": 211,
+          "default": 50,
+          "type": "Normal",
+          "min": 0,
+          "max": 99
+        },
+        {
+          "address": "BASS",
+          "index": 212,
+          "default": 50,
+          "type": "Normal",
+          "min": 0,
+          "max": 99
+        },
+        {
+          "address": "MID",
+          "index": 213,
+          "default": 50,
+          "type": "Normal",
+          "min": 0,
+          "max": 99
+        },
+        {
+          "address": "TREBLE",
+          "index": 214,
+          "default": 50,
+          "type": "Normal",
+          "min": 0,
+          "max": 99
+        },
+        {
+          "address": "LEVEL",
+          "index": 215,
+          "default": 85,
+          "type": "Normal",
+          "min": 0,
+          "max": 99
+        }
+      ]
+    },
+    {
+      "category": "Amplifier",
+      "subcategory": "ElectricAmp",
+      "type": "Amplifier",
+      "id": 42,
+      "index": 71,
+      "displayName": "2101 Saturated",
+      "address": "2101 SAT",
+      "params": [
+        {
+          "address": "ENABLE",
+          "index": 1,
+          "default": 1,
+          "type": "Special"
+        },
+        {
+          "address": "GAIN",
+          "index": 211,
+          "default": 75,
+          "type": "Normal",
+          "min": 0,
+          "max": 99
+        },
+        {
+          "address": "BASS",
+          "index": 212,
+          "default": 50,
+          "type": "Normal",
+          "min": 0,
+          "max": 99
+        },
+        {
+          "address": "MID",
+          "index": 213,
+          "default": 50,
+          "type": "Normal",
+          "min": 0,
+          "max": 99
+        },
+        {
+          "address": "TREBLE",
+          "index": 214,
+          "default": 50,
+          "type": "Normal",
+          "min": 0,
+          "max": 99
+        },
+        {
+          "address": "LEVEL",
+          "index": 215,
+          "default": 85,
+          "type": "Normal",
+          "min": 0,
+          "max": 99
+        }
+      ]
+    },
+    {
+      "category": "Amplifier",
+      "subcategory": "ElectricAmp",
+      "type": "Amplifier",
+      "id": 43,
+      "index": 72,
+      "displayName": "Crunch",
+      "address": "DIGCRNCH",
+      "params": [
+        {
+          "address": "ENABLE",
+          "index": 1,
+          "default": 1,
+          "type": "Special"
+        },
+        {
+          "address": "GAIN",
+          "index": 211,
+          "default": 70,
+          "type": "Normal",
+          "min": 0,
+          "max": 99
+        },
+        {
+          "address": "BASS",
+          "index": 212,
+          "default": 45,
+          "type": "Normal",
+          "min": 0,
+          "max": 99
+        },
+        {
+          "address": "MID",
+          "index": 213,
+          "default": 45,
+          "type": "Normal",
+          "min": 0,
+          "max": 99
+        },
+        {
+          "address": "TREBLE",
+          "index": 214,
+          "default": 45,
+          "type": "Normal",
+          "min": 0,
+          "max": 99
+        },
+        {
+          "address": "LEVEL",
+          "index": 215,
+          "default": 65,
+          "type": "Normal",
+          "min": 0,
+          "max": 99
+        }
+      ]
+    },
+    {
+      "category": "Amplifier",
+      "subcategory": "ElectricAmp",
+      "type": "Amplifier",
+      "id": 44,
+      "index": 73,
+      "displayName": "Monster",
+      "address": "DIGMNSTR",
+      "params": [
+        {
+          "address": "ENABLE",
+          "index": 1,
+          "default": 1,
+          "type": "Special"
+        },
+        {
+          "address": "GAIN",
+          "index": 211,
+          "default": 70,
+          "type": "Normal",
+          "min": 0,
+          "max": 99
+        },
+        {
+          "address": "BASS",
+          "index": 212,
+          "default": 45,
+          "type": "Normal",
+          "min": 0,
+          "max": 99
+        },
+        {
+          "address": "MID",
+          "index": 213,
+          "default": 45,
+          "type": "Normal",
+          "min": 0,
+          "max": 99
+        },
+        {
+          "address": "TREBLE",
+          "index": 214,
+          "default": 45,
+          "type": "Normal",
+          "min": 0,
+          "max": 99
+        },
+        {
+          "address": "LEVEL",
+          "index": 215,
+          "default": 70,
+          "type": "Normal",
+          "min": 0,
+          "max": 99
+        }
+      ]
+    },
+    {
+      "category": "Amplifier",
+      "subcategory": "ElectricAmp",
+      "type": "Amplifier",
+      "id": 45,
+      "index": 74,
+      "displayName": "TweedFace",
+      "address": "DIGTWEED",
+      "params": [
+        {
+          "address": "ENABLE",
+          "index": 1,
+          "default": 1,
+          "type": "Special"
+        },
+        {
+          "address": "GAIN",
+          "index": 211,
+          "default": 70,
+          "type": "Normal",
+          "min": 0,
+          "max": 99
+        },
+        {
+          "address": "BASS",
+          "index": 212,
+          "default": 45,
+          "type": "Normal",
+          "min": 0,
+          "max": 99
+        },
+        {
+          "address": "MID",
+          "index": 213,
+          "default": 45,
+          "type": "Normal",
+          "min": 0,
+          "max": 99
+        },
+        {
+          "address": "TREBLE",
+          "index": 214,
+          "default": 45,
+          "type": "Normal",
+          "min": 0,
+          "max": 99
+        },
+        {
+          "address": "LEVEL",
+          "index": 215,
+          "default": 80,
+          "type": "Normal",
+          "min": 0,
+          "max": 99
+        }
+      ]
+    },
+    {
+      "category": "Amplifier",
+      "subcategory": "ElectricAmp",
+      "type": "Amplifier",
+      "id": 46,
+      "index": 75,
+      "displayName": "Black Bass",
+      "address": "DIGBLACK",
+      "params": [
+        {
+          "address": "ENABLE",
+          "index": 1,
+          "default": 1,
+          "type": "Special"
+        },
+        {
+          "address": "GAIN",
+          "index": 211,
+          "default": 70,
+          "type": "Normal",
+          "min": 0,
+          "max": 99
+        },
+        {
+          "address": "BASS",
+          "index": 212,
+          "default": 45,
+          "type": "Normal",
+          "min": 0,
+          "max": 99
+        },
+        {
+          "address": "MID",
+          "index": 213,
+          "default": 45,
+          "type": "Normal",
+          "min": 0,
+          "max": 99
+        },
+        {
+          "address": "TREBLE",
+          "index": 214,
+          "default": 45,
+          "type": "Normal",
+          "min": 0,
+          "max": 99
+        },
+        {
+          "address": "LEVEL",
+          "index": 215,
+          "default": 70,
+          "type": "Normal",
+          "min": 0,
+          "max": 99
+        }
+      ]
+    },
+    {
+      "category": "Amplifier",
+      "subcategory": "ElectricAmp",
+      "type": "Amplifier",
+      "id": 47,
+      "index": 76,
+      "displayName": "Stoner Rock",
+      "address": "DIGSTONR",
+      "params": [
+        {
+          "address": "ENABLE",
+          "index": 1,
+          "default": 1,
+          "type": "Special"
+        },
+        {
+          "address": "GAIN",
+          "index": 211,
+          "default": 70,
+          "type": "Normal",
+          "min": 0,
+          "max": 99
+        },
+        {
+          "address": "BASS",
+          "index": 212,
+          "default": 45,
+          "type": "Normal",
+          "min": 0,
+          "max": 99
+        },
+        {
+          "address": "MID",
+          "index": 213,
+          "default": 45,
+          "type": "Normal",
+          "min": 0,
+          "max": 99
+        },
+        {
+          "address": "TREBLE",
+          "index": 214,
+          "default": 45,
+          "type": "Normal",
+          "min": 0,
+          "max": 99
+        },
+        {
+          "address": "LEVEL",
+          "index": 215,
+          "default": 65,
+          "type": "Normal",
+          "min": 0,
+          "max": 99
+        }
+      ]
+    },
+    {
+      "category": "Amplifier",
+      "subcategory": "ElectricAmp",
+      "type": "Amplifier",
+      "id": 48,
+      "index": 77,
+      "displayName": "DarkMetal",
+      "address": "DIGDKMTL",
+      "params": [
+        {
+          "address": "ENABLE",
+          "index": 1,
+          "default": 1,
+          "type": "Special"
+        },
+        {
+          "address": "GAIN",
+          "index": 211,
+          "default": 70,
+          "type": "Normal",
+          "min": 0,
+          "max": 99
+        },
+        {
+          "address": "BASS",
+          "index": 212,
+          "default": 45,
+          "type": "Normal",
+          "min": 0,
+          "max": 99
+        },
+        {
+          "address": "MID",
+          "index": 213,
+          "default": 45,
+          "type": "Normal",
+          "min": 0,
+          "max": 99
+        },
+        {
+          "address": "TREBLE",
+          "index": 214,
+          "default": 45,
+          "type": "Normal",
+          "min": 0,
+          "max": 99
+        },
+        {
+          "address": "LEVEL",
+          "index": 215,
+          "default": 70,
+          "type": "Normal",
+          "min": 0,
+          "max": 99
+        }
+      ]
+    },
+    {
+      "category": "Amplifier",
+      "subcategory": "ElectricAmp",
+      "type": "Amplifier",
+      "id": 49,
+      "index": 78,
+      "displayName": "Transistor",
+      "address": "DIGTRANS",
+      "params": [
+        {
+          "address": "ENABLE",
+          "index": 1,
+          "default": 1,
+          "type": "Special"
+        },
+        {
+          "address": "GAIN",
+          "index": 211,
+          "default": 70,
+          "type": "Normal",
+          "min": 0,
+          "max": 99
+        },
+        {
+          "address": "BASS",
+          "index": 212,
+          "default": 45,
+          "type": "Normal",
+          "min": 0,
+          "max": 99
+        },
+        {
+          "address": "MID",
+          "index": 213,
+          "default": 45,
+          "type": "Normal",
+          "min": 0,
+          "max": 99
+        },
+        {
+          "address": "TREBLE",
+          "index": 214,
+          "default": 45,
+          "type": "Normal",
+          "min": 0,
+          "max": 99
+        },
+        {
+          "address": "LEVEL",
+          "index": 215,
+          "default": 58,
+          "type": "Normal",
+          "min": 0,
+          "max": 99
+        }
+      ]
+    },
+    {
+      "category": "Amplifier",
+      "subcategory": "ElectricAmp",
+      "type": "Amplifier",
+      "id": 50,
+      "index": 79,
+      "displayName": "Brown Sound",
+      "address": "DIGBROWN",
+      "params": [
+        {
+          "address": "ENABLE",
+          "index": 1,
+          "default": 1,
+          "type": "Special"
+        },
+        {
+          "address": "GAIN",
+          "index": 211,
+          "default": 70,
+          "type": "Normal",
+          "min": 0,
+          "max": 99
+        },
+        {
+          "address": "BASS",
+          "index": 212,
+          "default": 90,
+          "type": "Normal",
+          "min": 0,
+          "max": 99
+        },
+        {
+          "address": "MID",
+          "index": 213,
+          "default": 90,
+          "type": "Normal",
+          "min": 0,
+          "max": 99
+        },
+        {
+          "address": "TREBLE",
+          "index": 214,
+          "default": 90,
+          "type": "Normal",
+          "min": 0,
+          "max": 99
+        },
+        {
+          "address": "LEVEL",
+          "index": 215,
+          "default": 60,
+          "type": "Normal",
+          "min": 0,
+          "max": 99
+        }
+      ]
+    },
+    {
+      "category": "Amplifier",
+      "subcategory": "ElectricAmp",
+      "type": "Amplifier",
+      "id": 51,
+      "index": 80,
+      "displayName": "Mosh",
+      "address": "DIG MOSH",
+      "params": [
+        {
+          "address": "ENABLE",
+          "index": 1,
+          "default": 1,
+          "type": "Special"
+        },
+        {
+          "address": "GAIN",
+          "index": 211,
+          "default": 70,
+          "type": "Normal",
+          "min": 0,
+          "max": 99
+        },
+        {
+          "address": "BASS",
+          "index": 212,
+          "default": 45,
+          "type": "Normal",
+          "min": 0,
+          "max": 99
+        },
+        {
+          "address": "MID",
+          "index": 213,
+          "default": 45,
+          "type": "Normal",
+          "min": 0,
+          "max": 99
+        },
+        {
+          "address": "TREBLE",
+          "index": 214,
+          "default": 45,
+          "type": "Normal",
+          "min": 0,
+          "max": 99
+        },
+        {
+          "address": "LEVEL",
+          "index": 215,
+          "default": 60,
+          "type": "Normal",
+          "min": 0,
+          "max": 99
+        }
+      ]
+    },
+    {
+      "category": "Amplifier",
+      "subcategory": "AcousticAmp",
+      "type": "Amplifier",
+      "id": 52,
+      "index": 81,
+      "displayName": "Dread Acoustic",
+      "address": "DREAD AC",
+      "params": [
+        {
+          "address": "ENABLE",
+          "index": 1,
+          "default": 1,
+          "type": "Special"
+        },
+        {
+          "address": "BASS",
+          "index": 212,
+          "default": 45,
+          "type": "Normal",
+          "min": 0,
+          "max": 99
+        },
+        {
+          "address": "MID",
+          "index": 213,
+          "default": 45,
+          "type": "Normal",
+          "min": 0,
+          "max": 99
+        },
+        {
+          "address": "TREBLE",
+          "index": 214,
+          "default": 45,
+          "type": "Normal",
+          "min": 0,
+          "max": 99
+        },
+        {
+          "address": "LEVEL",
+          "index": 215,
+          "default": 80,
+          "type": "Normal",
+          "min": 0,
+          "max": 99
+        }
+      ]
+    },
+    {
+      "category": "Amplifier",
+      "subcategory": "AcousticAmp",
+      "type": "Amplifier",
+      "id": 53,
+      "index": 82,
+      "displayName": "Jumbo Acoustic",
+      "address": "JUMBO AC",
+      "params": [
+        {
+          "address": "ENABLE",
+          "index": 1,
+          "default": 1,
+          "type": "Special"
+        },
+        {
+          "address": "BASS",
+          "index": 212,
+          "default": 45,
+          "type": "Normal",
+          "min": 0,
+          "max": 99
+        },
+        {
+          "address": "MID",
+          "index": 213,
+          "default": 45,
+          "type": "Normal",
+          "min": 0,
+          "max": 99
+        },
+        {
+          "address": "TREBLE",
+          "index": 214,
+          "default": 45,
+          "type": "Normal",
+          "min": 0,
+          "max": 99
+        },
+        {
+          "address": "LEVEL",
+          "index": 215,
+          "default": 70,
+          "type": "Normal",
+          "min": 0,
+          "max": 99
+        }
+      ]
+    },
+    {
+      "category": "Amplifier",
+      "subcategory": "AcousticAmp",
+      "type": "Amplifier",
+      "id": 54,
+      "index": 83,
+      "displayName": "Direct",
+      "address": "A DIRECT",
+      "params": [
+        {
+          "address": "ENABLE",
+          "index": 1,
+          "default": 1,
+          "type": "Special"
+        },
+        {
+          "address": "LEVEL",
+          "index": 215,
+          "default": 99,
+          "type": "Normal",
+          "min": 0,
+          "max": 99
+        }
+      ]
+    }
+  ],
+  "cabinets": [
+    {
+      "id": 0,
+      "index": 84,
+      "displayName": "1x8: Champ"
+    },
+    {
+      "id": 1,
+      "index": 85,
+      "displayName": "1x12: D-Luxe"
+    },
+    {
+      "id": 2,
+      "index": 86,
+      "displayName": "1x12: LUXREV"
+    },
+    {
+      "id": 3,
+      "index": 87,
+      "displayName": "1x12: AC British"
+    },
+    {
+      "id": 4,
+      "index": 88,
+      "displayName": "1x12: GIB-GA"
+    },
+    {
+      "id": 5,
+      "index": 89,
+      "displayName": "2x12: Bass Man"
+    },
+    {
+      "id": 6,
+      "index": 90,
+      "displayName": "2x12: Twin"
+    },
+    {
+      "id": 7,
+      "index": 91,
+      "displayName": "2x12: AC British"
+    },
+    {
+      "id": 8,
+      "index": 92,
+      "displayName": "2x12: Jazz"
+    },
+    {
+      "id": 9,
+      "index": 93,
+      "displayName": "2x15: JBL"
+    },
+    {
+      "id": 10,
+      "index": 94,
+      "displayName": "4x10: Bass Man"
+    },
+    {
+      "id": 11,
+      "index": 95,
+      "displayName": "4x12: Classic"
+    },
+    {
+      "id": 12,
+      "index": 96,
+      "displayName": "4x12: Green"
+    },
+    {
+      "id": 13,
+      "index": 97,
+      "displayName": "4x12: Fane"
+    },
+    {
+      "id": 14,
+      "index": 98,
+      "displayName": "4x12: Boutique"
+    },
+    {
+      "id": 15,
+      "index": 99,
+      "displayName": "4x12: V30"
+    },
+    {
+      "id": 16,
+      "index": 100,
+      "displayName": "4x12: Recto"
+    },
+    {
+      "id": 17,
+      "index": 101,
+      "displayName": "4x12: Solo"
+    },
+    {
+      "id": 18,
+      "index": 102,
+      "displayName": "2x12: Bright"
+    },
+    {
+      "id": 19,
+      "index": 103,
+      "displayName": "4x12: Metal"
+    },
+    {
+      "id": 20,
+      "index": 104,
+      "displayName": "4x12: Rock"
+    },
+    {
+      "id": 21,
+      "index": 105,
+      "displayName": "4x12: Alternative"
+    },
+    {
+      "id": 22,
+      "index": 106,
+      "displayName": "4x12: Vintage"
+    },
+    {
+      "id": 23,
+      "index": 107,
+      "displayName": "4x12: Chunk"
+    },
+    {
+      "id": 24,
+      "index": 108,
+      "displayName": "4x12: Spank"
+    },
+    {
+      "id": 25,
+      "index": 109,
+      "displayName": "2101 Speaker"
+    },
+    {
+      "id": 26,
+      "index": 110,
+      "displayName": "Direct"
+    }
+  ]
+}

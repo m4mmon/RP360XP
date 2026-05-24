@@ -148,7 +148,7 @@ class DeviceWorker(QObject):
     def _on_notification(self, msg: list):
         # Called from the transport reader thread — must not call send_command here.
         self.notification_received.emit(msg)
-        if msg and msg[0] == "cm":
+        if msg and msg[0] in ("cm", "nac", "ndc", "nsc"):
             self._refresh_needed.emit()  # queued → executes on worker thread
 
     def _safe_disconnect(self):

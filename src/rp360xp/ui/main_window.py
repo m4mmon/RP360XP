@@ -223,9 +223,30 @@ class MainWindow(QMainWindow):
                     self._preset_panel.update_param(slot, param, int(value))
                 return
 
+            # preset level
+            if path in ("preset/PRS LEVL", "PRS LEVL"):
+                self._preset_panel.update_level(int(value))
+                return
+
+            # preset name or ctrls assignment — require full model refresh
+            if path in ("preset/name", "name") or path.startswith("ctrls/"):
+                self._refresh_requested.emit()
+                return
+
+            # system settings — show in status bar only
+            if path == "system/MASTERVOL":
+                self.statusBar().showMessage(f"Master vol → {value}", 3000)
+                return
+
             self.statusBar().showMessage(f"np  {path} = {value}", 3000)
 
         elif cmd == "cm":
+            # Save confirmation: cm path='preset' value='banks/user/N'
+            if len(msg) >= 4 and str(msg[2]) == "preset":
+                val = str(msg[3])
+                if val.startswith("banks/user/"):
+                    self.statusBar().showMessage("Saved", 3000)
+                    return
             self.statusBar().showMessage("Preset changed", 2000)
 
     # ---------------------------------------------------------- cleanup

@@ -282,6 +282,12 @@ class PresetHeader(QWidget):
         self._level_spin.setValue(preset.prs_levl)
         self._level_suppress = False
 
+    def update_level(self, value: int):
+        self._level_suppress = True
+        self._level_slider.setValue(value)
+        self._level_spin.setValue(value)
+        self._level_suppress = False
+
     def _level_from_slider(self, v: int):
         if self._level_suppress:
             return
@@ -777,6 +783,9 @@ class PresetPanel(QWidget):
             self._slot_cards[slot].update_param(param, value)
         if slot == self._selected_idx:
             self._detail.update_param(param, value)
+
+    def update_level(self, value: int):
+        self._header.update_level(value)
 
     def update_enable(self, slot: int, enabled: bool):
         if slot == self._amp_idx:

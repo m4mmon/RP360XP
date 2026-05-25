@@ -81,3 +81,11 @@ pass it explicitly:
 rp360xp --port /dev/ttyACM0 show        # Linux
 rp360xp --port COM3 show                # Windows
 ```
+
+## GUI
+
+Do the same as described above, but launch:
+
+```bash
+rp360xp-gui
+```

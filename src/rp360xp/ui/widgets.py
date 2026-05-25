@@ -56,9 +56,9 @@ SLOT_CARD_H  = 8 + 26 + 16 + 20 + 8 + _N_ALL * (_TEXT_H + 1)
 DETAIL_H     = 14 + _LABEL_H + _N_ALL * (_ROW_H + 2)
 
 # BottomPanel: 4 sections side by side; height sized to the tallest (LFO) —
-#   outer margins 10+10, title label, lnk label, 4 rows (MIN MAX SPEED WAVEFORM)
-_N_LFO_ROWS = 4
-BOTTOM_H = 10 + _LABEL_H + 4 + _TEXT_H + _N_LFO_ROWS * (_ROW_H + 2) + 10
+#   outer margins 10+10, title label, 6 rows (SLOT PARAM MIN MAX SPEED WAVEFORM)
+_N_LFO_ROWS = 6
+BOTTOM_H = 10 + _LABEL_H + _N_LFO_ROWS * (_ROW_H + 2) + 10
 
 # ---------------------------------------------------------------------------
 
@@ -157,6 +157,10 @@ class ParamRow(QWidget):
         self._slider.setValue(v)
         self._suppress = False
         self._timer.start()
+
+    @property
+    def value(self) -> int:
+        return self._slider.value()
 
     def set_value(self, v: int):
         self._suppress = True
@@ -653,43 +657,85 @@ class DetailPanel(QFrame):
             self._param_rows[param].set_value(value)
 
 
+
+# ---------------------------------------------------------------- helpers for bottom sections
+
+def _combo_row(label: str, combo: QComboBox, label_width: int = 52) -> QWidget:
+    w = QWidget()
+    w.setFixedHeight(_ROW_H)
+    lay = QHBoxLayout(w)
+    lay.setContentsMargins(0, 0, 0, 0)
+    lay.setSpacing(4)
+    lbl = QLabel(label)
+    lbl.setFixedWidth(label_width)
+    lbl.setAlignment(Qt.AlignRight | Qt.AlignVCenter)
+    lay.addWidget(lbl)
+    lay.addWidget(combo, 1)
+    return w
+
+
 # ---------------------------------------------------------------- StompsSection
 
 class StompsSection(QFrame):
-    """Toggle-control assignments: ctrlA, ctrlB, ctrlC, and ctrlVSw (toe switch)."""
+    """Toggle-control assignments for ctrlA, ctrlB, ctrlC with per-slot enable buttons."""
 
-    assignment_changed = Signal(str, int)   # ctrl_name, slot_idx (-1 = clear)
+    assignment_changed = Signal(str, int)    # ctrl_name, slot_idx (-1 = clear)
+    enable_toggled     = Signal(int, bool)   # slot_idx, enabled
 
-    _CTRLS = (("A", "ctrlA"), ("B", "ctrlB"), ("C", "ctrlC"), ("Toe", "ctrlVSw"))
+    _CTRLS = (("A", "ctrlA"), ("B", "ctrlB"), ("C", "ctrlC"))
+    _TOGGLE_STYLE = (
+        "QPushButton{color:#666;border:1px solid #555;border-radius:3px;background:#333;padding:0}"
+        "QPushButton:checked{color:#5f5;border-color:#5a5;background:#253}"
+    )
 
     def __init__(self, parent=None):
         super().__init__(parent)
         self.setFrameShape(QFrame.StyledPanel)
+        self.setFixedHeight(BOTTOM_H)
         lay = QVBoxLayout(self)
         lay.setContentsMargins(8, 6, 8, 6)
         lay.setSpacing(3)
 
         title = QLabel("Stomps")
         title.setStyleSheet("font-weight: bold; font-size: 10pt;")
+        title.setFixedHeight(_LABEL_H)
         lay.addWidget(title)
 
         self._combos: dict[str, QComboBox] = {}
+        self._toggles: dict[str, QPushButton] = {}
+
         for letter, ctrl_name in self._CTRLS:
             row = QWidget()
+            row.setFixedHeight(_ROW_H)
             rl = QHBoxLayout(row)
             rl.setContentsMargins(0, 0, 0, 0)
             rl.setSpacing(4)
+
             lbl = QLabel(f"{letter}:")
-            lbl.setFixedWidth(28)
+            lbl.setFixedWidth(18)
             rl.addWidget(lbl)
+
             cb = QComboBox()
             cb.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Fixed)
             cb.currentIndexChanged.connect(
-                lambda _, c=cb, cn=ctrl_name: self._on_change(c, cn)
+                lambda _, c=cb, cn=ctrl_name: self._on_combo_change(c, cn)
             )
             rl.addWidget(cb, 1)
+
+            toggle = QPushButton("●")
+            toggle.setCheckable(True)
+            toggle.setFixedWidth(26)
+            toggle.setFixedHeight(22)
+            toggle.setEnabled(False)
+            toggle.setStyleSheet(self._TOGGLE_STYLE)
+            toggle.toggled.connect(
+                lambda checked, cn=ctrl_name: self._on_toggle(cn, checked)
+            )
+            rl.addWidget(toggle)
+
             lay.addWidget(row)
             self._combos[ctrl_name] = cb
+            self._toggles[ctrl_name] = toggle
 
         lay.addStretch()
 
@@ -707,144 +753,343 @@ class StompsSection(QFrame):
             idx = cb.findData(assigned) if assigned is not None else 0
             cb.setCurrentIndex(max(0, idx))
             cb.blockSignals(False)
+            self._refresh_toggle(ctrl_name, assigned, preset)
 
-    def _on_change(self, cb: QComboBox, ctrl_name: str):
-        slot = cb.currentData()
-        self.assignment_changed.emit(ctrl_name, int(slot) if slot is not None else -1)
+    def update_enable(self, slot_idx: int, enabled: bool):
+        for ctrl_name, cb in self._combos.items():
+            if cb.currentData() == slot_idx:
+                t = self._toggles[ctrl_name]
+                t.blockSignals(True)
+                t.setChecked(enabled)
+                t.blockSignals(False)
+
+    def _refresh_toggle(self, ctrl_name: str, assigned: int | None, preset: Preset):
+        toggle = self._toggles[ctrl_name]
+        toggle.blockSignals(True)
+        if assigned is not None and assigned >= 0 and assigned in preset.slots:
+            toggle.setEnabled(True)
+            toggle.setChecked(bool(preset.slots[assigned].enable))
+        else:
+            toggle.setEnabled(False)
+            toggle.setChecked(False)
+        toggle.blockSignals(False)
+
+    def _on_combo_change(self, cb: QComboBox, ctrl_name: str):
+        slot_idx = int(cb.currentData()) if cb.currentData() is not None else -1
+        self.assignment_changed.emit(ctrl_name, slot_idx)
+        toggle = self._toggles[ctrl_name]
+        toggle.blockSignals(True)
+        toggle.setEnabled(slot_idx >= 0)
+        toggle.blockSignals(False)
+
+    def _on_toggle(self, ctrl_name: str, checked: bool):
+        slot_idx = self._combos[ctrl_name].currentData()
+        if slot_idx is not None and slot_idx >= 0:
+            self.enable_toggled.emit(slot_idx, checked)
 
 
-# ---------------------------------------------------------------- CtrlRangePanel
+# ---------------------------------------------------------------- ExprCtrlSection
 
-class CtrlRangePanel(QFrame):
-    """Display/edit panel for a continuous controller with MIN and MAX (treadle or altTreadle)."""
+class ExprCtrlSection(QFrame):
+    """Expression pedal section: slot + param selection, MIN and MAX range."""
 
-    ctrl_field_changed = Signal(str, str, int)   # ctrl_name, field, value
+    assign_requested = Signal(str, int, str, int, int, bool)  # ctrl, slot, param, min, max, flat
 
     def __init__(self, ctrl_name: str, title: str, parent=None):
         super().__init__(parent)
         self._ctrl_name = ctrl_name
-        self._rows: dict[str, ParamRow] = {}
+        self._preset: Preset | None = None
+        self._suppress = False
 
         self.setFrameShape(QFrame.StyledPanel)
+        self.setFixedHeight(BOTTOM_H)
         lay = QVBoxLayout(self)
         lay.setContentsMargins(8, 6, 8, 6)
         lay.setSpacing(3)
 
         title_lbl = QLabel(title)
         title_lbl.setStyleSheet("font-weight: bold; font-size: 10pt;")
+        title_lbl.setFixedHeight(_LABEL_H)
         lay.addWidget(title_lbl)
 
-        self._lnk_lbl = QLabel("— not assigned")
-        self._lnk_lbl.setStyleSheet("color: #888; font-size: 8pt;")
-        lay.addWidget(self._lnk_lbl)
+        self._slot_combo = QComboBox()
+        self._slot_combo.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Fixed)
+        self._slot_combo.currentIndexChanged.connect(self._on_slot_changed)
+        lay.addWidget(_combo_row("Slot:", self._slot_combo))
 
-        for field, lo, hi in (("MIN", 0, 99), ("MAX", 0, 99)):
-            row = ParamRow(field, 0, lo, hi)
-            row.value_changed.connect(
-                lambda f, v, cn=ctrl_name: self.ctrl_field_changed.emit(cn, f, v)
-            )
-            lay.addWidget(row)
-            self._rows[field] = row
+        self._param_combo = QComboBox()
+        self._param_combo.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Fixed)
+        self._param_combo.currentIndexChanged.connect(self._on_any_change)
+        lay.addWidget(_combo_row("Param:", self._param_combo))
+
+        self._row_min = ParamRow("MIN", 0, 0, 99)
+        self._row_min.value_changed.connect(self._on_any_change)
+        lay.addWidget(self._row_min)
+
+        self._row_max = ParamRow("MAX", 99, 0, 99)
+        self._row_max.value_changed.connect(self._on_any_change)
+        lay.addWidget(self._row_max)
 
         lay.addStretch()
 
     def update_ctrl(self, ctrl: Ctrl | None, preset: Preset | None = None):
-        assigned = bool(ctrl and ctrl.lnk)
-        self._lnk_lbl.setText(_lnk_label(ctrl.lnk if ctrl else "", preset))
-        for row in self._rows.values():
-            row.setEnabled(assigned)
+        self._preset = preset
+        self._suppress = True
+
+        current_slot, current_param = -1, None
+        if ctrl and ctrl.lnk:
+            m = re.search(r'fxc/(\d+)/(?:fx/)?([^/]+)$', ctrl.lnk)
+            if m:
+                current_slot, current_param = int(m.group(1)), m.group(2)
+
+        self._slot_combo.blockSignals(True)
+        self._slot_combo.clear()
+        self._slot_combo.addItem("— not assigned", -1)
+        if preset:
+            for idx in sorted(preset.slots.keys()):
+                _, label = _effect_info(preset.slots[idx])
+                self._slot_combo.addItem(f"Slot {idx} · {label}", idx)
+        si = self._slot_combo.findData(current_slot)
+        self._slot_combo.setCurrentIndex(max(0, si))
+        self._slot_combo.blockSignals(False)
+
+        self._rebuild_param_combo(current_slot, current_param)
+
         if ctrl:
             if ctrl.min is not None:
-                self._rows["MIN"].set_value(ctrl.min)
+                self._row_min.set_value(ctrl.min)
             if ctrl.max is not None:
-                self._rows["MAX"].set_value(ctrl.max)
+                self._row_max.set_value(ctrl.max)
+
+        self._suppress = False
+
+    def _on_slot_changed(self):
+        slot_idx = self._slot_combo.currentData()
+        self._rebuild_param_combo(slot_idx if slot_idx is not None else -1, None)
+        self._on_any_change()
+
+    def _rebuild_param_combo(self, slot_idx: int, current_param: str | None):
+        self._param_combo.blockSignals(True)
+        self._param_combo.clear()
+        if slot_idx >= 0 and self._preset and slot_idx in self._preset.slots:
+            for p in self._preset.slots[slot_idx].params:
+                self._param_combo.addItem(p, p)
+            if current_param:
+                pi = self._param_combo.findData(current_param)
+                self._param_combo.setCurrentIndex(max(0, pi))
+        self._param_combo.blockSignals(False)
+
+    def _on_any_change(self, *_):
+        if self._suppress:
+            return
+        slot_idx = self._slot_combo.currentData()
+        param = self._param_combo.currentData()
+        if slot_idx is None or slot_idx < 0 or not param or self._preset is None:
+            return
+        slot = self._preset.slots.get(slot_idx)
+        if slot is None:
+            return
+        self.assign_requested.emit(
+            self._ctrl_name, slot_idx, param,
+            self._row_min.value, self._row_max.value,
+            not slot._use_fx_subdict,
+        )
 
 
-# ---------------------------------------------------------------- LfoPanel
+# ---------------------------------------------------------------- LfoSection
 
-class LfoPanel(QFrame):
-    """Display/edit panel for lfo1 (MIN, MAX, SPEED, WAVEFORM)."""
+class LfoSection(QFrame):
+    """LFO section: slot + param selection, MIN, MAX, SPEED, WAVEFORM."""
 
-    ctrl_field_changed = Signal(str, str, int)   # "lfo1", field, value
+    assign_requested = Signal(int, str, int, int, int, int, bool)  # slot, param, min, max, speed, wf, flat
 
     def __init__(self, parent=None):
         super().__init__(parent)
-        self._rows: dict[str, ParamRow] = {}
-        self._wave_suppress = False
+        self._preset: Preset | None = None
+        self._suppress = False
+        self._wave_val = 0
 
         self.setFrameShape(QFrame.StyledPanel)
+        self.setFixedHeight(BOTTOM_H)
         lay = QVBoxLayout(self)
         lay.setContentsMargins(8, 6, 8, 6)
         lay.setSpacing(3)
 
         title_lbl = QLabel("LFO")
         title_lbl.setStyleSheet("font-weight: bold; font-size: 10pt;")
+        title_lbl.setFixedHeight(_LABEL_H)
         lay.addWidget(title_lbl)
 
-        self._lnk_lbl = QLabel("— not assigned")
-        self._lnk_lbl.setStyleSheet("color: #888; font-size: 8pt;")
-        lay.addWidget(self._lnk_lbl)
+        self._slot_combo = QComboBox()
+        self._slot_combo.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Fixed)
+        self._slot_combo.currentIndexChanged.connect(self._on_slot_changed)
+        lay.addWidget(_combo_row("Slot:", self._slot_combo))
 
-        for field, lo, hi in (("MIN", 0, 99), ("MAX", 0, 99), ("SPEED", 0, 185)):
-            row = ParamRow(field, 0, lo, hi)
-            row.value_changed.connect(
-                lambda f, v: self.ctrl_field_changed.emit("lfo1", f, v)
-            )
-            lay.addWidget(row)
-            self._rows[field] = row
+        self._param_combo = QComboBox()
+        self._param_combo.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Fixed)
+        self._param_combo.currentIndexChanged.connect(self._on_any_change)
+        lay.addWidget(_combo_row("Param:", self._param_combo))
 
-        # Waveform combo row
-        wave_row = QWidget()
-        wl = QHBoxLayout(wave_row)
-        wl.setContentsMargins(0, 0, 0, 0)
-        wl.setSpacing(6)
-        wave_lbl = QLabel("WAVEFORM")
-        wave_lbl.setFixedWidth(96)
-        wave_lbl.setAlignment(Qt.AlignRight | Qt.AlignVCenter)
-        wl.addWidget(wave_lbl)
+        self._row_min = ParamRow("MIN", 0, 0, 99)
+        self._row_min.value_changed.connect(self._on_any_change)
+        lay.addWidget(self._row_min)
+
+        self._row_max = ParamRow("MAX", 99, 0, 99)
+        self._row_max.value_changed.connect(self._on_any_change)
+        lay.addWidget(self._row_max)
+
+        self._row_speed = ParamRow("SPEED", 74, 0, 185)
+        self._row_speed.value_changed.connect(self._on_any_change)
+        lay.addWidget(self._row_speed)
+
         self._wave_combo = QComboBox()
         self._wave_combo.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Fixed)
         for k in sorted(LFO_WAVEFORMS):
             self._wave_combo.addItem(LFO_WAVEFORMS[k], k)
-        self._wave_combo.currentIndexChanged.connect(self._on_waveform)
-        wl.addWidget(self._wave_combo, 1)
-        lay.addWidget(wave_row)
-        self._wave_row = wave_row
+        self._wave_combo.currentIndexChanged.connect(self._on_wave_changed)
+        lay.addWidget(_combo_row("WAVEFORM", self._wave_combo, label_width=72))
 
         lay.addStretch()
 
-    def _on_waveform(self, _idx: int):
-        if not self._wave_suppress:
-            self.ctrl_field_changed.emit("lfo1", "WAVEFORM", self._wave_combo.currentData())
+    def update_ctrl(self, ctrl: Ctrl | None, preset: Preset | None = None):
+        self._preset = preset
+        self._suppress = True
+
+        current_slot, current_param = -1, None
+        if ctrl and ctrl.lnk:
+            m = re.search(r'fxc/(\d+)/(?:fx/)?([^/]+)$', ctrl.lnk)
+            if m:
+                current_slot, current_param = int(m.group(1)), m.group(2)
+
+        self._slot_combo.blockSignals(True)
+        self._slot_combo.clear()
+        self._slot_combo.addItem("— not assigned", -1)
+        if preset:
+            for idx in sorted(preset.slots.keys()):
+                _, label = _effect_info(preset.slots[idx])
+                self._slot_combo.addItem(f"Slot {idx} · {label}", idx)
+        si = self._slot_combo.findData(current_slot)
+        self._slot_combo.setCurrentIndex(max(0, si))
+        self._slot_combo.blockSignals(False)
+
+        self._rebuild_param_combo(current_slot, current_param)
+
+        if ctrl:
+            if ctrl.min is not None:
+                self._row_min.set_value(ctrl.min)
+            if ctrl.max is not None:
+                self._row_max.set_value(ctrl.max)
+            if ctrl.speed is not None:
+                self._row_speed.set_value(ctrl.speed)
+            if ctrl.waveform is not None:
+                self._wave_val = ctrl.waveform
+                self._wave_combo.blockSignals(True)
+                wi = self._wave_combo.findData(ctrl.waveform)
+                if wi >= 0:
+                    self._wave_combo.setCurrentIndex(wi)
+                self._wave_combo.blockSignals(False)
+
+        self._suppress = False
+
+    def _on_slot_changed(self):
+        slot_idx = self._slot_combo.currentData()
+        self._rebuild_param_combo(slot_idx if slot_idx is not None else -1, None)
+        self._on_any_change()
+
+    def _rebuild_param_combo(self, slot_idx: int, current_param: str | None):
+        self._param_combo.blockSignals(True)
+        self._param_combo.clear()
+        if slot_idx >= 0 and self._preset and slot_idx in self._preset.slots:
+            for p in self._preset.slots[slot_idx].params:
+                self._param_combo.addItem(p, p)
+            if current_param:
+                pi = self._param_combo.findData(current_param)
+                self._param_combo.setCurrentIndex(max(0, pi))
+        self._param_combo.blockSignals(False)
+
+    def _on_wave_changed(self, _):
+        v = self._wave_combo.currentData()
+        if v is not None:
+            self._wave_val = v
+        self._on_any_change()
+
+    def _on_any_change(self, *_):
+        if self._suppress:
+            return
+        slot_idx = self._slot_combo.currentData()
+        param = self._param_combo.currentData()
+        if slot_idx is None or slot_idx < 0 or not param or self._preset is None:
+            return
+        slot = self._preset.slots.get(slot_idx)
+        if slot is None:
+            return
+        self.assign_requested.emit(
+            slot_idx, param,
+            self._row_min.value, self._row_max.value,
+            self._row_speed.value, self._wave_val,
+            not slot._use_fx_subdict,
+        )
+
+
+# ---------------------------------------------------------------- WahSection
+
+class WahSection(QFrame):
+    """Wah section: shows altTreadle assignment and MIN/MAX range."""
+
+    ctrl_field_changed = Signal(str, str, int)   # "altTreadle", field, value
+
+    def __init__(self, parent=None):
+        super().__init__(parent)
+        self._rows: dict[str, ParamRow] = {}
+
+        self.setFrameShape(QFrame.StyledPanel)
+        self.setFixedHeight(BOTTOM_H)
+        lay = QVBoxLayout(self)
+        lay.setContentsMargins(8, 6, 8, 6)
+        lay.setSpacing(3)
+
+        title_lbl = QLabel("Wah")
+        title_lbl.setStyleSheet("font-weight: bold; font-size: 10pt;")
+        title_lbl.setFixedHeight(_LABEL_H)
+        lay.addWidget(title_lbl)
+
+        self._lnk_lbl = QLabel("— not assigned")
+        self._lnk_lbl.setStyleSheet("color: #888; font-size: 8pt;")
+        self._lnk_lbl.setFixedHeight(_TEXT_H)
+        lay.addWidget(self._lnk_lbl)
+
+        for field, lo, hi in (("MIN", 0, 99), ("MAX", 0, 99)):
+            row = ParamRow(field, 0, lo, hi)
+            row.value_changed.connect(
+                lambda f, v: self.ctrl_field_changed.emit("altTreadle", f, v)
+            )
+            lay.addWidget(row)
+            self._rows[field] = row
+
+        lay.addStretch()
 
     def update_ctrl(self, ctrl: Ctrl | None, preset: Preset | None = None):
         assigned = bool(ctrl and ctrl.lnk)
         self._lnk_lbl.setText(_lnk_label(ctrl.lnk if ctrl else "", preset))
         for row in self._rows.values():
             row.setEnabled(assigned)
-        self._wave_row.setEnabled(assigned)
         if ctrl:
             if ctrl.min is not None:
                 self._rows["MIN"].set_value(ctrl.min)
             if ctrl.max is not None:
                 self._rows["MAX"].set_value(ctrl.max)
-            if ctrl.speed is not None:
-                self._rows["SPEED"].set_value(ctrl.speed)
-            if ctrl.waveform is not None:
-                self._wave_suppress = True
-                idx = self._wave_combo.findData(ctrl.waveform)
-                if idx >= 0:
-                    self._wave_combo.setCurrentIndex(idx)
-                self._wave_suppress = False
 
 
 # ---------------------------------------------------------------- BottomPanel
 
 class BottomPanel(QWidget):
-    """Four-section bottom bar: Stomps · Expression · LFO · Wah."""
+    """Four-section bottom bar: Stomps | Expression | LFO | Wah."""
 
-    stomp_changed      = Signal(str, int)        # ctrl_name, slot_idx (-1 = clear)
-    ctrl_field_changed = Signal(str, str, int)   # ctrl_name, field, value
+    stomp_changed      = Signal(str, int)                         # ctrl_name, slot_idx (-1=clear)
+    enable_toggled     = Signal(int, bool)                        # slot_idx, enabled
+    expression_assign  = Signal(str, int, str, int, int, bool)   # ctrl, slot, param, min, max, flat
+    lfo_assign         = Signal(int, str, int, int, int, int, bool)  # slot, param, min, max, spd, wf, flat
+    ctrl_field_changed = Signal(str, str, int)                    # ctrl_name, field, value (wah)
 
     def __init__(self, parent=None):
         super().__init__(parent)
@@ -855,17 +1100,18 @@ class BottomPanel(QWidget):
 
         self._stomps = StompsSection()
         self._stomps.assignment_changed.connect(self.stomp_changed)
+        self._stomps.enable_toggled.connect(self.enable_toggled)
         lay.addWidget(self._stomps, 1)
 
-        self._expr = CtrlRangePanel("treadle", "Expression")
-        self._expr.ctrl_field_changed.connect(self.ctrl_field_changed)
+        self._expr = ExprCtrlSection("treadle", "Expression")
+        self._expr.assign_requested.connect(self.expression_assign)
         lay.addWidget(self._expr, 1)
 
-        self._lfo = LfoPanel()
-        self._lfo.ctrl_field_changed.connect(self.ctrl_field_changed)
+        self._lfo = LfoSection()
+        self._lfo.assign_requested.connect(self.lfo_assign)
         lay.addWidget(self._lfo, 1)
 
-        self._wah = CtrlRangePanel("altTreadle", "Wah")
+        self._wah = WahSection()
         self._wah.ctrl_field_changed.connect(self.ctrl_field_changed)
         lay.addWidget(self._wah, 1)
 
@@ -874,6 +1120,9 @@ class BottomPanel(QWidget):
         self._expr.update_ctrl(preset.ctrls.get("treadle"), preset)
         self._lfo.update_ctrl(preset.ctrls.get("lfo1"), preset)
         self._wah.update_ctrl(preset.ctrls.get("altTreadle"), preset)
+
+    def update_enable(self, slot_idx: int, enabled: bool):
+        self._stomps.update_enable(slot_idx, enabled)
 
 
 # ---------------------------------------------------------------- PresetPanel
@@ -887,7 +1136,9 @@ class PresetPanel(QWidget):
     save_clicked       = Signal()
     refresh_clicked    = Signal()
     stomp_changed      = Signal(str, int)
-    ctrl_field_changed = Signal(str, str, int)   # ctrl_name, field, value
+    ctrl_field_changed = Signal(str, str, int)         # ctrl_name, field, value (wah)
+    expression_assign  = Signal(str, int, str, int, int, bool)      # ctrl, slot, param, min, max, flat
+    lfo_assign         = Signal(int, str, int, int, int, int, bool) # slot, param, min, max, spd, wf, flat
 
     def __init__(self, parent=None):
         super().__init__(parent)
@@ -937,6 +1188,9 @@ class PresetPanel(QWidget):
         # Bottom panel (stomps + expression + LFO + wah)
         self._bottom = BottomPanel()
         self._bottom.stomp_changed.connect(self.stomp_changed)
+        self._bottom.enable_toggled.connect(self.enable_toggled)
+        self._bottom.expression_assign.connect(self.expression_assign)
+        self._bottom.lfo_assign.connect(self.lfo_assign)
         self._bottom.ctrl_field_changed.connect(self.ctrl_field_changed)
         lay.addWidget(self._bottom)
 
@@ -992,6 +1246,7 @@ class PresetPanel(QWidget):
             return
         if slot in self._slot_cards:
             self._slot_cards[slot].update_enable(enabled)
+        self._bottom.update_enable(slot, enabled)
 
     # ---------------------------------------------------------- private
 

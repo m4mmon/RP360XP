@@ -129,6 +129,18 @@ class DeviceWorker(QObject):
     def set_ctrl_field(self, ctrl: str, field: str, value: int):
         self._run(lambda: self._device.set_ctrl_field(ctrl, field, value))
 
+    @Slot(str, int, str, int, int, bool)
+    def assign_expression(self, ctrl: str, slot: int, param: str,
+                          min_val: int, max_val: int, flat: bool):
+        self._run(lambda: self._device.assign_expression(
+            ctrl, slot, param, min_val, max_val, flat=flat))
+
+    @Slot(int, str, int, int, int, int, bool)
+    def assign_lfo(self, slot: int, param: str,
+                   min_val: int, max_val: int, speed: int, waveform: int, flat: bool):
+        self._run(lambda: self._device.assign_lfo(
+            slot, param, min_val, max_val, speed, waveform, flat=flat))
+
     # ---------------------------------------------------------- private
 
     def _run(self, fn):

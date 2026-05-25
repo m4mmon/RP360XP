@@ -34,7 +34,29 @@ except ImportError:
         return None
 
 from .worker import DeviceWorker
-from .widgets import PresetPanel
+from .widgets import (
+    PresetPanel,
+    PRESET_HDR_H, AMP_PANEL_H, SLOT_CARD_H, DETAIL_H, BOTTOM_H,
+)
+
+# Default window dimensions computed from chain and panel constants.
+# Width: enough to show all 10 possible slots (0-9) without horizontal scrolling.
+_MAX_CHAIN_SLOTS = 10   # RP360XP slot indices 0-9
+_SLOT_CARD_W     = 152  # SlotCard.setFixedWidth
+_AMP_MARKER_W    = 56   # AmpMarker.setFixedWidth
+_CHAIN_SPACING   = 6
+_CHAIN_MARGINS   = 12   # 6 + 6 in chain QHBoxLayout
+
+_DEFAULT_W = (
+    (_MAX_CHAIN_SLOTS - 1) * (_SLOT_CARD_W + _CHAIN_SPACING)
+    + _AMP_MARKER_W + _CHAIN_SPACING + _CHAIN_MARGINS
+)
+_DEFAULT_H = (
+    PRESET_HDR_H + AMP_PANEL_H
+    + (SLOT_CARD_H + 16)   # chain scroll area = card + layout margins
+    + DETAIL_H + BOTTOM_H
+    + 30                   # status bar + window chrome
+)
 
 
 class MainWindow(QMainWindow):
@@ -55,7 +77,7 @@ class MainWindow(QMainWindow):
     def __init__(self):
         super().__init__()
         self.setWindowTitle("RP360XP Controller")
-        self.resize(760, 700)
+        self.resize(_DEFAULT_W, _DEFAULT_H)
         self._build_ui()
         self._build_worker()
 

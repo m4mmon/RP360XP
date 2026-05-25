@@ -2,12 +2,13 @@
 
 from __future__ import annotations
 
+import json
 import re
 import sys
 
 from PySide6.QtCore import Qt, QThread, Signal, Slot
 from PySide6.QtWidgets import (
-    QApplication, QComboBox, QDialog, QDialogButtonBox, QFormLayout,
+    QApplication, QComboBox, QDialog, QDialogButtonBox, QFileDialog, QFormLayout,
     QHBoxLayout, QLabel, QLineEdit, QMainWindow, QMessageBox, QProgressDialog,
     QPushButton, QStatusBar, QVBoxLayout, QWidget,
 )
@@ -85,6 +86,8 @@ class MainWindow(QMainWindow):
     _save_as_requested      = Signal(int, str)   # index 0-based, name
     _system_param_changed   = Signal(str, int)   # param_name, value
     _load_preset_requested  = Signal(int, str)   # index 0-based, bank
+    _backup_requested       = Signal(str)        # path
+    _restore_requested      = Signal(str)        # path
 
     def __init__(self):
         super().__init__()
@@ -92,6 +95,7 @@ class MainWindow(QMainWindow):
         self.resize(_DEFAULT_W + _PRESET_LIST_W + 4, _DEFAULT_H)
         self._user_preset_names: list = []   # list[str | None], indices 0-98
         self._progress_dlg: QProgressDialog | None = None
+        self._op_progress_dlg: QProgressDialog | None = None
         self._current_dirty = False
         self._current_bank = "user"
         self._current_slot_0 = 0
@@ -125,6 +129,10 @@ class MainWindow(QMainWindow):
 
         self._system_bar = SystemBar()
         self._system_bar.param_changed.connect(self._system_param_changed)
+        self._system_bar.import_requested.connect(self._on_system_import)
+        self._system_bar.export_requested.connect(self._on_system_export)
+        self._system_bar.backup_requested.connect(self._on_backup_clicked)
+        self._system_bar.restore_requested.connect(self._on_restore_clicked)
         self._system_bar.setEnabled(False)
         root.addWidget(self._system_bar)
 
@@ -222,10 +230,17 @@ class MainWindow(QMainWindow):
         self._export_requested.connect(self._worker.export_preset)
         self._save_as_requested.connect(self._worker.save_preset_as)
         self._load_preset_requested.connect(self._worker.load_preset)
+        self._backup_requested.connect(self._worker.backup_device)
+        self._restore_requested.connect(self._worker.restore_device)
 
+        self._worker.operation_progress.connect(self._on_operation_progress)
+        self._worker.operation_done.connect(
+            lambda msg: self.statusBar().showMessage(msg, 5000)
+        )
         self._worker.preset_names_changed.connect(self._on_preset_names_changed)
         self._worker.preset_name_progress.connect(self._on_preset_name_progress)
         self._worker.system_params_changed.connect(self._on_system_params_changed)
+        self._worker.factory_names_changed.connect(self._on_factory_names_changed)
         self._system_param_changed.connect(self._worker.set_system_param)
 
         # worker → UI
@@ -298,6 +313,7 @@ class MainWindow(QMainWindow):
             self._suppress_next_preset_change = False
             return
         self._preset_panel.setEnabled(True)
+        self._preset_panel.set_readonly(bank == "factory")
         self._preset_panel.update_preset(preset, dirty, bank, slot_1)
         marker = "  [unsaved]" if dirty else ""
         self.statusBar().showMessage(f'"{preset.name}"  —  {bank} #{slot_1}{marker}', 5000)
@@ -310,20 +326,113 @@ class MainWindow(QMainWindow):
         if self._current_bank == "user":
             self._preset_list.select_preset("user", self._current_slot_0)
 
+    @Slot(list)
+    def _on_factory_names_changed(self, names: list):
+        self._preset_list.set_factory_presets(names)
+        if self._current_bank == "factory":
+            self._preset_list.select_preset("factory", self._current_slot_0)
+
     @Slot(dict)
     def _on_system_params_changed(self, params: dict):
         self._system_bar.update_params(params)
 
-    @Slot(int, int)
-    def _on_preset_name_progress(self, done: int, total: int):
+    @Slot()
+    def _on_system_export(self):
+        path, _ = QFileDialog.getSaveFileName(
+            self, "Export system parameters", "", "RP360XP System (*.rp360s)"
+        )
+        if not path:
+            return
+        if not path.endswith(".rp360s"):
+            path += ".rp360s"
+        params = self._system_bar.get_params()
+        try:
+            with open(path, "w", encoding="utf-8") as f:
+                json.dump(params, f, indent=2)
+            self.statusBar().showMessage(f"System parameters exported to {path}", 4000)
+        except OSError as exc:
+            QMessageBox.warning(self, "Export failed", str(exc))
+
+    @Slot()
+    def _on_system_import(self):
+        path, _ = QFileDialog.getOpenFileName(
+            self, "Import system parameters", "", "RP360XP System (*.rp360s)"
+        )
+        if not path:
+            return
+        try:
+            with open(path, encoding="utf-8") as f:
+                params = json.load(f)
+        except Exception as exc:
+            QMessageBox.warning(self, "Import failed", f"Cannot read file: {exc}")
+            return
+        if not isinstance(params, dict):
+            QMessageBox.warning(self, "Import failed", "Invalid file format.")
+            return
+        for name, value in params.items():
+            try:
+                raw = int(value)
+            except (TypeError, ValueError):
+                continue
+            self._system_param_changed.emit(name, raw)
+        self._system_bar.update_params({k: int(v) for k, v in params.items()
+                                        if isinstance(v, (int, float))})
+        self.statusBar().showMessage("System parameters imported.", 4000)
+
+    @Slot()
+    def _on_backup_clicked(self):
+        path, _ = QFileDialog.getSaveFileName(
+            self, "Backup presets", "", "RP360XP Backup (*.rp360b)"
+        )
+        if not path:
+            return
+        if not path.endswith(".rp360b"):
+            path += ".rp360b"
+        self._backup_requested.emit(path)
+
+    @Slot()
+    def _on_restore_clicked(self):
+        answer = QMessageBox.warning(
+            self,
+            "Restore presets",
+            "For best results, perform a restore shortly after powering on the device "
+            "(cold boot). Heavy use before restoring may cause timeouts.\n\n"
+            "Continue?",
+            QMessageBox.Ok | QMessageBox.Cancel,
+            QMessageBox.Cancel,
+        )
+        if answer != QMessageBox.Ok:
+            return
+        path, _ = QFileDialog.getOpenFileName(
+            self, "Restore presets", "", "RP360XP Backup (*.rp360b)"
+        )
+        if not path:
+            return
+        self._restore_requested.emit(path)
+
+    @Slot(int, int, str)
+    def _on_operation_progress(self, done: int, total: int, label: str):
+        if self._op_progress_dlg is None:
+            self._op_progress_dlg = QProgressDialog(label, None, 0, total, self)
+            self._op_progress_dlg.setWindowTitle("Please wait")
+            self._op_progress_dlg.setWindowModality(Qt.WindowModal)
+            self._op_progress_dlg.setMinimumDuration(0)
+            self._op_progress_dlg.setValue(0)
+        self._op_progress_dlg.setLabelText(label)
+        self._op_progress_dlg.setValue(done)
+        if done >= total:
+            self._op_progress_dlg.close()
+            self._op_progress_dlg = None
+
+    @Slot(int, int, str)
+    def _on_preset_name_progress(self, done: int, total: int, label: str):
         if self._progress_dlg is None:
-            self._progress_dlg = QProgressDialog(
-                "Loading preset list…", None, 0, total, self
-            )
+            self._progress_dlg = QProgressDialog(label, None, 0, total, self)
             self._progress_dlg.setWindowTitle("Connecting")
             self._progress_dlg.setWindowModality(Qt.WindowModal)
             self._progress_dlg.setMinimumDuration(0)
             self._progress_dlg.setValue(0)
+        self._progress_dlg.setLabelText(label)
         self._progress_dlg.setValue(done)
         if done >= total:
             self._progress_dlg.close()
@@ -378,7 +487,7 @@ class MainWindow(QMainWindow):
     def _on_list_preset_selected(self, index_0: int, bank: str):
         if bank == self._current_bank and index_0 == self._current_slot_0:
             return
-        if self._current_dirty:
+        if self._current_dirty and self._current_bank != "factory":
             result = self._ask_save_changes()
             if result == "cancel":
                 self._preset_list.select_preset(self._current_bank, self._current_slot_0)

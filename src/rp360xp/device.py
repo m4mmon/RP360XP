@@ -308,7 +308,7 @@ class Device:
 
     # --------------------------------------------------------------- backup
 
-    def export_user_bank(self) -> list[Preset]:
+    def export_user_bank(self, progress=None) -> list[Preset]:
         """Read all 99 user presets. Returns list indexed 0..98."""
         presets = []
         for i in range(NUM_PRESETS):
@@ -317,6 +317,8 @@ class Device:
             except Exception as exc:
                 log.warning("Could not read user preset %d: %s", i, exc)
                 presets.append(None)
+            if progress:
+                progress(i + 1, NUM_PRESETS)
         return presets
 
     def restore_user_bank(self, presets: list,
@@ -435,10 +437,11 @@ class Device:
         """Return (bank, index) for the last active preset.
 
         bank is 'user' or 'factory'; index is 0-based.
+        Encoding: user 0-98 → LAST PRES 0-98; factory 0-98 → LAST PRES 99-197.
         """
         raw = self.last_preset_index()
-        if raw >= 100:
-            return BANK_FACTORY, raw - 100
+        if raw >= 99:
+            return BANK_FACTORY, raw - 99
         return BANK_USER, raw
 
     # ---------------------------------------------------------- notifications

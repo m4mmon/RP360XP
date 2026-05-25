@@ -3,10 +3,11 @@
 from __future__ import annotations
 
 import json
+import re
 
 from PySide6.QtCore import QObject, Signal, Slot
 
-from ..device import Device, BANK_USER, BANK_FACTORY
+from ..device import Device, BANK_USER, BANK_FACTORY, NUM_PRESETS
 from ..effects_db import EffectsDB
 from ..model import Preset
 
@@ -19,8 +20,11 @@ class DeviceWorker(QObject):
     notification_received = Signal(list)
     reorder_done          = Signal()
     preset_names_changed  = Signal(list)               # list[str | None], indices 0-98
-    preset_name_progress  = Signal(int, int)           # done, total
+    preset_name_progress  = Signal(int, int, str)       # done, total, label
     system_params_changed = Signal(dict)               # {name: int}
+    factory_names_changed = Signal(list)               # list[str | None], indices 0-98
+    operation_progress    = Signal(int, int, str)      # done, total, label
+    operation_done        = Signal(str)                # status message
 
     # Internal: queued trigger so _emit_preset() runs on the worker thread,
     # not on the transport reader thread where notifications arrive.
@@ -47,6 +51,7 @@ class DeviceWorker(QObject):
             self._emit_preset()
             self._fetch_system_params()
             self._fetch_preset_names()
+            self._fetch_factory_names()
         except Exception as exc:
             self.error_occurred.emit(str(exc))
             self.connection_changed.emit(False, "")
@@ -77,7 +82,7 @@ class DeviceWorker(QObject):
     def save_preset(self):
         def _do():
             raw = self._device.last_preset_index()
-            if raw < 100:
+            if raw < 99:
                 self._device.save_to_user_slot(raw)
                 self._emit_preset()
             else:
@@ -206,6 +211,69 @@ class DeviceWorker(QObject):
                 self.error_occurred.emit(f"Cannot write file: {exc}")
         self._run(_do)
 
+    # ---------------------------------------------------------- backup / restore
+
+    @Slot(str)
+    def backup_device(self, path: str):
+        def _do():
+            label = "Backing up presets…"
+            self.operation_progress.emit(0, NUM_PRESETS, label)
+            presets = self._device.export_user_bank(
+                progress=lambda d, t: self.operation_progress.emit(d, t, label)
+            )
+            parts = []
+            count = 0
+            for p in presets:
+                if p is not None:
+                    parts.append(json.dumps(p.to_json(), indent=3, ensure_ascii=False))
+                    count += 1
+                else:
+                    parts.append("")
+            content = "\n##".join(parts) + "\n##"
+            try:
+                with open(path, "w", encoding="utf-8") as f:
+                    f.write(content)
+            except OSError as exc:
+                self.error_occurred.emit(f"Cannot write file: {exc}")
+                return
+            self.operation_progress.emit(NUM_PRESETS, NUM_PRESETS, label)
+            self.operation_done.emit(f"Backed up {count} presets.")
+        self._run(_do)
+
+    @Slot(str)
+    def restore_device(self, path: str):
+        def _do():
+            try:
+                with open(path, encoding="utf-8") as f:
+                    content = f.read()
+            except OSError as exc:
+                self.error_occurred.emit(f"Cannot read file: {exc}")
+                return
+            parts = re.split(r'^##', content, flags=re.MULTILINE)
+            presets_map: dict = {}
+            for i, part in enumerate(parts):
+                part = part.strip()
+                if not part:
+                    continue
+                try:
+                    presets_map[i] = Preset.from_json(json.loads(part))
+                except Exception:
+                    pass
+            presets = [presets_map.get(i) for i in range(NUM_PRESETS)]
+            total = sum(1 for p in presets if p is not None)
+            label = "Restoring presets…"
+            self.operation_progress.emit(0, total, label)
+            self._device.restore_user_bank(
+                presets,
+                progress=lambda d, t: self.operation_progress.emit(d, t, label)
+            )
+            self.operation_progress.emit(total, total, label)
+            self.operation_done.emit(f"Restored {total} presets.")
+            self._emit_preset()
+            self._fetch_preset_names()
+            self._fetch_factory_names()
+        self._run(_do)
+
     # ---------------------------------------------------------- stomp
 
     @Slot(str, int)
@@ -281,13 +349,31 @@ class DeviceWorker(QObject):
         except Exception:
             pass
 
+    def _fetch_factory_names(self):
+        if not self._device:
+            return
+        try:
+            _TOTAL = 198
+            _LABEL = "Loading factory preset list…"
+            self.preset_name_progress.emit(99, _TOTAL, _LABEL)
+            names = self._device.factory_preset_names(
+                progress=lambda done, total: self.preset_name_progress.emit(
+                    done + 99, _TOTAL, _LABEL)
+            )
+            self.factory_names_changed.emit(names)
+        except Exception:
+            pass
+
     def _fetch_preset_names(self):
         if not self._device:
             return
         try:
-            self.preset_name_progress.emit(0, 99)
+            _TOTAL = 198
+            _LABEL = "Loading user preset list…"
+            self.preset_name_progress.emit(0, _TOTAL, _LABEL)
             names = self._device.user_preset_names(
-                progress=lambda done, total: self.preset_name_progress.emit(done, total)
+                progress=lambda done, total: self.preset_name_progress.emit(
+                    done, _TOTAL, _LABEL)
             )
             self._user_preset_names = names
             self.preset_names_changed.emit(names)

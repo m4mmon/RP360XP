@@ -283,11 +283,11 @@ class PresetHeader(QWidget):
 
         lay.addWidget(self._make_sep())
 
-        btn_save = QPushButton("Quick Store")
-        btn_save.setFixedWidth(88)
-        btn_save.setToolTip("Save to current user slot")
-        btn_save.clicked.connect(self.save_clicked)
-        lay.addWidget(btn_save)
+        self._btn_save = QPushButton("Quick Store")
+        self._btn_save.setFixedWidth(88)
+        self._btn_save.setToolTip("Save to current user slot")
+        self._btn_save.clicked.connect(self.save_clicked)
+        lay.addWidget(self._btn_save)
 
         btn_store_new = QPushButton("Store New")
         btn_store_new.setFixedWidth(82)
@@ -297,11 +297,11 @@ class PresetHeader(QWidget):
 
         lay.addWidget(self._make_sep())
 
-        btn_import = QPushButton("Import")
-        btn_import.setFixedWidth(68)
-        btn_import.setToolTip("Load a preset from a .rp360p file")
-        btn_import.clicked.connect(self._on_import_clicked)
-        lay.addWidget(btn_import)
+        self._btn_import = QPushButton("Import")
+        self._btn_import.setFixedWidth(68)
+        self._btn_import.setToolTip("Load a preset from a .rp360p file")
+        self._btn_import.clicked.connect(self._on_import_clicked)
+        lay.addWidget(self._btn_import)
 
         btn_export = QPushButton("Export")
         btn_export.setFixedWidth(68)
@@ -317,6 +317,10 @@ class PresetHeader(QWidget):
         btn_refresh.clicked.connect(self.refresh_clicked)
         lay.addWidget(btn_refresh)
 
+    def set_readonly(self, readonly: bool):
+        self._btn_save.setEnabled(not readonly)
+        self._btn_import.setEnabled(not readonly)
+
     def clear(self):
         self._name_lbl.setText("")
         self._bank_lbl.setText("")
@@ -325,6 +329,7 @@ class PresetHeader(QWidget):
         self._level_slider.setValue(0)
         self._level_spin.setValue(0)
         self._level_suppress = False
+        self.set_readonly(False)
 
     def mark_dirty(self):
         self._dirty_lbl.setVisible(True)
@@ -435,7 +440,11 @@ class PresetListPanel(QFrame):
         """Highlight the given preset without triggering a load."""
         tab_idx = 0 if bank == "user" else 1
         lst = self._user_list if bank == "user" else self._factory_list
+        other = self._factory_list if bank == "user" else self._user_list
         self._tabs.setCurrentIndex(tab_idx)
+        other.blockSignals(True)
+        other.setCurrentItem(None)
+        other.blockSignals(False)
         lst.blockSignals(True)
         for i in range(lst.count()):
             item = lst.item(i)
@@ -455,7 +464,11 @@ class PresetListPanel(QFrame):
 class SystemBar(QFrame):
     """Horizontal bar exposing the seven writable device system parameters."""
 
-    param_changed = Signal(str, int)   # param_name, raw_value
+    param_changed     = Signal(str, int)   # param_name, raw_value
+    import_requested  = Signal()
+    export_requested  = Signal()
+    backup_requested  = Signal()
+    restore_requested = Signal()
 
     _COMBOS = [
         ("FSWMODE",    "Footswitch:",     ["Preset", "Stomp", "Bank"]),
@@ -515,6 +528,45 @@ class SystemBar(QFrame):
             self._spin_offsets[name] = offset
 
         lay.addStretch()
+
+        sep2 = QFrame()
+        sep2.setFrameShape(QFrame.VLine)
+        sep2.setFrameShadow(QFrame.Sunken)
+        lay.addWidget(sep2)
+
+        btn_import = QPushButton("Import")
+        btn_import.setFixedWidth(64)
+        btn_import.clicked.connect(self.import_requested)
+        lay.addWidget(btn_import)
+
+        btn_export = QPushButton("Export")
+        btn_export.setFixedWidth(64)
+        btn_export.clicked.connect(self.export_requested)
+        lay.addWidget(btn_export)
+
+        sep3 = QFrame()
+        sep3.setFrameShape(QFrame.VLine)
+        sep3.setFrameShadow(QFrame.Sunken)
+        lay.addWidget(sep3)
+
+        btn_backup = QPushButton("Backup")
+        btn_backup.setFixedWidth(64)
+        btn_backup.clicked.connect(self.backup_requested)
+        lay.addWidget(btn_backup)
+
+        btn_restore = QPushButton("Restore")
+        btn_restore.setFixedWidth(64)
+        btn_restore.clicked.connect(self.restore_requested)
+        lay.addWidget(btn_restore)
+
+    def get_params(self) -> dict:
+        """Return current displayed values as {name: raw_value}."""
+        result = {}
+        for name, cb in self._combos.items():
+            result[name] = cb.currentIndex()
+        for name, spin in self._spins.items():
+            result[name] = spin.value() + self._spin_offsets.get(name, 0)
+        return result
 
     def _on_changed(self, name: str, raw: int):
         if not self._suppress:
@@ -1594,6 +1646,9 @@ class PresetPanel(QWidget):
         self._header.clear()
         self._detail.hide_slot()
         self._bottom.clear()
+
+    def set_readonly(self, readonly: bool):
+        self._header.set_readonly(readonly)
 
     def mark_dirty(self):
         self._header.mark_dirty()

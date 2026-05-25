@@ -8,8 +8,8 @@ from PySide6.QtCore import QEvent, QMimeData, Qt, QTimer, Signal
 from PySide6.QtGui import QDrag
 from PySide6.QtWidgets import (
     QApplication, QCheckBox, QComboBox, QFileDialog, QFrame, QHBoxLayout,
-    QLabel, QPushButton, QScrollArea, QSizePolicy, QSlider, QSpinBox,
-    QVBoxLayout, QWidget,
+    QLabel, QListWidget, QListWidgetItem, QPushButton, QScrollArea,
+    QSizePolicy, QSlider, QSpinBox, QTabWidget, QVBoxLayout, QWidget,
 )
 
 from ..effects_db import EffectsDB
@@ -381,6 +381,73 @@ class PresetHeader(QWidget):
             if not path.endswith(".rp360p"):
                 path += ".rp360p"
             self.export_requested.emit(path)
+
+
+# ---------------------------------------------------------------- PresetListPanel
+
+class PresetListPanel(QFrame):
+    """Left panel: tabbed user / factory preset browser."""
+
+    preset_selected = Signal(int, str)   # index 0-based, bank ("user"/"factory")
+
+    def __init__(self, parent=None):
+        super().__init__(parent)
+        self.setFrameShape(QFrame.StyledPanel)
+        self.setFrameShadow(QFrame.Plain)
+        self.setFixedWidth(200)
+
+        lay = QVBoxLayout(self)
+        lay.setContentsMargins(0, 0, 0, 0)
+        lay.setSpacing(0)
+
+        self._tabs = QTabWidget()
+        self._user_list = QListWidget()
+        self._factory_list = QListWidget()
+        self._tabs.addTab(self._user_list, "User")
+        self._tabs.addTab(self._factory_list, "Factory")
+        lay.addWidget(self._tabs)
+
+        self._user_list.itemClicked.connect(self._on_item_clicked)
+        self._factory_list.itemClicked.connect(self._on_item_clicked)
+
+    def _on_item_clicked(self, item: QListWidgetItem):
+        index = item.data(Qt.UserRole)
+        bank = "user" if self._tabs.currentIndex() == 0 else "factory"
+        self.preset_selected.emit(index, bank)
+
+    def set_user_presets(self, names: list):
+        self._user_list.clear()
+        for i, name in enumerate(names):
+            label = f"{i + 1}: {name}" if name else f"{i + 1}: (empty)"
+            item = QListWidgetItem(label)
+            item.setData(Qt.UserRole, i)
+            self._user_list.addItem(item)
+
+    def set_factory_presets(self, names: list):
+        self._factory_list.clear()
+        for i, name in enumerate(names):
+            label = f"{i + 1}: {name}" if name else f"{i + 1}: (empty)"
+            item = QListWidgetItem(label)
+            item.setData(Qt.UserRole, i)
+            self._factory_list.addItem(item)
+
+    def select_preset(self, bank: str, index: int):
+        """Highlight the given preset without triggering a load."""
+        tab_idx = 0 if bank == "user" else 1
+        lst = self._user_list if bank == "user" else self._factory_list
+        self._tabs.setCurrentIndex(tab_idx)
+        lst.blockSignals(True)
+        for i in range(lst.count()):
+            item = lst.item(i)
+            if item.data(Qt.UserRole) == index:
+                lst.setCurrentItem(item)
+                lst.scrollToItem(item)
+                break
+        lst.blockSignals(False)
+
+    def clear(self):
+        self._user_list.clear()
+        self._factory_list.clear()
 
 
 # ---------------------------------------------------------------- SystemBar

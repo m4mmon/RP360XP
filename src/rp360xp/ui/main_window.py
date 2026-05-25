@@ -8,7 +8,7 @@ import sys
 from PySide6.QtCore import Qt, QThread, Signal, Slot
 from PySide6.QtWidgets import (
     QApplication, QComboBox, QDialog, QDialogButtonBox, QFormLayout,
-    QHBoxLayout, QLabel, QLineEdit, QMainWindow, QProgressDialog,
+    QHBoxLayout, QLabel, QLineEdit, QMainWindow, QMessageBox, QProgressDialog,
     QPushButton, QStatusBar, QVBoxLayout, QWidget,
 )
 
@@ -36,7 +36,7 @@ except ImportError:
 
 from .worker import DeviceWorker
 from .widgets import (
-    PresetPanel, SystemBar,
+    PresetPanel, PresetListPanel, SystemBar,
     PRESET_HDR_H, SLOT_CARD_H, DETAIL_H, BOTTOM_H,
 )
 
@@ -52,6 +52,7 @@ _DEFAULT_W = (
     + (_MAX_CHAIN_SLOTS - 1) * _CHAIN_SPACING
     + _CHAIN_MARGINS
 )
+_PRESET_LIST_W = 200   # PresetListPanel fixed width
 _DEFAULT_H = (
     PRESET_HDR_H
     + (SLOT_CARD_H + 16)   # chain scroll area = card + layout margins
@@ -83,13 +84,19 @@ class MainWindow(QMainWindow):
     _export_requested       = Signal(str)
     _save_as_requested      = Signal(int, str)   # index 0-based, name
     _system_param_changed   = Signal(str, int)   # param_name, value
+    _load_preset_requested  = Signal(int, str)   # index 0-based, bank
 
     def __init__(self):
         super().__init__()
         self.setWindowTitle("RP360XP Controller")
-        self.resize(_DEFAULT_W, _DEFAULT_H)
+        self.resize(_DEFAULT_W + _PRESET_LIST_W + 4, _DEFAULT_H)
         self._user_preset_names: list = []   # list[str | None], indices 0-98
         self._progress_dlg: QProgressDialog | None = None
+        self._current_dirty = False
+        self._current_bank = "user"
+        self._current_slot_0 = 0
+        self._current_preset_name = ""
+        self._suppress_next_preset_change = False
         self._build_ui()
         self._build_worker()
 
@@ -98,9 +105,21 @@ class MainWindow(QMainWindow):
     def _build_ui(self):
         central = QWidget()
         self.setCentralWidget(central)
-        root = QVBoxLayout(central)
+
+        outer = QHBoxLayout(central)
+        outer.setContentsMargins(0, 0, 0, 0)
+        outer.setSpacing(4)
+
+        self._preset_list = PresetListPanel()
+        self._preset_list.preset_selected.connect(self._on_list_preset_selected)
+        self._preset_list.setEnabled(False)
+        outer.addWidget(self._preset_list)
+
+        right = QWidget()
+        root = QVBoxLayout(right)
         root.setContentsMargins(0, 0, 0, 0)
         root.setSpacing(4)
+        outer.addWidget(right, 1)
 
         root.addWidget(self._build_connection_bar())
 
@@ -202,6 +221,7 @@ class MainWindow(QMainWindow):
         self._import_requested.connect(self._worker.import_preset)
         self._export_requested.connect(self._worker.export_preset)
         self._save_as_requested.connect(self._worker.save_preset_as)
+        self._load_preset_requested.connect(self._worker.load_preset)
 
         self._worker.preset_names_changed.connect(self._on_preset_names_changed)
         self._worker.preset_name_progress.connect(self._on_preset_name_progress)
@@ -253,12 +273,16 @@ class MainWindow(QMainWindow):
         self._port_combo.setEnabled(not connected)
         self._scan_btn.setEnabled(not connected)
         self._system_bar.setEnabled(connected)
+        self._preset_list.setEnabled(connected)
         self._preset_panel.setEnabled(connected)
         if connected:
             self._conn_lbl.setText(f"Connected · {port}")
             self._conn_lbl.setStyleSheet("color: #7fc97f;")
         else:
             self._preset_panel.clear()
+            self._preset_list.clear()
+            self._current_dirty = False
+            self._current_preset_name = ""
             self._conn_lbl.setText("Disconnected")
             self._conn_lbl.setStyleSheet("color: #aaa;")
 
@@ -266,14 +290,25 @@ class MainWindow(QMainWindow):
     def _on_preset_changed(self, preset, dirty: bool, bank: str, slot_1: int):
         if preset is None:
             return
+        self._current_dirty = dirty
+        self._current_bank = bank
+        self._current_slot_0 = slot_1 - 1
+        self._current_preset_name = preset.name
+        if self._suppress_next_preset_change:
+            self._suppress_next_preset_change = False
+            return
         self._preset_panel.setEnabled(True)
         self._preset_panel.update_preset(preset, dirty, bank, slot_1)
         marker = "  [unsaved]" if dirty else ""
         self.statusBar().showMessage(f'"{preset.name}"  —  {bank} #{slot_1}{marker}', 5000)
+        self._preset_list.select_preset(bank, slot_1 - 1)
 
     @Slot(list)
     def _on_preset_names_changed(self, names: list):
         self._user_preset_names = names
+        self._preset_list.set_user_presets(names)
+        if self._current_bank == "user":
+            self._preset_list.select_preset("user", self._current_slot_0)
 
     @Slot(dict)
     def _on_system_params_changed(self, params: dict):
@@ -338,6 +373,46 @@ class MainWindow(QMainWindow):
             name = name_edit.text().strip()
             self._preset_panel.setEnabled(False)
             self._save_as_requested.emit(idx, name)
+
+    @Slot(int, str)
+    def _on_list_preset_selected(self, index_0: int, bank: str):
+        if bank == self._current_bank and index_0 == self._current_slot_0:
+            return
+        if self._current_dirty:
+            result = self._ask_save_changes()
+            if result == "cancel":
+                self._preset_list.select_preset(self._current_bank, self._current_slot_0)
+                return
+            if result == "store_new":
+                self._on_store_new_clicked()
+                return
+            if result == "quick_store":
+                self._save_requested.emit()
+                self._suppress_next_preset_change = True
+        self._preset_panel.setEnabled(False)
+        self._load_preset_requested.emit(index_0, bank)
+
+    def _ask_save_changes(self) -> str:
+        msg = QMessageBox(self)
+        msg.setWindowTitle("Unsaved Changes")
+        msg.setText(
+            f'The preset "{self._current_preset_name}" has been modified.\n'
+            f'Do you want to store the changes?'
+        )
+        btn_quick  = msg.addButton("Quick Store", QMessageBox.ButtonRole.AcceptRole)
+        btn_new    = msg.addButton("Store New",   QMessageBox.ButtonRole.AcceptRole)
+        btn_no     = msg.addButton("No",          QMessageBox.ButtonRole.NoRole)
+        btn_cancel = msg.addButton("Cancel",      QMessageBox.ButtonRole.RejectRole)
+        msg.setDefaultButton(btn_cancel)
+        msg.exec()
+        clicked = msg.clickedButton()
+        if clicked == btn_quick:
+            return "quick_store"
+        if clicked == btn_new:
+            return "store_new"
+        if clicked == btn_no:
+            return "no"
+        return "cancel"
 
     @Slot(str)
     def _on_error(self, msg: str):

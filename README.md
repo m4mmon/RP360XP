@@ -45,6 +45,6 @@ I have to think about the connection phase too: as of today, the program reads a
 
 It might also be possible to access the expression pedal calibration data, not 100 % sure about that, but for sure the pedal talks when the calibration occurs.
 
-For now, there is no packaging, you have to use the [instructions](src/README.md) to use it.
+For now, there is no packaging, you have to use the [instructions](src/README.md) to use it. But I think about providing an autonomous package (i.e. .exe for Windows).
 
 But as it is, I find it quite OK.

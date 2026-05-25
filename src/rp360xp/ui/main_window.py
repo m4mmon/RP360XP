@@ -5,10 +5,11 @@ from __future__ import annotations
 import re
 import sys
 
-from PySide6.QtCore import QThread, Signal, Slot
+from PySide6.QtCore import Qt, QThread, Signal, Slot
 from PySide6.QtWidgets import (
-    QApplication, QComboBox, QHBoxLayout, QLabel,
-    QMainWindow, QPushButton, QStatusBar, QVBoxLayout, QWidget,
+    QApplication, QComboBox, QDialog, QDialogButtonBox, QFormLayout,
+    QHBoxLayout, QLabel, QLineEdit, QMainWindow, QProgressDialog,
+    QPushButton, QStatusBar, QVBoxLayout, QWidget,
 )
 
 _RP360XP_VID = 0x1210
@@ -36,23 +37,23 @@ except ImportError:
 from .worker import DeviceWorker
 from .widgets import (
     PresetPanel,
-    PRESET_HDR_H, AMP_PANEL_H, SLOT_CARD_H, DETAIL_H, BOTTOM_H,
+    PRESET_HDR_H, SLOT_CARD_H, DETAIL_H, BOTTOM_H,
 )
 
 # Default window dimensions computed from chain and panel constants.
 # Width: enough to show all 10 possible slots (0-9) without horizontal scrolling.
 _MAX_CHAIN_SLOTS = 10   # RP360XP slot indices 0-9
 _SLOT_CARD_W     = 152  # SlotCard.setFixedWidth
-_AMP_MARKER_W    = 56   # AmpMarker.setFixedWidth
 _CHAIN_SPACING   = 6
 _CHAIN_MARGINS   = 12   # 6 + 6 in chain QHBoxLayout
 
 _DEFAULT_W = (
-    (_MAX_CHAIN_SLOTS - 1) * (_SLOT_CARD_W + _CHAIN_SPACING)
-    + _AMP_MARKER_W + _CHAIN_SPACING + _CHAIN_MARGINS
+    _MAX_CHAIN_SLOTS * _SLOT_CARD_W
+    + (_MAX_CHAIN_SLOTS - 1) * _CHAIN_SPACING
+    + _CHAIN_MARGINS
 )
 _DEFAULT_H = (
-    PRESET_HDR_H + AMP_PANEL_H
+    PRESET_HDR_H
     + (SLOT_CARD_H + 16)   # chain scroll area = card + layout margins
     + DETAIL_H + BOTTOM_H
     + 30                   # status bar + window chrome
@@ -73,11 +74,21 @@ class MainWindow(QMainWindow):
     _ctrl_field_changed  = Signal(str, str, int)
     _expression_assign   = Signal(str, int, str, int, int, bool)
     _lfo_assign          = Signal(int, str, int, int, int, int, bool)
+    _model_changed       = Signal(int, str)
+    _delete_requested       = Signal(int)
+    _slot_add_requested     = Signal(int, str)
+    _slot_replace_requested = Signal(int, str, list)
+    _reorder_requested      = Signal(list)
+    _import_requested       = Signal(str)
+    _export_requested       = Signal(str)
+    _save_as_requested      = Signal(int, str)   # index 0-based, name
 
     def __init__(self):
         super().__init__()
         self.setWindowTitle("RP360XP Controller")
         self.resize(_DEFAULT_W, _DEFAULT_H)
+        self._user_preset_names: list = []   # list[str | None], indices 0-98
+        self._progress_dlg: QProgressDialog | None = None
         self._build_ui()
         self._build_worker()
 
@@ -94,6 +105,7 @@ class MainWindow(QMainWindow):
 
         self._preset_panel = PresetPanel()
         self._preset_panel.enable_toggled.connect(self._enable_changed)
+        self._preset_panel.enable_toggled.connect(self._preset_panel.update_enable)
         self._preset_panel.enable_toggled.connect(lambda *_: self._preset_panel.mark_dirty())
         self._preset_panel.param_changed.connect(self._param_changed)
         self._preset_panel.param_changed.connect(lambda *_: self._preset_panel.mark_dirty())
@@ -104,7 +116,18 @@ class MainWindow(QMainWindow):
         self._preset_panel.stomp_changed.connect(self._on_stomp_changed)
         self._preset_panel.ctrl_field_changed.connect(self._ctrl_field_changed)
         self._preset_panel.expression_assign.connect(self._expression_assign)
+        self._preset_panel.expression_assign.connect(lambda *_: self._preset_panel.mark_dirty())
         self._preset_panel.lfo_assign.connect(self._lfo_assign)
+        self._preset_panel.lfo_assign.connect(lambda *_: self._preset_panel.mark_dirty())
+        self._preset_panel.model_changed.connect(self._model_changed)
+        self._preset_panel.model_changed.connect(lambda *_: self._preset_panel.mark_dirty())
+        self._preset_panel.delete_requested.connect(self._delete_requested)
+        self._preset_panel.slot_add_requested.connect(self._slot_add_requested)
+        self._preset_panel.slot_replace_requested.connect(self._slot_replace_requested)
+        self._preset_panel.reorder_requested.connect(self._reorder_requested)
+        self._preset_panel.import_requested.connect(self._import_requested)
+        self._preset_panel.export_requested.connect(self._export_requested)
+        self._preset_panel.store_new_clicked.connect(self._on_store_new_clicked)
         self._preset_panel.setEnabled(False)
         root.addWidget(self._preset_panel, 1)
 
@@ -165,9 +188,21 @@ class MainWindow(QMainWindow):
         self._ctrl_field_changed.connect(self._worker.set_ctrl_field)
         self._expression_assign.connect(self._worker.assign_expression)
         self._lfo_assign.connect(self._worker.assign_lfo)
+        self._model_changed.connect(self._worker.set_model)
+        self._delete_requested.connect(self._worker.delete_effect)
+        self._slot_add_requested.connect(self._worker.add_effect)
+        self._slot_replace_requested.connect(self._worker.replace_effect)
+        self._reorder_requested.connect(self._worker.reorder_chain)
+        self._import_requested.connect(self._worker.import_preset)
+        self._export_requested.connect(self._worker.export_preset)
+        self._save_as_requested.connect(self._worker.save_preset_as)
+
+        self._worker.preset_names_changed.connect(self._on_preset_names_changed)
+        self._worker.preset_name_progress.connect(self._on_preset_name_progress)
 
         # worker → UI
         self._worker.connection_changed.connect(self._on_connection_changed)
+        self._worker.reorder_done.connect(self._preset_panel.unlock_chain)
         self._worker.preset_changed.connect(self._on_preset_changed)
         self._worker.error_occurred.connect(self._on_error)
         self._worker.notification_received.connect(self._on_notification)
@@ -214,6 +249,7 @@ class MainWindow(QMainWindow):
             self._conn_lbl.setText(f"Connected · {port}")
             self._conn_lbl.setStyleSheet("color: #7fc97f;")
         else:
+            self._preset_panel.clear()
             self._conn_lbl.setText("Disconnected")
             self._conn_lbl.setStyleSheet("color: #aaa;")
 
@@ -221,9 +257,74 @@ class MainWindow(QMainWindow):
     def _on_preset_changed(self, preset, dirty: bool, bank: str, slot_1: int):
         if preset is None:
             return
+        self._preset_panel.setEnabled(True)
         self._preset_panel.update_preset(preset, dirty, bank, slot_1)
         marker = "  [unsaved]" if dirty else ""
         self.statusBar().showMessage(f'"{preset.name}"  —  {bank} #{slot_1}{marker}', 5000)
+
+    @Slot(list)
+    def _on_preset_names_changed(self, names: list):
+        self._user_preset_names = names
+
+    @Slot(int, int)
+    def _on_preset_name_progress(self, done: int, total: int):
+        if self._progress_dlg is None:
+            self._progress_dlg = QProgressDialog(
+                "Loading preset list…", None, 0, total, self
+            )
+            self._progress_dlg.setWindowTitle("Connecting")
+            self._progress_dlg.setWindowModality(Qt.WindowModal)
+            self._progress_dlg.setMinimumDuration(0)
+            self._progress_dlg.setValue(0)
+        self._progress_dlg.setValue(done)
+        if done >= total:
+            self._progress_dlg.close()
+            self._progress_dlg = None
+
+    @Slot()
+    def _on_store_new_clicked(self):
+        names = self._user_preset_names
+        if not names:
+            self.statusBar().showMessage("Preset list not loaded yet", 4000)
+            return
+
+        dlg = QDialog(self)
+        dlg.setWindowTitle("Store New")
+        dlg.setModal(True)
+        dlg.setMinimumWidth(360)
+
+        lay = QVBoxLayout(dlg)
+        lay.setSpacing(10)
+
+        form = QFormLayout()
+        form.setSpacing(6)
+
+        name_edit = QLineEdit()
+        name_edit.setMaxLength(16)
+        name_edit.setPlaceholderText("max 16 characters")
+        if self._preset_panel._current_preset:
+            name_edit.setText(self._preset_panel._current_preset.name[:16])
+        form.addRow("Preset Name:", name_edit)
+
+        loc_combo = QComboBox()
+        loc_combo.setSizeAdjustPolicy(QComboBox.AdjustToContents)
+        for i, n in enumerate(names):
+            label = f"{i + 1}.  {n}" if n else f"{i + 1}.  (empty)"
+            loc_combo.addItem(label, i)
+        form.addRow("Preset location:", loc_combo)
+
+        lay.addLayout(form)
+
+        btn_box = QDialogButtonBox(QDialogButtonBox.Ok | QDialogButtonBox.Cancel)
+        btn_box.accepted.connect(dlg.accept)
+        btn_box.rejected.connect(dlg.reject)
+        lay.addWidget(btn_box)
+
+        if dlg.exec() == QDialog.Accepted:
+            idx = loc_combo.currentData()
+            name = name_edit.text().strip()
+            self._preset_panel.setEnabled(False)
+            self._save_as_requested.emit(idx, name)
 
     @Slot(str)
     def _on_error(self, msg: str):

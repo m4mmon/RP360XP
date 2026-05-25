@@ -76,15 +76,18 @@ class Device:
 
     # ------------------------------------------------------------ preset names
 
-    def user_preset_names(self) -> list[Optional[str]]:
-        """Return list of 99 user preset names (index 0..98). None = empty slot."""
-        return self._preset_names(BANK_USER)
+    def user_preset_names(self, progress=None) -> list[Optional[str]]:
+        """Return list of 99 user preset names (index 0..98). None = empty slot.
 
-    def factory_preset_names(self) -> list[Optional[str]]:
+        progress(done, total) is an optional callback called after each name is read.
+        """
+        return self._preset_names(BANK_USER, progress)
+
+    def factory_preset_names(self, progress=None) -> list[Optional[str]]:
         """Return list of 99 factory preset names (index 0..98)."""
-        return self._preset_names(BANK_FACTORY)
+        return self._preset_names(BANK_FACTORY, progress)
 
-    def _preset_names(self, bank: str) -> list[Optional[str]]:
+    def _preset_names(self, bank: str, progress=None) -> list[Optional[str]]:
         names = []
         for i in range(NUM_PRESETS):
             try:
@@ -92,6 +95,8 @@ class Device:
                 names.append(name)
             except Exception:
                 names.append(None)
+            if progress:
+                progress(i + 1, NUM_PRESETS)
         return names
 
     # ------------------------------------------------------------ preset read

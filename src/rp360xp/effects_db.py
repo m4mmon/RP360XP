@@ -18,7 +18,7 @@ _CATEGORY_PREFIX: dict[str, str] = {
     "Wah":        "wah",   # confirmed
     "Compressor": "cmpr",  # confirmed
     "Distortion": "dist",  # confirmed
-    "Other":      "other", # unverified (only 1 model, not changeable)
+    "Other":      "vol",   # Volume effect — flat slot, confirmed prefix from preset JSON
     "EQ":         "eq",    # confirmed
     "Gate":       "gate",  # confirmed
     "Mod":        "mod",   # confirmed
@@ -110,6 +110,7 @@ class EffectsDB:
         if model_id is None:
             return None
 
+        has_enable = any(p["address"] == "ENABLE" for p in effect.get("params", []))
         params = {
             p["address"]: p.get("default", 0)
             for p in effect.get("params", [])
@@ -119,6 +120,12 @@ class EffectsDB:
         prefix = model_id.split(".")[0]
         if prefix in ("eq", "vol"):
             # flat slot — params at root level, no fx subdict
-            return {"ENABLE": 0, **params, "name": model_id}
+            slot: dict = {"name": model_id, **params}
+            if has_enable:
+                slot["ENABLE"] = 0
+            return slot
         else:
-            return {"ENABLE": 0, "fx": {**params, "name": model_id}}
+            slot = {"fx": {"name": model_id, **params}}
+            if has_enable:
+                slot["ENABLE"] = 0
+            return slot

@@ -4,10 +4,11 @@ from __future__ import annotations
 
 import re
 
-from PySide6.QtCore import Qt, QTimer, Signal
+from PySide6.QtCore import QEvent, QMimeData, Qt, QTimer, Signal
+from PySide6.QtGui import QDrag
 from PySide6.QtWidgets import (
-    QCheckBox, QComboBox, QFrame, QHBoxLayout, QLabel,
-    QPushButton, QScrollArea, QSizePolicy, QSlider, QSpinBox,
+    QApplication, QCheckBox, QComboBox, QFileDialog, QFrame, QHBoxLayout,
+    QLabel, QPushButton, QScrollArea, QSizePolicy, QSlider, QSpinBox,
     QVBoxLayout, QWidget,
 )
 
@@ -31,22 +32,14 @@ def _max_param_count(category: str | None = None) -> int:
         for e in effects
     )
 
-_N_AMP = _max_param_count("Amplifier")   # 5
 _N_ALL = _max_param_count()              # 9  (EQ)
 
 _ROW_H   = 28   # ParamRow (slider + spinbox)
 _TEXT_H  = 17   # small text label inside a SlotCard
 _LABEL_H = 20   # regular label (name, category)
 
-# CABINET will be added to the JSON later; reserve one extra row now so the
-# layout doesn't change when the updated DB arrives.
-_N_AMP_WITH_CAB = _N_AMP + 1   # currently 5 slider rows + 1 combo row
-
 # PresetHeader: single HBoxLayout row (14pt label + buttons)
 PRESET_HDR_H = 44
-
-# AmpPanel: outer margins 12px + name label + N slider rows + 1 combo row
-AMP_PANEL_H  = 12 + _LABEL_H + 4 + _N_AMP * (_ROW_H + 2) + (_ROW_H + 2)
 
 # SlotCard: outer margins 8px + hdr 26px + category 16px + name 20px +
 #           separator 8px + N_ALL text rows
@@ -235,15 +228,21 @@ class CabinetRow(QWidget):
 # ---------------------------------------------------------------- PresetHeader
 
 class PresetHeader(QWidget):
-    save_clicked = Signal()
-    refresh_clicked = Signal()
-    level_changed = Signal(int)
+    save_clicked      = Signal()
+    store_new_clicked = Signal()
+    refresh_clicked   = Signal()
+    level_changed     = Signal(int)
+    import_requested  = Signal(str)   # file path
+    export_requested  = Signal(str)   # file path
+
+    _FILE_FILTER = "RP360XP Preset (*.rp360p);;All files (*)"
 
     def __init__(self, parent=None):
         super().__init__(parent)
         self.setFixedHeight(PRESET_HDR_H)
         lay = QHBoxLayout(self)
         lay.setContentsMargins(8, 6, 8, 6)
+        lay.setSpacing(6)
 
         self._name_lbl = QLabel()
         self._name_lbl.setStyleSheet("font-size: 14pt; font-weight: bold;")
@@ -261,6 +260,7 @@ class PresetHeader(QWidget):
 
         lay.addStretch()
 
+        # Level
         lay.addWidget(QLabel("Level:"))
         self._level_slider = QSlider(Qt.Horizontal)
         self._level_slider.setRange(0, 99)
@@ -281,17 +281,50 @@ class PresetHeader(QWidget):
         self._level_slider.valueChanged.connect(self._level_from_slider)
         self._level_spin.valueChanged.connect(self._level_from_spin)
 
-        lay.addSpacing(12)
-        btn_save = QPushButton("Save")
-        btn_save.setFixedWidth(72)
+        lay.addWidget(self._make_sep())
+
+        btn_save = QPushButton("Quick Store")
+        btn_save.setFixedWidth(88)
+        btn_save.setToolTip("Save to current user slot")
         btn_save.clicked.connect(self.save_clicked)
         lay.addWidget(btn_save)
+
+        btn_store_new = QPushButton("Store New")
+        btn_store_new.setFixedWidth(82)
+        btn_store_new.setToolTip("Save preset to a different slot with a new name")
+        btn_store_new.clicked.connect(self.store_new_clicked)
+        lay.addWidget(btn_store_new)
+
+        lay.addWidget(self._make_sep())
+
+        btn_import = QPushButton("Import")
+        btn_import.setFixedWidth(68)
+        btn_import.setToolTip("Load a preset from a .rp360p file")
+        btn_import.clicked.connect(self._on_import_clicked)
+        lay.addWidget(btn_import)
+
+        btn_export = QPushButton("Export")
+        btn_export.setFixedWidth(68)
+        btn_export.setToolTip("Save the current preset to a .rp360p file")
+        btn_export.clicked.connect(self._on_export_clicked)
+        lay.addWidget(btn_export)
+
+        lay.addWidget(self._make_sep())
 
         btn_refresh = QPushButton("↺")
         btn_refresh.setFixedWidth(36)
         btn_refresh.setToolTip("Refresh from device")
         btn_refresh.clicked.connect(self.refresh_clicked)
         lay.addWidget(btn_refresh)
+
+    def clear(self):
+        self._name_lbl.setText("")
+        self._bank_lbl.setText("")
+        self._dirty_lbl.setVisible(False)
+        self._level_suppress = True
+        self._level_slider.setValue(0)
+        self._level_spin.setValue(0)
+        self._level_suppress = False
 
     def mark_dirty(self):
         self._dirty_lbl.setVisible(True)
@@ -327,107 +360,30 @@ class PresetHeader(QWidget):
         self._level_suppress = False
         self._level_timer.start()
 
+    def _make_sep(self) -> QFrame:
+        sep = QFrame()
+        sep.setFrameShape(QFrame.VLine)
+        sep.setFrameShadow(QFrame.Sunken)
+        return sep
+
+    def _on_import_clicked(self):
+        path, _ = QFileDialog.getOpenFileName(
+            self, "Import Preset", "", self._FILE_FILTER
+        )
+        if path:
+            self.import_requested.emit(path)
+
+    def _on_export_clicked(self):
+        path, _ = QFileDialog.getSaveFileName(
+            self, "Export Preset", "", self._FILE_FILTER
+        )
+        if path:
+            if not path.endswith(".rp360p"):
+                path += ".rp360p"
+            self.export_requested.emit(path)
+
 
 # ---------------------------------------------------------------- AmpPanel
-
-class AmpPanel(QFrame):
-    """Full-width amp slot panel — always visible at the top."""
-
-    enable_toggled = Signal(int, bool)    # slot_idx, enabled
-    param_changed  = Signal(int, str, int)
-
-    def __init__(self, parent=None):
-        super().__init__(parent)
-        self.setFrameShape(QFrame.StyledPanel)
-        self.setStyleSheet(
-            "AmpPanel { border: 1px solid #888; border-radius: 4px;"
-            " background: #2d2d2d; }"
-        )
-        self._idx = -1
-        self._param_rows: dict[str, ParamRow] = {}
-
-        self.setFixedHeight(AMP_PANEL_H)
-        lay = QHBoxLayout(self)
-        lay.setContentsMargins(10, 6, 10, 6)
-        lay.setSpacing(12)
-
-        # Left column: enable + name
-        left = QVBoxLayout()
-        left.setSpacing(4)
-        hdr = QHBoxLayout()
-        self._enable_cb = QCheckBox()
-        self._enable_cb.setStyleSheet("color: white;")
-        hdr.addWidget(self._enable_cb)
-        self._slot_lbl = QLabel()
-        self._slot_lbl.setStyleSheet("color: #aaa; font-size: 8pt;")
-        hdr.addWidget(self._slot_lbl)
-        hdr.addStretch()
-        left.addLayout(hdr)
-        self._name_lbl = QLabel()
-        self._name_lbl.setStyleSheet(
-            "color: #ffcc44; font-weight: bold; font-size: 11pt;"
-        )
-        left.addWidget(self._name_lbl)
-        left.addStretch()
-        lay.addLayout(left)
-
-        # Right: param rows (expand to fill)
-        self._params_widget = QWidget()
-        self._params_layout = QVBoxLayout(self._params_widget)
-        self._params_layout.setContentsMargins(0, 0, 0, 0)
-        self._params_layout.setSpacing(2)
-        lay.addWidget(self._params_widget, 1)
-
-        self.setVisible(False)
-
-    def load_slot(self, slot_idx: int, slot: FxSlot):
-        self._idx = slot_idx
-        category, display = _effect_info(slot)
-        self._slot_lbl.setText(f"Slot {slot_idx}")
-        self._name_lbl.setText(display)
-
-        self._enable_cb.blockSignals(True)
-        self._enable_cb.setChecked(bool(slot.enable))
-        self._enable_cb.blockSignals(False)
-        try:
-            self._enable_cb.toggled.disconnect()
-        except RuntimeError:
-            pass
-        self._enable_cb.toggled.connect(
-            lambda v: self.enable_toggled.emit(self._idx, v)
-        )
-
-        while self._params_layout.count():
-            w = self._params_layout.takeAt(0).widget()
-            if w:
-                w.deleteLater()
-        self._param_rows.clear()
-
-        ranges = _param_ranges(slot)
-        for param, raw in slot.params.items():
-            lo, hi = ranges.get(param, (0, 99))
-            value = max(lo, min(hi, int(raw)))
-            if param == CabinetRow._PARAM:
-                row = CabinetRow(value)
-            else:
-                row = ParamRow(param, value, lo, hi)
-            row.value_changed.connect(
-                lambda p, v, idx=slot_idx: self.param_changed.emit(idx, p, v)
-            )
-            self._params_layout.addWidget(row)
-            self._param_rows[param] = row
-
-        self.setVisible(True)
-
-    def update_enable(self, enabled: bool):
-        self._enable_cb.blockSignals(True)
-        self._enable_cb.setChecked(enabled)
-        self._enable_cb.blockSignals(False)
-
-    def update_param(self, param: str, value: int):
-        if param in self._param_rows:
-            self._param_rows[param].set_value(value)
-
 
 # ---------------------------------------------------------------- SlotCard
 
@@ -436,11 +392,11 @@ class SlotCard(QFrame):
 
     selected_changed = Signal(int, bool)   # slot_idx, selected
     enable_toggled   = Signal(int, bool)   # slot_idx, enabled
+    delete_requested = Signal(int)         # slot_idx
 
-    _STYLE_NORMAL   = ("QFrame { border: 1px solid #888; border-radius: 4px; }")
-    _STYLE_SELECTED = ("QFrame { border: 2px solid #4a9eff; border-radius: 4px;"
-                       " background: #1a3a5a; }")
-    _STYLE_DISABLED = ("QFrame { border: 1px solid #555; border-radius: 4px;"
+    _STYLE_NORMAL   = ("SlotCard { border: 1px solid #888; border-radius: 4px; }")
+    _STYLE_SELECTED = ("SlotCard { border: 1px solid #4a9eff; border-radius: 4px; }")
+    _STYLE_DISABLED = ("SlotCard { border: 1px solid #555; border-radius: 4px;"
                        " color: #888; }")
 
     def __init__(self, slot_idx: int, slot: FxSlot, parent=None):
@@ -448,6 +404,7 @@ class SlotCard(QFrame):
         self._idx = slot_idx
         self._selected = False
         self._param_labels: dict[str, QLabel] = {}
+        self._drag_start_pos = None
 
         self.setFixedWidth(152)
         self.setFixedHeight(SLOT_CARD_H)
@@ -460,15 +417,28 @@ class SlotCard(QFrame):
 
         hdr = QHBoxLayout()
         hdr.setSpacing(4)
+        self._cb_container = QWidget()
+        self._cb_container.setFixedWidth(20)
+        cb_inner = QHBoxLayout(self._cb_container)
+        cb_inner.setContentsMargins(0, 0, 0, 0)
         self._enable_cb = QCheckBox()
         self._enable_cb.toggled.connect(
             lambda v: self.enable_toggled.emit(self._idx, v)
         )
-        hdr.addWidget(self._enable_cb)
+        cb_inner.addWidget(self._enable_cb)
+        hdr.addWidget(self._cb_container)
         num_lbl = QLabel(f"<small>Slot {slot_idx}</small>")
         num_lbl.setStyleSheet("color: #aaa;")
         hdr.addWidget(num_lbl)
         hdr.addStretch()
+        self._delete_btn = QPushButton("×")
+        self._delete_btn.setFixedSize(14, 14)
+        self._delete_btn.setStyleSheet(
+            "QPushButton { color: #777; border: none; padding: 0; font-size: 9pt; }"
+            "QPushButton:hover { color: #f55; }"
+        )
+        self._delete_btn.clicked.connect(lambda: self.delete_requested.emit(self._idx))
+        hdr.addWidget(self._delete_btn)
         lay.addLayout(hdr)
 
         self._category_lbl = QLabel()
@@ -537,6 +507,8 @@ class SlotCard(QFrame):
         self._category_lbl.setText(category)
         self._name_lbl.setText(display)
 
+        has_enable = slot.category != "vol"
+        self._enable_cb.setVisible(has_enable)
         self._enable_cb.blockSignals(True)
         self._enable_cb.setChecked(bool(slot.enable))
         self._enable_cb.blockSignals(False)
@@ -546,37 +518,62 @@ class SlotCard(QFrame):
             self._params_layout.addWidget(lbl)
             self._param_labels[param] = lbl
 
+    def set_deletable(self, deletable: bool):
+        self._delete_btn.setVisible(deletable)
+
     def mousePressEvent(self, event):
-        # QCheckBox consumes its own clicks; anything else toggles selection.
+        if event.button() == Qt.LeftButton:
+            self._drag_start_pos = event.pos()
         new_sel = not self._selected
         self.set_selected(new_sel)
         self.selected_changed.emit(self._idx, new_sel)
         super().mousePressEvent(event)
 
+    def mouseMoveEvent(self, event):
+        if not (event.buttons() & Qt.LeftButton) or self._drag_start_pos is None:
+            return
+        if (event.pos() - self._drag_start_pos).manhattanLength() < QApplication.startDragDistance():
+            return
+        drag = QDrag(self)
+        mime = QMimeData()
+        mime.setText(str(self._idx))
+        drag.setMimeData(mime)
+        drag.setPixmap(self.grab())
+        drag.setHotSpot(event.pos())
+        drag.exec(Qt.MoveAction)
 
-# ---------------------------------------------------------------- AmpMarker
 
-class AmpMarker(QFrame):
-    """Visual placeholder for the amp's position in the signal chain."""
+# ---------------------------------------------------------------- AddCard
+
+class AddCard(QWidget):
+    """Placeholder card at the end of the chain — click to add a new slot."""
+
+    add_clicked = Signal()
 
     def __init__(self, parent=None):
         super().__init__(parent)
-        self.setFixedWidth(56)
-        self.setFrameShape(QFrame.StyledPanel)
-        self.setStyleSheet(
-            "QFrame { background: #3a2a00; border: 1px solid #aa7700;"
-            " border-radius: 4px; }"
-        )
+        self.setFixedWidth(152)
+        self.setFixedHeight(SLOT_CARD_H)
+        self.setCursor(Qt.PointingHandCursor)
+        self.setToolTip("Add a new effect slot")
+
         lay = QVBoxLayout(self)
-        lay.setContentsMargins(4, 6, 4, 6)
-        lbl = QLabel("AMP")
+        lay.setContentsMargins(0, 0, 0, 0)
+
+        lbl = QLabel("+")
         lbl.setAlignment(Qt.AlignCenter)
-        lbl.setStyleSheet(
-            "color: #ffcc44; font-weight: bold; font-size: 9pt;"
-            " background: transparent; border: none;"
-        )
+        lbl.setStyleSheet("font-size: 28pt; color: #555;")
         lay.addWidget(lbl)
-        lay.addStretch()
+
+        self.setStyleSheet(
+            "AddCard { border: 1px dashed #555; border-radius: 4px; }"
+            "AddCard:hover { border-color: #888; }"
+        )
+
+    def mousePressEvent(self, event):
+        if event.button() == Qt.LeftButton:
+            self.add_clicked.emit()
+        super().mousePressEvent(event)
 
 
 # ---------------------------------------------------------------- DetailPanel
@@ -584,22 +581,43 @@ class AmpMarker(QFrame):
 class DetailPanel(QFrame):
     """Param sliders for the selected slot — hidden when nothing is selected."""
 
-    param_changed = Signal(int, str, int)   # slot_idx, param, value
+    param_changed         = Signal(int, str, int)   # slot_idx, param, value
+    model_changed         = Signal(int, str)         # slot_idx, model_id (same category)
+    slot_add_requested    = Signal(int, str)         # free_idx, address
+    slot_replace_requested = Signal(int, str)        # slot_idx, address (cross-category)
 
     def __init__(self, parent=None):
         super().__init__(parent)
         self.setFrameShape(QFrame.StyledPanel)
         self.setFixedHeight(DETAIL_H)
         self._slot_idx = -1
+        self._new_slot_idx = -1       # >= 0 when in "add new slot" mode
+        self._original_category: str = ""
+        self._suppress = False
         self._param_rows: dict[str, ParamRow] = {}
 
         outer = QVBoxLayout(self)
         outer.setContentsMargins(8, 6, 8, 8)
         outer.setSpacing(4)
 
-        self._header = QLabel()
-        self._header.setStyleSheet("font-weight: bold; font-size: 10pt;")
-        outer.addWidget(self._header)
+        hdr_row = QHBoxLayout()
+        hdr_row.setSpacing(8)
+        self._slot_lbl = QLabel()
+        self._slot_lbl.setStyleSheet("font-weight: bold; font-size: 10pt;")
+        hdr_row.addWidget(self._slot_lbl)
+
+        self._category_combo = QComboBox()
+        self._category_combo.setFixedWidth(110)
+        self._category_combo.setVisible(False)
+        self._category_combo.currentIndexChanged.connect(self._on_category_changed)
+        hdr_row.addWidget(self._category_combo)
+
+        self._model_combo = QComboBox()
+        self._model_combo.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Fixed)
+        self._model_combo.setVisible(False)
+        self._model_combo.currentIndexChanged.connect(self._on_model_changed)
+        hdr_row.addWidget(self._model_combo)
+        outer.addLayout(hdr_row)
 
         self._placeholder = QLabel("← Sélectionnez un slot pour éditer ses paramètres")
         self._placeholder.setAlignment(Qt.AlignCenter)
@@ -610,14 +628,60 @@ class DetailPanel(QFrame):
         self._params_layout = QVBoxLayout(self._params_widget)
         self._params_layout.setContentsMargins(0, 0, 0, 0)
         self._params_layout.setSpacing(2)
+        self._params_layout.setAlignment(Qt.AlignTop)
         self._params_widget.setVisible(False)
         outer.addWidget(self._params_widget)
+        outer.addStretch(1)
 
     @property
     def current_slot(self) -> int:
         return self._slot_idx
 
-    def show_slot(self, slot_idx: int, slot: FxSlot):
+    # ---------------------------------------------------------- private helpers
+
+    def _on_category_changed(self, _):
+        if self._suppress:
+            return
+        cat = self._category_combo.currentData()
+        if cat:
+            # Always show placeholder: user is actively choosing a new category/model
+            self._rebuild_model_combo(cat, use_placeholder=True)
+
+    def _rebuild_model_combo(self, cat: str, use_placeholder: bool = False):
+        self._model_combo.blockSignals(True)
+        self._model_combo.clear()
+        if use_placeholder:
+            self._model_combo.addItem("— select a model —", None)
+        for e in _db.by_category(cat) or []:
+            self._model_combo.addItem(e["displayName"], e["address"])
+        self._model_combo.blockSignals(False)
+
+    def _on_model_changed(self, _):
+        if self._suppress:
+            return
+        address = self._model_combo.currentData()
+        if address is None:
+            return
+        if self._new_slot_idx >= 0:
+            idx = self._new_slot_idx
+            self._new_slot_idx = -1   # prevent double-emit
+            self.slot_add_requested.emit(idx, address)
+        elif self._slot_idx >= 0:
+            new_cat = self._category_combo.currentData()
+            self._params_widget.setEnabled(False)
+            if new_cat and new_cat != self._original_category:
+                # Cross-category: device requires delete → add → reorder
+                self.slot_replace_requested.emit(self._slot_idx, address)
+            else:
+                model_id = _db.model_id(address)
+                if model_id:
+                    self.model_changed.emit(self._slot_idx, model_id)
+
+    # ---------------------------------------------------------- public API
+
+    def show_slot(self, slot_idx: int, slot: FxSlot, preset: "Preset | None" = None):
+        self._suppress = True
+        self._new_slot_idx = -1
         self._slot_idx = slot_idx
 
         while self._params_layout.count():
@@ -627,30 +691,123 @@ class DetailPanel(QFrame):
         self._param_rows.clear()
 
         category, display = _effect_info(slot)
-        self._header.setText(
-            f"Slot {slot_idx}  ·  {category}  ·  {display}"
-            if category else f"Slot {slot_idx}  ·  {display}"
-        )
+        self._original_category = category
+        self._slot_lbl.setText(f"Slot {slot_idx}")
+
+        # Categories used by OTHER slots (not this one), using DB-format category strings
+        used_cats: set[str] = set()
+        if preset:
+            for s_idx, s in preset.slots.items():
+                if s_idx != slot_idx:
+                    cat, _ = _effect_info(s)
+                    if cat:
+                        used_cats.add(cat)
+
+        all_cats = sorted({e["category"] for e in _db._effects if e.get("category")})
+        # Free categories = not used by any other slot (current category is always included)
+        free_cats = [c for c in all_cats if c not in used_cats and c != category]
+
+        self._category_combo.blockSignals(True)
+        self._category_combo.clear()
+        # Current category first, then other available ones
+        if category:
+            self._category_combo.addItem(category, category)
+        for cat in free_cats:
+            self._category_combo.addItem(cat, cat)
+        self._category_combo.setCurrentIndex(0)
+        self._category_combo.blockSignals(False)
+        # Enable only when there are other categories to choose from
+        self._category_combo.setEnabled(bool(free_cats))
+
+        # Model combo: all effects in current category, pre-select current model
+        address = slot.model.split(".")[-1] if "." in slot.model else slot.model
+        self._model_combo.blockSignals(True)
+        self._model_combo.clear()
+        effects = _db.by_category(category) if category else []
+        if effects:
+            for e in effects:
+                self._model_combo.addItem(e["displayName"], e["address"])
+            idx = self._model_combo.findData(address)
+            if idx >= 0:
+                self._model_combo.setCurrentIndex(idx)
+        else:
+            self._model_combo.addItem(display, address)
+        self._model_combo.blockSignals(False)
 
         ranges = _param_ranges(slot)
         for param, raw in slot.params.items():
             lo, hi = ranges.get(param, (0, 99))
             value = max(lo, min(hi, int(raw)))
-            row = ParamRow(param, value, lo, hi)
+            if param == CabinetRow._PARAM:
+                row = CabinetRow(value)
+            else:
+                row = ParamRow(param, value, lo, hi)
             row.value_changed.connect(
                 lambda p, v, idx=slot_idx: self.param_changed.emit(idx, p, v)
             )
             self._params_layout.addWidget(row)
             self._param_rows[param] = row
 
+        self._category_combo.setVisible(True)
+        self._model_combo.setVisible(True)
         self._placeholder.setVisible(False)
+        self._params_widget.setEnabled(True)
         self._params_widget.setVisible(True)
+        self._suppress = False
+
+    def show_new_slot(self, free_idx: int, preset: "Preset | None" = None):
+        """Switch to 'add new slot' mode — user picks category then model."""
+        self._suppress = True
+        self._new_slot_idx = free_idx
+        self._slot_idx = -1
+
+        while self._params_layout.count():
+            w = self._params_layout.takeAt(0).widget()
+            if w:
+                w.deleteLater()
+        self._param_rows.clear()
+
+        self._slot_lbl.setText(f"New slot {free_idx}")
+
+        # Collect categories already used (DB-format strings)
+        used_cats: set[str] = set()
+        if preset:
+            for s in preset.slots.values():
+                cat, _ = _effect_info(s)
+                if cat:
+                    used_cats.add(cat)
+
+        all_cats = sorted({e["category"] for e in _db._effects if e.get("category")})
+        free_cats = [c for c in all_cats if c not in used_cats]
+
+        self._category_combo.blockSignals(True)
+        self._category_combo.clear()
+        for cat in free_cats:
+            self._category_combo.addItem(cat, cat)
+        self._category_combo.blockSignals(False)
+        self._category_combo.setEnabled(True)
+
+        first_cat = self._category_combo.currentData()
+        self._rebuild_model_combo(first_cat or "", use_placeholder=True)
+
+        self._category_combo.setVisible(True)
+        self._model_combo.setVisible(True)
+        self._params_widget.setVisible(False)
+        self._placeholder.setVisible(False)
+        self._suppress = False
 
     def hide_slot(self):
         self._slot_idx = -1
+        self._new_slot_idx = -1
         self._params_widget.setVisible(False)
         self._placeholder.setVisible(True)
-        self._header.setText("")
+        self._slot_lbl.setText("")
+        self._suppress = True
+        self._category_combo.clear()
+        self._category_combo.setVisible(False)
+        self._model_combo.clear()
+        self._model_combo.setVisible(False)
+        self._suppress = False
 
     def update_param(self, param: str, value: int):
         if param in self._param_rows:
@@ -739,6 +896,17 @@ class StompsSection(QFrame):
 
         lay.addStretch()
 
+    def clear(self):
+        for cb in self._combos.values():
+            cb.blockSignals(True)
+            cb.clear()
+            cb.blockSignals(False)
+        for toggle in self._toggles.values():
+            toggle.blockSignals(True)
+            toggle.setChecked(False)
+            toggle.setEnabled(False)
+            toggle.blockSignals(False)
+
     def update_preset(self, preset: Preset):
         slot_ids = sorted(preset.slots.keys())
         for ctrl_name, cb in self._combos.items():
@@ -820,7 +988,8 @@ class ExprCtrlSection(QFrame):
         self._param_combo = QComboBox()
         self._param_combo.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Fixed)
         self._param_combo.currentIndexChanged.connect(self._on_any_change)
-        lay.addWidget(_combo_row("Param:", self._param_combo))
+        self._param_row = _combo_row("Param:", self._param_combo)
+        lay.addWidget(self._param_row)
 
         self._row_min = ParamRow("MIN", 0, 0, 99)
         self._row_min.value_changed.connect(self._on_any_change)
@@ -831,6 +1000,12 @@ class ExprCtrlSection(QFrame):
         lay.addWidget(self._row_max)
 
         lay.addStretch()
+        self._update_controls_enabled(False)
+
+    def _update_controls_enabled(self, assigned: bool):
+        self._param_row.setEnabled(assigned)
+        self._row_min.setEnabled(assigned)
+        self._row_max.setEnabled(assigned)
 
     def update_ctrl(self, ctrl: Ctrl | None, preset: Preset | None = None):
         self._preset = preset
@@ -861,11 +1036,13 @@ class ExprCtrlSection(QFrame):
             if ctrl.max is not None:
                 self._row_max.set_value(ctrl.max)
 
+        self._update_controls_enabled(current_slot >= 0)
         self._suppress = False
 
     def _on_slot_changed(self):
         slot_idx = self._slot_combo.currentData()
         self._rebuild_param_combo(slot_idx if slot_idx is not None else -1, None)
+        self._update_controls_enabled(slot_idx is not None and slot_idx >= 0)
         self._on_any_change()
 
     def _rebuild_param_combo(self, slot_idx: int, current_param: str | None):
@@ -883,8 +1060,13 @@ class ExprCtrlSection(QFrame):
         if self._suppress:
             return
         slot_idx = self._slot_combo.currentData()
+        if slot_idx is None:
+            return
+        if slot_idx < 0:
+            self.assign_requested.emit(self._ctrl_name, -1, "", 0, 99, False)
+            return
         param = self._param_combo.currentData()
-        if slot_idx is None or slot_idx < 0 or not param or self._preset is None:
+        if not param or self._preset is None:
             return
         slot = self._preset.slots.get(slot_idx)
         if slot is None:
@@ -928,7 +1110,8 @@ class LfoSection(QFrame):
         self._param_combo = QComboBox()
         self._param_combo.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Fixed)
         self._param_combo.currentIndexChanged.connect(self._on_any_change)
-        lay.addWidget(_combo_row("Param:", self._param_combo))
+        self._param_row = _combo_row("Param:", self._param_combo)
+        lay.addWidget(self._param_row)
 
         self._row_min = ParamRow("MIN", 0, 0, 99)
         self._row_min.value_changed.connect(self._on_any_change)
@@ -947,9 +1130,18 @@ class LfoSection(QFrame):
         for k in sorted(LFO_WAVEFORMS):
             self._wave_combo.addItem(LFO_WAVEFORMS[k], k)
         self._wave_combo.currentIndexChanged.connect(self._on_wave_changed)
-        lay.addWidget(_combo_row("WAVEFORM", self._wave_combo, label_width=72))
+        self._wave_row = _combo_row("WAVEFORM", self._wave_combo, label_width=72)
+        lay.addWidget(self._wave_row)
 
         lay.addStretch()
+        self._update_controls_enabled(False)
+
+    def _update_controls_enabled(self, assigned: bool):
+        self._param_row.setEnabled(assigned)
+        self._row_min.setEnabled(assigned)
+        self._row_max.setEnabled(assigned)
+        self._row_speed.setEnabled(assigned)
+        self._wave_row.setEnabled(assigned)
 
     def update_ctrl(self, ctrl: Ctrl | None, preset: Preset | None = None):
         self._preset = preset
@@ -989,11 +1181,13 @@ class LfoSection(QFrame):
                     self._wave_combo.setCurrentIndex(wi)
                 self._wave_combo.blockSignals(False)
 
+        self._update_controls_enabled(current_slot >= 0)
         self._suppress = False
 
     def _on_slot_changed(self):
         slot_idx = self._slot_combo.currentData()
         self._rebuild_param_combo(slot_idx if slot_idx is not None else -1, None)
+        self._update_controls_enabled(slot_idx is not None and slot_idx >= 0)
         self._on_any_change()
 
     def _rebuild_param_combo(self, slot_idx: int, current_param: str | None):
@@ -1017,8 +1211,13 @@ class LfoSection(QFrame):
         if self._suppress:
             return
         slot_idx = self._slot_combo.currentData()
+        if slot_idx is None:
+            return
+        if slot_idx < 0:
+            self.assign_requested.emit(-1, "", 0, 99, self._row_speed.value, self._wave_val, False)
+            return
         param = self._param_combo.currentData()
-        if slot_idx is None or slot_idx < 0 or not param or self._preset is None:
+        if not param or self._preset is None:
             return
         slot = self._preset.slots.get(slot_idx)
         if slot is None:
@@ -1115,6 +1314,12 @@ class BottomPanel(QWidget):
         self._wah.ctrl_field_changed.connect(self.ctrl_field_changed)
         lay.addWidget(self._wah, 1)
 
+    def clear(self):
+        self._stomps.clear()
+        self._expr.update_ctrl(None, None)
+        self._lfo.update_ctrl(None, None)
+        self._wah.update_ctrl(None, None)
+
     def update_preset(self, preset: Preset):
         self._stomps.update_preset(preset)
         self._expr.update_ctrl(preset.ctrls.get("treadle"), preset)
@@ -1128,43 +1333,49 @@ class BottomPanel(QWidget):
 # ---------------------------------------------------------------- PresetPanel
 
 class PresetPanel(QWidget):
-    """Full preset editing panel: header + amp + chain + detail + bottom."""
+    """Full preset editing panel: header + chain + detail + bottom."""
 
     enable_toggled     = Signal(int, bool)
     param_changed      = Signal(int, str, int)
     level_changed      = Signal(int)
+    model_changed      = Signal(int, str)
     save_clicked       = Signal()
+    store_new_clicked  = Signal()
     refresh_clicked    = Signal()
     stomp_changed      = Signal(str, int)
-    ctrl_field_changed = Signal(str, str, int)         # ctrl_name, field, value (wah)
-    expression_assign  = Signal(str, int, str, int, int, bool)      # ctrl, slot, param, min, max, flat
-    lfo_assign         = Signal(int, str, int, int, int, int, bool) # slot, param, min, max, spd, wf, flat
+    ctrl_field_changed = Signal(str, str, int)
+    expression_assign  = Signal(str, int, str, int, int, bool)
+    lfo_assign         = Signal(int, str, int, int, int, int, bool)
+    delete_requested       = Signal(int)           # slot_idx
+    slot_add_requested     = Signal(int, str)      # slot_idx, address
+    slot_replace_requested = Signal(int, str, list)# slot_idx, address, restore_order
+    reorder_requested      = Signal(list)           # new chain order
+    import_requested       = Signal(str)            # file path
+    export_requested       = Signal(str)            # file path
 
     def __init__(self, parent=None):
         super().__init__(parent)
-        self._amp_idx = -1          # slot index of the amp
-        self._selected_idx = -1     # currently selected non-amp slot
+        self._selected_idx = -1
         self._slot_cards: dict[int, SlotCard] = {}
         self._current_preset: Preset | None = None
+        self._chain_order: list[int] = []
+        self._add_card: AddCard | None = None
+        self._pending_add_idx = -1
+        self._insertion_target = -1
 
         lay = QVBoxLayout(self)
         lay.setContentsMargins(0, 0, 0, 0)
         lay.setSpacing(0)
 
-        # Preset name / level / save bar
         self._header = PresetHeader()
         self._header.save_clicked.connect(self.save_clicked)
+        self._header.store_new_clicked.connect(self.store_new_clicked)
         self._header.refresh_clicked.connect(self.refresh_clicked)
         self._header.level_changed.connect(self.level_changed)
+        self._header.import_requested.connect(self.import_requested)
+        self._header.export_requested.connect(self.export_requested)
         lay.addWidget(self._header)
 
-        # Amp panel
-        self._amp_panel = AmpPanel()
-        self._amp_panel.enable_toggled.connect(self.enable_toggled)
-        self._amp_panel.param_changed.connect(self.param_changed)
-        lay.addWidget(self._amp_panel)
-
-        # Horizontal chain
         self._chain_scroll = QScrollArea()
         self._chain_scroll.setWidgetResizable(True)
         self._chain_scroll.setVerticalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
@@ -1172,20 +1383,30 @@ class PresetPanel(QWidget):
         self._chain_scroll.setFrameShape(QFrame.NoFrame)
 
         self._chain_widget = QWidget()
+        self._chain_widget.setAcceptDrops(True)
+        self._chain_widget.installEventFilter(self)
         self._chain_layout = QHBoxLayout(self._chain_widget)
         self._chain_layout.setContentsMargins(6, 6, 6, 6)
         self._chain_layout.setSpacing(6)
         self._chain_layout.setAlignment(Qt.AlignLeft | Qt.AlignTop)
         self._chain_scroll.setWidget(self._chain_widget)
-        self._chain_scroll.setFixedHeight(SLOT_CARD_H + 16)  # card + layout margins
+        self._chain_scroll.setFixedHeight(SLOT_CARD_H + 16)
         lay.addWidget(self._chain_scroll)
 
-        # Detail panel (hidden until a slot is selected)
+        # Drag insertion marker — absolute child of chain_widget
+        self._insertion_marker = QFrame(self._chain_widget)
+        self._insertion_marker.setStyleSheet("QFrame { background: #4a9eff; }")
+        self._insertion_marker.resize(3, SLOT_CARD_H)
+        self._insertion_marker.setVisible(False)
+        self._insertion_marker.setAttribute(Qt.WA_TransparentForMouseEvents)
+
         self._detail = DetailPanel()
         self._detail.param_changed.connect(self.param_changed)
+        self._detail.model_changed.connect(self.model_changed)
+        self._detail.slot_add_requested.connect(self._on_detail_slot_add_requested)
+        self._detail.slot_replace_requested.connect(self._on_detail_slot_replace_requested)
         lay.addWidget(self._detail)
 
-        # Bottom panel (stomps + expression + LFO + wah)
         self._bottom = BottomPanel()
         self._bottom.stomp_changed.connect(self.stomp_changed)
         self._bottom.enable_toggled.connect(self.enable_toggled)
@@ -1196,42 +1417,50 @@ class PresetPanel(QWidget):
 
     # ---------------------------------------------------------- public API
 
+    def clear(self):
+        self._current_preset = None
+        self._selected_idx = -1
+        self._chain_order = []
+        self._pending_add_idx = -1
+        while self._chain_layout.count():
+            item = self._chain_layout.takeAt(0)
+            w = item.widget()
+            if w:
+                w.deleteLater()
+        self._slot_cards.clear()
+        self._add_card = None
+        self._header.clear()
+        self._detail.hide_slot()
+        self._bottom.clear()
+
     def mark_dirty(self):
         self._header.mark_dirty()
 
     def update_preset(self, preset: Preset, dirty: bool, bank: str, slot_1: int):
         self._current_preset = preset
         self._header.update(preset, dirty, bank, slot_1)
-
-        # Find amp slot
-        amp_idx = next(
-            (idx for idx, s in preset.slots.items()
-             if s.model.startswith("amp.")),
-            -1,
-        )
-        self._amp_idx = amp_idx
-        if amp_idx >= 0:
-            self._amp_panel.load_slot(amp_idx, preset.slots[amp_idx])
-        else:
-            self._amp_panel.setVisible(False)
-
         self._rebuild_chain(preset)
         self._bottom.update_preset(preset)
 
-        # Refresh detail panel if its slot still exists
+        # Auto-select a pending newly-added slot
+        if self._pending_add_idx >= 0:
+            idx = self._pending_add_idx
+            self._pending_add_idx = -1
+            if idx in preset.slots:
+                self._selected_idx = idx
+                if idx in self._slot_cards:
+                    self._slot_cards[idx].set_selected(True)
+                self._detail.show_slot(idx, preset.slots[idx], preset)
+                return
+
         if self._selected_idx >= 0:
             if self._selected_idx in preset.slots:
-                self._detail.show_slot(
-                    self._selected_idx, preset.slots[self._selected_idx]
-                )
+                self._detail.show_slot(self._selected_idx, preset.slots[self._selected_idx], preset)
             else:
                 self._selected_idx = -1
                 self._detail.hide_slot()
 
     def update_param(self, slot: int, param: str, value: int):
-        if slot == self._amp_idx:
-            self._amp_panel.update_param(param, value)
-            return
         if slot in self._slot_cards:
             self._slot_cards[slot].update_param(param, value)
         if slot == self._selected_idx:
@@ -1241,52 +1470,172 @@ class PresetPanel(QWidget):
         self._header.update_level(value)
 
     def update_enable(self, slot: int, enabled: bool):
-        if slot == self._amp_idx:
-            self._amp_panel.update_enable(enabled)
-            return
         if slot in self._slot_cards:
             self._slot_cards[slot].update_enable(enabled)
         self._bottom.update_enable(slot, enabled)
 
+    def unlock_chain(self):
+        """Re-enable all cards after a reorder has been acknowledged."""
+        for card in self._slot_cards.values():
+            card.setEnabled(True)
+        if self._add_card:
+            self._add_card.setEnabled(True)
+
+    # ---------------------------------------------------------- drag & drop event filter
+
+    def eventFilter(self, obj, event):
+        if obj is self._chain_widget:
+            t = event.type()
+            if t == QEvent.DragEnter:
+                if event.mimeData().hasText():
+                    event.acceptProposedAction()
+                    return True
+            elif t == QEvent.DragMove:
+                self._update_insertion_marker(event.pos())
+                event.acceptProposedAction()
+                return True
+            elif t == QEvent.Drop:
+                self._insertion_marker.setVisible(False)
+                try:
+                    src = int(event.mimeData().text())
+                    self._finish_drop(src, self._insertion_target)
+                except (ValueError, TypeError):
+                    pass
+                event.acceptProposedAction()
+                return True
+            elif t == QEvent.DragLeave:
+                self._insertion_marker.setVisible(False)
+                return True
+        return super().eventFilter(obj, event)
+
     # ---------------------------------------------------------- private
 
     def _rebuild_chain(self, preset: Preset):
-        # Remove all widgets from the chain layout
         while self._chain_layout.count():
             item = self._chain_layout.takeAt(0)
             w = item.widget()
             if w:
                 w.deleteLater()
         self._slot_cards.clear()
+        self._add_card = None
 
-        # Use the key order from the preset JSON (chain_order).
-        # If the device serialises fxc in signal-chain order this is correct;
-        # if not, it falls back gracefully to slot-index order.
         order = preset.chain_order if preset.chain_order else sorted(preset.slots.keys())
+        self._chain_order = list(order)
+
         for idx in order:
-            if idx == self._amp_idx:
-                self._chain_layout.addWidget(AmpMarker())
-            else:
-                slot = preset.slots[idx]
-                card = SlotCard(idx, slot)
-                card.enable_toggled.connect(self.enable_toggled)
-                card.selected_changed.connect(self._on_card_selected)
+            slot = preset.slots.get(idx)
+            if slot is None:
+                continue
+            card = SlotCard(idx, slot)
+            card.enable_toggled.connect(self.enable_toggled)
+            card.selected_changed.connect(self._on_card_selected)
+            card.delete_requested.connect(self._on_card_delete)
+            self._chain_layout.addWidget(card)
+            self._slot_cards[idx] = card
+
+        # × button only visible when there is more than one slot
+        deletable = len(self._slot_cards) > 1
+        for card in self._slot_cards.values():
+            card.set_deletable(deletable)
+
+        # Restore selection highlight
+        if self._selected_idx in self._slot_cards:
+            self._slot_cards[self._selected_idx].set_selected(True)
+
+        # AddCard if fewer than 10 slots
+        if len(self._slot_cards) < 10:
+            self._add_card = AddCard()
+            self._add_card.add_clicked.connect(self._on_add_card_clicked)
+            self._chain_layout.addWidget(self._add_card)
+
+    def _rebuild_chain_from_order(self, order: list[int], disable: bool = False):
+        """Rebuild layout in-place without deleting cards — used after drag & drop."""
+        while self._chain_layout.count():
+            item = self._chain_layout.takeAt(0)
+            w = item.widget()
+            if w:
+                w.setParent(None)
+        for idx in order:
+            card = self._slot_cards.get(idx)
+            if card:
+                if disable:
+                    card.setEnabled(False)
                 self._chain_layout.addWidget(card)
-                self._slot_cards[idx] = card
+        if self._add_card:
+            if disable:
+                self._add_card.setEnabled(False)
+            self._chain_layout.addWidget(self._add_card)
 
     def _on_card_selected(self, slot_idx: int, selected: bool):
         prev = self._selected_idx
-
         if not selected:
-            # Explicit deselect of the current card
             self._selected_idx = -1
             self._detail.hide_slot()
             return
-
-        # Deselect previous card
         if prev >= 0 and prev != slot_idx and prev in self._slot_cards:
             self._slot_cards[prev].set_selected(False)
-
         self._selected_idx = slot_idx
         if self._current_preset and slot_idx in self._current_preset.slots:
-            self._detail.show_slot(slot_idx, self._current_preset.slots[slot_idx])
+            self._detail.show_slot(slot_idx, self._current_preset.slots[slot_idx], self._current_preset)
+
+    def _on_card_delete(self, slot_idx: int):
+        if self._selected_idx == slot_idx:
+            self._selected_idx = -1
+            self._detail.hide_slot()
+        self.delete_requested.emit(slot_idx)
+
+    def _on_add_card_clicked(self):
+        used = set(self._slot_cards.keys())
+        free = next((i for i in range(10) if i not in used), None)
+        if free is None:
+            return
+        self._detail.show_new_slot(free, self._current_preset)
+
+    def _on_detail_slot_add_requested(self, slot_idx: int, address: str):
+        self._pending_add_idx = slot_idx
+        self.slot_add_requested.emit(slot_idx, address)
+
+    def _on_detail_slot_replace_requested(self, slot_idx: int, address: str):
+        # Pass current chain order so the worker can restore position after delete+add
+        self._pending_add_idx = slot_idx
+        self.slot_replace_requested.emit(slot_idx, address, list(self._chain_order))
+
+    def _drop_target_pos(self, pos) -> int:
+        for i, idx in enumerate(self._chain_order):
+            card = self._slot_cards.get(idx)
+            if card and pos.x() < card.x() + card.width() // 2:
+                return i
+        return len(self._chain_order)
+
+    def _update_insertion_marker(self, pos):
+        target = self._drop_target_pos(pos)
+        self._insertion_target = target
+        order = self._chain_order
+        if target < len(order):
+            card = self._slot_cards.get(order[target])
+            x = (card.x() - 4) if card else 0
+        elif order:
+            card = self._slot_cards.get(order[-1])
+            x = (card.x() + card.width() + 1) if card else 0
+        else:
+            x = 6
+        self._insertion_marker.move(x, 6)
+        self._insertion_marker.resize(3, SLOT_CARD_H)
+        self._insertion_marker.setVisible(True)
+        self._insertion_marker.raise_()
+
+    def _finish_drop(self, src_idx: int, target_pos: int):
+        order = list(self._chain_order)
+        if src_idx not in order:
+            return
+        src_pos = order.index(src_idx)
+        order.pop(src_pos)
+        if src_pos < target_pos:
+            target_pos -= 1
+        target_pos = max(0, min(target_pos, len(order)))
+        order.insert(target_pos, src_idx)
+        if order == list(self._chain_order):
+            return
+        self._chain_order = order
+        self._rebuild_chain_from_order(order, disable=True)
+        self.reorder_requested.emit(order)

@@ -2,18 +2,24 @@
 
 from __future__ import annotations
 
+import json
+
 from PySide6.QtCore import QObject, Signal, Slot
 
 from ..device import Device, BANK_USER, BANK_FACTORY
 from ..effects_db import EffectsDB
+from ..model import Preset
 
 
 class DeviceWorker(QObject):
     # Signals → UI thread
-    connection_changed = Signal(bool, str)           # connected, port
-    preset_changed = Signal(object, bool, str, int)  # Preset, dirty, bank, slot_1
-    error_occurred = Signal(str)
+    connection_changed    = Signal(bool, str)            # connected, port
+    preset_changed        = Signal(object, bool, str, int)  # Preset, dirty, bank, slot_1
+    error_occurred        = Signal(str)
     notification_received = Signal(list)
+    reorder_done          = Signal()
+    preset_names_changed  = Signal(list)               # list[str | None], indices 0-98
+    preset_name_progress  = Signal(int, int)           # done, total
 
     # Internal: queued trigger so _emit_preset() runs on the worker thread,
     # not on the transport reader thread where notifications arrive.
@@ -23,6 +29,7 @@ class DeviceWorker(QObject):
         super().__init__()
         self._device: Device | None = None
         self._db = EffectsDB()
+        self._user_preset_names: list = []
         self._refresh_needed.connect(self.refresh_preset)
 
     # ---------------------------------------------------------- connection
@@ -37,6 +44,7 @@ class DeviceWorker(QObject):
             self._device = dev
             self.connection_changed.emit(True, port or "auto")
             self._emit_preset()
+            self._fetch_preset_names()
         except Exception as exc:
             self.error_occurred.emit(str(exc))
             self.connection_changed.emit(False, "")
@@ -44,6 +52,7 @@ class DeviceWorker(QObject):
     @Slot()
     def disconnect_device(self):
         self._safe_disconnect()
+        self._user_preset_names = []
         self.connection_changed.emit(False, "")
 
     # ---------------------------------------------------------- preset
@@ -76,11 +85,24 @@ class DeviceWorker(QObject):
     @Slot(int, str)
     def save_preset_as(self, index: int, name: str):
         def _do():
+            original_name = None
+            if not name:
+                try:
+                    original_name = self._device.get_active_preset().name
+                except Exception:
+                    pass
+
             if name:
                 self._device.save_and_rename(index, name)
             else:
                 self._device.save_to_user_slot(index)
+
+            self._device.load_user_preset(index)
             self._emit_preset()
+            stored = name if name else (original_name or "")
+            if self._user_preset_names and 0 <= index < len(self._user_preset_names):
+                self._user_preset_names[index] = stored
+                self.preset_names_changed.emit(list(self._user_preset_names))
         self._run(_do)
 
     # ---------------------------------------------------------- live edits
@@ -99,11 +121,17 @@ class DeviceWorker(QObject):
 
     @Slot(int, str)
     def set_model(self, slot: int, model_id: str):
-        self._run(lambda: self._device.set_model(slot, model_id))
+        def _do():
+            self._device.set_model(slot, model_id)
+            self._emit_preset()
+        self._run(_do)
 
     @Slot(int)
     def delete_effect(self, slot: int):
-        self._run(lambda: self._device.delete_effect(slot))
+        def _do():
+            self._device.delete_effect(slot)
+            self._emit_preset()
+        self._run(_do)
 
     @Slot(int, str)
     def add_effect(self, slot: int, address: str):
@@ -111,7 +139,70 @@ class DeviceWorker(QObject):
         if slot_data is None:
             self.error_occurred.emit(f"Unknown effect: {address!r}")
             return
-        self._run(lambda: self._device.add_effect(slot, slot_data))
+        def _do():
+            try:
+                self._device.add_effect(slot, slot_data)
+            except Exception as exc:
+                self.error_occurred.emit(str(exc))
+            # Always refresh: device may create the slot even when it sends a nack
+            self._emit_preset()
+        self._run(_do)
+
+    @Slot(int, str, list)
+    def replace_effect(self, slot: int, address: str, restore_order: list):
+        """Cross-category slot change: delete old effect, add new one, restore chain order."""
+        slot_data = self._db.build_slot_data(address)
+        if slot_data is None:
+            self.error_occurred.emit(f"Unknown effect: {address!r}")
+            return
+        def _do():
+            try:
+                self._device.delete_effect(slot)
+            except Exception as exc:
+                self.error_occurred.emit(str(exc))
+            try:
+                self._device.add_effect(slot, slot_data)
+            except Exception as exc:
+                self.error_occurred.emit(str(exc))
+            if restore_order:
+                try:
+                    self._device.reorder_chain(restore_order)
+                except Exception as exc:
+                    self.error_occurred.emit(str(exc))
+            # Always refresh regardless of nacks
+            self._emit_preset()
+        self._run(_do)
+
+    @Slot(list)
+    def reorder_chain(self, order: list):
+        self._run(lambda: self._device.reorder_chain(order))
+        self.reorder_done.emit()
+
+    @Slot(str)
+    def import_preset(self, path: str):
+        try:
+            with open(path, encoding="utf-8") as f:
+                raw = json.load(f)
+            data = raw.get("preset", raw) if isinstance(raw, dict) else raw
+            preset = Preset.from_json(data)
+        except Exception as exc:
+            self.error_occurred.emit(f"Cannot read file: {exc}")
+            return
+        def _do():
+            self._device.send_preset(preset)
+            self._emit_preset()
+        self._run(_do)
+
+    @Slot(str)
+    def export_preset(self, path: str):
+        def _do():
+            preset = self._device.get_active_preset()
+            try:
+                with open(path, "w", encoding="utf-8") as f:
+                    json.dump(preset.to_json(), f, indent=2, ensure_ascii=False)
+            except OSError as exc:
+                self.error_occurred.emit(f"Cannot write file: {exc}")
+        self._run(_do)
 
     # ---------------------------------------------------------- stomp
 
@@ -132,14 +223,20 @@ class DeviceWorker(QObject):
     @Slot(str, int, str, int, int, bool)
     def assign_expression(self, ctrl: str, slot: int, param: str,
                           min_val: int, max_val: int, flat: bool):
-        self._run(lambda: self._device.assign_expression(
-            ctrl, slot, param, min_val, max_val, flat=flat))
+        if slot < 0:
+            self._run(lambda: self._device.clear_ctrl(ctrl))
+        else:
+            self._run(lambda: self._device.assign_expression(
+                ctrl, slot, param, min_val, max_val, flat=flat))
 
     @Slot(int, str, int, int, int, int, bool)
     def assign_lfo(self, slot: int, param: str,
                    min_val: int, max_val: int, speed: int, waveform: int, flat: bool):
-        self._run(lambda: self._device.assign_lfo(
-            slot, param, min_val, max_val, speed, waveform, flat=flat))
+        if slot < 0:
+            self._run(lambda: self._device.clear_ctrl("lfo1"))
+        else:
+            self._run(lambda: self._device.assign_lfo(
+                slot, param, min_val, max_val, speed, waveform, flat=flat))
 
     # ---------------------------------------------------------- private
 
@@ -168,6 +265,19 @@ class DeviceWorker(QObject):
         self.notification_received.emit(msg)
         if msg and msg[0] in ("cm", "nac", "ndc", "nsc"):
             self._refresh_needed.emit()  # queued → executes on worker thread
+
+    def _fetch_preset_names(self):
+        if not self._device:
+            return
+        try:
+            self.preset_name_progress.emit(0, 99)
+            names = self._device.user_preset_names(
+                progress=lambda done, total: self.preset_name_progress.emit(done, total)
+            )
+            self._user_preset_names = names
+            self.preset_names_changed.emit(names)
+        except Exception:
+            pass
 
     def _safe_disconnect(self):
         if self._device:

@@ -20,6 +20,7 @@ class DeviceWorker(QObject):
     reorder_done          = Signal()
     preset_names_changed  = Signal(list)               # list[str | None], indices 0-98
     preset_name_progress  = Signal(int, int)           # done, total
+    system_params_changed = Signal(dict)               # {name: int}
 
     # Internal: queued trigger so _emit_preset() runs on the worker thread,
     # not on the transport reader thread where notifications arrive.
@@ -44,6 +45,7 @@ class DeviceWorker(QObject):
             self._device = dev
             self.connection_changed.emit(True, port or "auto")
             self._emit_preset()
+            self._fetch_system_params()
             self._fetch_preset_names()
         except Exception as exc:
             self.error_occurred.emit(str(exc))
@@ -265,6 +267,19 @@ class DeviceWorker(QObject):
         self.notification_received.emit(msg)
         if msg and msg[0] in ("cm", "nac", "ndc", "nsc"):
             self._refresh_needed.emit()  # queued → executes on worker thread
+
+    @Slot(str, int)
+    def set_system_param(self, name: str, value: int):
+        self._run(lambda: self._device.set_system_param(name, value))
+
+    def _fetch_system_params(self):
+        if not self._device:
+            return
+        try:
+            params = self._device.get_system_params()
+            self.system_params_changed.emit(params)
+        except Exception:
+            pass
 
     def _fetch_preset_names(self):
         if not self._device:

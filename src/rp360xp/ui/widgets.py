@@ -383,6 +383,101 @@ class PresetHeader(QWidget):
             self.export_requested.emit(path)
 
 
+# ---------------------------------------------------------------- SystemBar
+
+class SystemBar(QFrame):
+    """Horizontal bar exposing the seven writable device system parameters."""
+
+    param_changed = Signal(str, int)   # param_name, raw_value
+
+    _COMBOS = [
+        ("FSWMODE",    "Footswitch:",     ["Preset", "Stomp", "Bank"]),
+        ("EXTFSWMODE", "Control In:",     ["FS3X", "Looper"]),
+        ("LOOPERPOS",  "Phrase Sampler:", ["Sound Check", "Looper"]),
+        ("STEREO",     "Output:",         ["Mono", "Stereo"]),
+        ("OUTPUTSW",   "Output To:",      ["Amp", "Mixer"]),
+    ]
+    # (name, label, lo_display, hi_display, suffix, raw_offset)
+    # raw = display + raw_offset
+    _SPINS = [
+        ("USB REC",  "USB Record Level:", -12, 24, " dB", 12),
+        ("USB PBKQ", "USB Play Mix:",       0, 100, "",    0),
+    ]
+
+    def __init__(self, parent=None):
+        super().__init__(parent)
+        self.setFrameShape(QFrame.StyledPanel)
+        self.setFrameShadow(QFrame.Plain)
+        self._suppress = False
+        self._combos: dict[str, QComboBox] = {}
+        self._spins: dict[str, QSpinBox] = {}
+        self._spin_offsets: dict[str, int] = {}
+
+        lay = QHBoxLayout(self)
+        lay.setContentsMargins(10, 4, 10, 4)
+        lay.setSpacing(6)
+
+        for name, label, options in self._COMBOS:
+            lay.addWidget(QLabel(label))
+            cb = QComboBox()
+            for opt in options:
+                cb.addItem(opt)
+            cb.currentIndexChanged.connect(
+                lambda idx, n=name: self._on_changed(n, idx)
+            )
+            lay.addWidget(cb)
+            self._combos[name] = cb
+
+        sep = QFrame()
+        sep.setFrameShape(QFrame.VLine)
+        sep.setFrameShadow(QFrame.Sunken)
+        lay.addWidget(sep)
+
+        for name, label, lo, hi, suffix, offset in self._SPINS:
+            lay.addWidget(QLabel(label))
+            spin = QSpinBox()
+            spin.setRange(lo, hi)
+            if suffix:
+                spin.setSuffix(suffix)
+            spin.setFixedWidth(68)
+            spin.valueChanged.connect(
+                lambda v, n=name, o=offset: self._on_changed(n, v + o)
+            )
+            lay.addWidget(spin)
+            self._spins[name] = spin
+            self._spin_offsets[name] = offset
+
+        lay.addStretch()
+
+    def _on_changed(self, name: str, raw: int):
+        if not self._suppress:
+            self.param_changed.emit(name, raw)
+
+    def update_params(self, params: dict):
+        self._suppress = True
+        for name, cb in self._combos.items():
+            if name in params:
+                v = int(params[name])
+                if 0 <= v < cb.count():
+                    cb.setCurrentIndex(v)
+        for name, spin in self._spins.items():
+            if name in params:
+                offset = self._spin_offsets.get(name, 0)
+                spin.setValue(int(params[name]) - offset)
+        self._suppress = False
+
+    def update_param(self, name: str, raw: int):
+        self._suppress = True
+        if name in self._combos:
+            cb = self._combos[name]
+            if 0 <= raw < cb.count():
+                cb.setCurrentIndex(raw)
+        elif name in self._spins:
+            offset = self._spin_offsets.get(name, 0)
+            self._spins[name].setValue(raw - offset)
+        self._suppress = False
+
+
 # ---------------------------------------------------------------- AmpPanel
 
 # ---------------------------------------------------------------- SlotCard

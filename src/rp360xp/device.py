@@ -380,6 +380,27 @@ class Device:
 
     # --------------------------------------------------- dirty / state queries
 
+    # ---------------------------------------------------------- system params
+
+    SYSTEM_PARAMS = (
+        "FSWMODE", "EXTFSWMODE", "LOOPERPOS",
+        "STEREO", "OUTPUTSW", "USB REC", "USB PBKQ",
+    )
+
+    def get_system_params(self) -> dict:
+        """Read the writable system parameters. Returns {name: int}."""
+        result = {}
+        for p in self.SYSTEM_PARAMS:
+            try:
+                result[p] = int(self._protocol.send_command("rp", path=f"system/{p}"))
+            except Exception:
+                pass
+        return result
+
+    def set_system_param(self, name: str, value: int) -> None:
+        """Write one system parameter."""
+        self._protocol.send_command("sp", path=f"system/{name}", value=value)
+
     # ---------------------------------------------------------- master volume
 
     def get_master_vol(self) -> int:

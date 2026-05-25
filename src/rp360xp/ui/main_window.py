@@ -36,7 +36,7 @@ except ImportError:
 
 from .worker import DeviceWorker
 from .widgets import (
-    PresetPanel,
+    PresetPanel, SystemBar,
     PRESET_HDR_H, SLOT_CARD_H, DETAIL_H, BOTTOM_H,
 )
 
@@ -82,6 +82,7 @@ class MainWindow(QMainWindow):
     _import_requested       = Signal(str)
     _export_requested       = Signal(str)
     _save_as_requested      = Signal(int, str)   # index 0-based, name
+    _system_param_changed   = Signal(str, int)   # param_name, value
 
     def __init__(self):
         super().__init__()
@@ -99,9 +100,14 @@ class MainWindow(QMainWindow):
         self.setCentralWidget(central)
         root = QVBoxLayout(central)
         root.setContentsMargins(0, 0, 0, 0)
-        root.setSpacing(0)
+        root.setSpacing(4)
 
         root.addWidget(self._build_connection_bar())
+
+        self._system_bar = SystemBar()
+        self._system_bar.param_changed.connect(self._system_param_changed)
+        self._system_bar.setEnabled(False)
+        root.addWidget(self._system_bar)
 
         self._preset_panel = PresetPanel()
         self._preset_panel.enable_toggled.connect(self._enable_changed)
@@ -199,6 +205,8 @@ class MainWindow(QMainWindow):
 
         self._worker.preset_names_changed.connect(self._on_preset_names_changed)
         self._worker.preset_name_progress.connect(self._on_preset_name_progress)
+        self._worker.system_params_changed.connect(self._on_system_params_changed)
+        self._system_param_changed.connect(self._worker.set_system_param)
 
         # worker → UI
         self._worker.connection_changed.connect(self._on_connection_changed)
@@ -244,6 +252,7 @@ class MainWindow(QMainWindow):
         self._connect_btn.setText("Disconnect" if connected else "Connect")
         self._port_combo.setEnabled(not connected)
         self._scan_btn.setEnabled(not connected)
+        self._system_bar.setEnabled(connected)
         self._preset_panel.setEnabled(connected)
         if connected:
             self._conn_lbl.setText(f"Connected · {port}")
@@ -265,6 +274,10 @@ class MainWindow(QMainWindow):
     @Slot(list)
     def _on_preset_names_changed(self, names: list):
         self._user_preset_names = names
+
+    @Slot(dict)
+    def _on_system_params_changed(self, params: dict):
+        self._system_bar.update_params(params)
 
     @Slot(int, int)
     def _on_preset_name_progress(self, done: int, total: int):
@@ -365,10 +378,16 @@ class MainWindow(QMainWindow):
                 self._refresh_requested.emit()
                 return
 
-            # system settings — show in status bar only
-            if path == "system/MASTERVOL":
-                self.statusBar().showMessage(f"Master vol → {value}", 3000)
-                return
+            # system settings
+            if path.startswith("system/"):
+                param = path[len("system/"):]
+                if param in ("FSWMODE", "EXTFSWMODE", "LOOPERPOS",
+                             "STEREO", "OUTPUTSW", "USB REC", "USB PBKQ"):
+                    self._system_bar.update_param(param, int(value))
+                    return
+                if param == "MASTERVOL":
+                    self.statusBar().showMessage(f"Master vol → {value}", 3000)
+                    return
 
             self.statusBar().showMessage(f"np  {path} = {value}", 3000)
 

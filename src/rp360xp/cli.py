@@ -554,7 +554,7 @@ def master_vol(ctx, value):
 
 _SYSTEM_PARAMS = {
     # confirmed writable
-    "FSWMODE":    "FOOTSWITCH MODE : 0=PRESET 1=STOMP 2=LOOPER  [✓]",
+    "FSWMODE":    "FOOTSWITCH MODE : 0=PRESET 1=STOMP 2=BANK  [✓]",
     "EXTFSWMODE": "CONTROL IN : 0=FS3X 1=LOOPER  [✓]",
     "LOOPERPOS":  "PHRASE SAMPLER : 0=SOUND CHECK 1=LOOPER  [✓]",
     "STEREO":     "OUTPUT MODE : 0=MONO 1=STEREO  [✓]",
@@ -577,7 +577,7 @@ def system_param(ctx, param, value):
 
     \b
     Writable parameters:
-      FSWMODE     FOOTSWITCH MODE : 0=PRESET  1=STOMP  2=LOOPER
+      FSWMODE     FOOTSWITCH MODE : 0=PRESET  1=STOMP  2=BANK
       EXTFSWMODE  CONTROL IN      : 0=FS3X  1=LOOPER
       LOOPERPOS   PHRASE SAMPLER  : 0=SOUND CHECK  1=LOOPER
       STEREO      OUTPUT MODE     : 0=MONO  1=STEREO

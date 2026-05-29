@@ -1,4 +1,9 @@
-This is an attempt at re-creating an application for managing the DigiTech RP360XP on Linux and Windows.
+rp360xp-controller — Open-source Python tool to control the DigiTech RP360XP guitar effects pedal on Linux and Windows.
+Drop-in replacement for the abandoned Nexus software, with full preset management via a graphical interface and CLI.
+Backup and preset files from Nexus are 100% compatible. Reverse-engineered USB/serial protocol (VID:PID 1210:0032).
+
+Maybe it works on the RP360, but I don't own a unit and cannot tell.
+
 
 It has been made with the help of Claude Code, it is made in python + Qt.
 
@@ -35,6 +40,8 @@ You can note I have not implemented the copy / paste feature from Nexus. I find 
 
 A complete command line tool exists too. You can use it to automate stuff with the pedal, perform tests, etc.
 
+I have personally made extended tests with the CLI tool and GUI on linux, and quickly tested the GUI on windows. "Works for me" :D
+
 ---
 
 What's next?
@@ -48,3 +55,6 @@ It might also be possible to access the expression pedal calibration data, not 1
 For now, there is no packaging, you have to use the [instructions](src/README.md) to use it. But I think about providing an autonomous package (i.e. .exe for Windows).
 
 But as it is, I find it quite OK.
+
+On a personal note, I "play" the guitar on my own at home, and have been using this device with the FS3X, its analog outputs going to a basic sound card in my PC, since 2014 (the dates of the files I have do not lie :D). I am no professional, can't tell if it is a good device (I have no illusions about that: at that price range you cannot expect a miracle), but I love it and it is more than good enough for me, and I maybe use 1% of everything it can do :)
+I often look at more modern stuff, but after a while I'm just like: "meh. what I already have is perfect for me".
